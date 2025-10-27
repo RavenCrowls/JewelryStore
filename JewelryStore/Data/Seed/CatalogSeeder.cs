@@ -11,47 +11,62 @@ namespace JewelryStore.Data.Seed
         {
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
+            var didAdd = false;
+
             // Categories
             if (!await db.Categories.AnyAsync())
             {
-                db.Categories.AddRange(
+                var categories = new[]
+                {
                     new Category { Id = 1, Name = "Rings", Status = true },
                     new Category { Id = 2, Name = "Necklaces", Status = true },
                     new Category { Id = 3, Name = "Bracelets", Status = true }
-                );
-                await db.SaveChangesAsync();
+                };
+                db.Categories.AddRange(categories);
+                didAdd = true;
             }
 
             // Products
             if (!await db.Products.AnyAsync())
             {
-                db.Products.AddRange(
+                var products = new[]
+                {
                     new Product { Id = 1, CategoryId = 1, Name = "Gold Ring A", Material = "Gold 18K", Description = "Elegant gold ring.", Price = 1999.99m, Status = true },
                     new Product { Id = 2, CategoryId = 2, Name = "Diamond Necklace B", Material = "Diamond, Silver", Description = "Sparkling diamond necklace.", Price = 4999.00m, Status = true },
                     new Product { Id = 3, CategoryId = 3, Name = "Silver Bracelet C", Material = "Silver 925", Description = "Classic silver bracelet.", Price = 299.50m, Status = true }
-                );
-                await db.SaveChangesAsync();
+                };
+                db.Products.AddRange(products);
+                didAdd = true;
             }
 
             // Gemstones
             if (!await db.Gemstones.AnyAsync())
             {
-                db.Gemstones.AddRange(
+                var gemstones = new[]
+                {
                     new Gemstone { Id = 1, ProductId = 1, Name = "Diamond", Weight = 0.5f, Size = "5mm", Color = "Clear" },
                     new Gemstone { Id = 2, ProductId = 1, Name = "Ruby", Weight = 0.3f, Size = "4mm", Color = "Red" },
                     new Gemstone { Id = 3, ProductId = 2, Name = "Diamond", Weight = 1.2f, Size = "8mm", Color = "Clear" }
-                );
-                await db.SaveChangesAsync();
+                };
+                db.Gemstones.AddRange(gemstones);
+                didAdd = true;
             }
 
             // Inventory
             if (!await db.Inventory.AnyAsync())
             {
-                db.Inventory.AddRange(
+                var inventory = new[]
+                {
                     new Inventory { ProductId = 1, Quantity = 10 },
                     new Inventory { ProductId = 2, Quantity = 5 },
                     new Inventory { ProductId = 3, Quantity = 20 }
-                );
+                };
+                db.Inventory.AddRange(inventory);
+                didAdd = true;
+            }
+
+            if (didAdd)
+            {
                 await db.SaveChangesAsync();
             }
         }

@@ -46,6 +46,7 @@ using (var scope = app.Services.CreateScope())
 {
     await IdentitySeeder.SeedAsync(scope);
     await CatalogSeeder.SeedAsync(scope);
+    // await OrderSeeder.SeedAsync(scope); // uncomment when users exist
 }
 
 app.Run();
