@@ -17,6 +17,9 @@ namespace JewelryStore.Data
         public DbSet<Inventory> Inventory => Set<Inventory>();
         public DbSet<OrderForm> Orders => Set<OrderForm>();
         public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
+        public DbSet<Supplier> Suppliers => Set<Supplier>();
+        public DbSet<ImportForm> ImportForms => Set<ImportForm>();
+        public DbSet<ImportDetail> ImportDetails => Set<ImportDetail>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
