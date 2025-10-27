@@ -1,0 +1,104 @@
+using JewelryStore.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace JewelryStore.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ProductsController : ControllerBase
+    {
+        private readonly AppDbContext _db;
+        public ProductsController(AppDbContext db) => _db = db;
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Product>>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 50)
+        {
+            try
+            {
+                if (take <= 0 || take > 200) take = 50;
+                var items = await _db.Products.AsNoTracking().OrderBy(c => c.Id).Skip(skip).Take(take).ToListAsync();
+                return Ok(items);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "error fetching products" });
+            }
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Product>> GetById([FromRoute] int id)
+        {
+            try
+            {
+                var item = await _db.Products.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+                if (item == null) return NotFound(new { error = "product not found" });
+                return Ok(item);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "error fetching product" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] Product model)
+        {
+            try
+            {
+                _db.Products.Add(model);
+                await _db.SaveChangesAsync();
+                return CreatedAtAction(nameof(GetById), new { id = model.Id }, model);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "error creating product" });
+            }
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] Product model)
+        {
+            try
+            {
+                var exists = await _db.Products.FirstOrDefaultAsync(c => c.Id == id);
+                if (exists == null) return NotFound(new { error = "product not found" });
+
+                exists.Name = model.Name;
+                exists.Material = model.Material;
+                exists.Description = model.Description;
+                exists.Price = model.Price;
+                exists.Status = model.Status;
+                exists.CategoryId = model.CategoryId;
+
+                await _db.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "error updating product" });
+            }
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            try
+            {
+                var item = await _db.Products.FirstOrDefaultAsync(c => c.Id == id);
+                if (item == null) return NotFound(new { error = "product not found" });
+                _db.Products.Remove(item);
+                await _db.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "error deleting product" });
+            }
+        }
+    }
+}
