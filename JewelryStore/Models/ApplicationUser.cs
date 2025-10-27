@@ -1,8 +1,8 @@
-namespace JewelryStore.Models
-{
-    using Microsoft.AspNetCore.Identity;
-    using System;
+using Microsoft.AspNetCore.Identity;
+using System;
 
+namespace JewelryStore.Data
+{
     public class ApplicationUser : IdentityUser<int>
     {
         public string FullName { get; set; } = string.Empty;
