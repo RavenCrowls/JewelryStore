@@ -65,6 +65,20 @@ namespace JewelryStore.Data.Seed
                 didAdd = true;
             }
 
+            // Product images
+            if (!await db.ProductImages.AnyAsync())
+            {
+                const string url = "https://res.cloudinary.com/djf63iwha/image/upload/v1761568149/Charm_wuvozq.webp";
+                var images = new[]
+                {
+                    new ProductImage { ProductId = 1, ImageOrder = 1, ImageUrl = url },
+                    new ProductImage { ProductId = 2, ImageOrder = 1, ImageUrl = url },
+                    new ProductImage { ProductId = 3, ImageOrder = 1, ImageUrl = url }
+                };
+                db.ProductImages.AddRange(images);
+                didAdd = true;
+            }
+
             if (didAdd)
             {
                 await db.SaveChangesAsync();

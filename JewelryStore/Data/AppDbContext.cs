@@ -20,6 +20,7 @@ namespace JewelryStore.Data
         public DbSet<Supplier> Suppliers => Set<Supplier>();
         public DbSet<ImportForm> ImportForms => Set<ImportForm>();
         public DbSet<ImportDetail> ImportDetails => Set<ImportDetail>();
+        public DbSet<ProductImage> ProductImages => Set<ProductImage>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

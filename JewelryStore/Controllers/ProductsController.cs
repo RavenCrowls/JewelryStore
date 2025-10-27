@@ -15,6 +15,46 @@ namespace JewelryStore.Controllers
         private readonly AppDbContext _db;
         public ProductsController(AppDbContext db) => _db = db;
 
+        public record ProductPreviewDto(
+            int Id,
+            string Name,
+            string? ImageUrl,
+            string CategoryName,
+            decimal Price,
+            int Quantity
+        );
+
+        [HttpGet("preview")]
+        public async Task<ActionResult<IEnumerable<ProductPreviewDto>>> GetPreviews([FromQuery] int skip = 0, [FromQuery] int take = 50)
+        {
+            try
+            {
+                if (take <= 0 || take > 200) take = 50;
+                var items = await _db.Products.AsNoTracking()
+                    .OrderBy(p => p.Id)
+                    .Skip(skip)
+                    .Take(take)
+                    .Select(p => new ProductPreviewDto(
+                        p.Id,
+                        p.Name,
+                        _db.ProductImages
+                            .Where(i => i.ProductId == p.Id)
+                            .OrderBy(i => i.ImageOrder)
+                            .Select(i => i.ImageUrl)
+                            .FirstOrDefault(),
+                        _db.Categories.Where(c => c.Id == p.CategoryId).Select(c => c.Name).FirstOrDefault() ?? string.Empty,
+                        p.Price,
+                        _db.Inventory.Where(i => i.ProductId == p.Id).Select(i => i.Quantity).FirstOrDefault()
+                    ))
+                    .ToListAsync();
+                return Ok(items);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "Error fetching product previews" });
+            }
+        }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 50)
         {
