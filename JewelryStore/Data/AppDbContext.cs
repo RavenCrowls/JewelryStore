@@ -11,6 +11,11 @@ namespace JewelryStore.Data
         {
         }
 
+        public DbSet<Category> Categories => Set<Category>();
+        public DbSet<Product> Products => Set<Product>();
+        public DbSet<Gemstone> Gemstones => Set<Gemstone>();
+        public DbSet<Inventory> Inventory => Set<Inventory>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

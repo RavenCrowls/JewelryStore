@@ -42,10 +42,10 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Seed default roles
 using (var scope = app.Services.CreateScope())
 {
     await IdentitySeeder.SeedAsync(scope);
+    await CatalogSeeder.SeedAsync(scope);
 }
 
 app.Run();
