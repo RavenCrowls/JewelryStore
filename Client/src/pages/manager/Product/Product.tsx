@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Container } from '../../../components/common/Container'
 import styles from './ProductTable.module.css'
 import { ProductService, type ProductPreview } from '../../../services'
+import { Table, type Column } from '../../../components/common/Table'
 
 function formatPriceVND(value: number) {
     try {
@@ -43,53 +44,46 @@ export default function Product() {
     return (
         <>
             <Container title="Product" />
-            <div className={styles.tableWrap} style={{ marginTop: 16 }}>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Image</th>
-                            <th>Category</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {loading && (
-                            <tr>
-                                <td colSpan={7}>Loading...</td>
-                            </tr>
-                        )}
-                        {!loading && error && (
-                            <tr>
-                                <td colSpan={7}>{error}</td>
-                            </tr>
-                        )}
-                        {!loading && !error && rows.map((r) => (
-                            <tr key={r.id}>
-                                <td>{r.id}</td>
-                                <td>{r.name}</td>
-                                <td>
-                                    {r.imageUrl ? (
-                                        <img className={styles.image} src={r.imageUrl} alt={r.name} />
-                                    ) : (
-                                        <span className={styles.image} />
-                                    )}
-                                </td>
-                                <td>{r.categoryName}</td>
-                                <td>{formatPriceVND(r.price)}</td>
-                                <td>{r.quantity}</td>
-                                <td>
-                                    <div className={styles.actions}>
-                                        <button className={styles.btn}>View</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            <div style={{ marginTop: 16 }}>
+                <Table<ProductPreview>
+                    columns={[
+                        { key: 'id', header: 'ID', width: 80 },
+                        { key: 'name', header: 'Name' },
+                        {
+                            key: 'imageUrl',
+                            header: 'Image',
+                            width: 84,
+                            render: (r) =>
+                                r.imageUrl ? (
+                                    <img className={styles.image} src={r.imageUrl} alt={r.name} />
+                                ) : (
+                                    <span className={styles.image} />
+                                ),
+                        },
+                        { key: 'categoryName', header: 'Category' },
+                        {
+                            key: 'price',
+                            header: 'Price',
+                            align: 'right',
+                            render: (r) => formatPriceVND(r.price),
+                        },
+                        { key: 'quantity', header: 'Quantity', align: 'right' },
+                        {
+                            key: 'actions',
+                            header: 'Actions',
+                            align: 'center',
+                            render: () => (
+                                <div className={styles.actions}>
+                                    <button className={styles.btn}>View</button>
+                                </div>
+                            ),
+                        },
+                    ] as Column<ProductPreview>[]}
+                    data={!loading && !error ? rows : []}
+                    rowKey={(r) => r.id}
+                    loading={loading}
+                    emptyText={error || 'No products'}
+                />
             </div>
         </>
     )
