@@ -1,1 +1,1 @@
-export * from './ManagerLayout'
+export {default} from './ManagerLayout'

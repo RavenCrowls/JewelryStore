@@ -1,1 +1,1 @@
-export { default as ManagerDashboard } from './Dashboard'
+export { default } from "./Dashboard";
