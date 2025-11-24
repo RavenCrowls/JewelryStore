@@ -2,7 +2,8 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import ManagerLayout from "../layouts/ManagerLayout";
 import Dashboard from "../pages/manager/Dashboard";
-import Product from "../pages/manager/Product";
+// import Product from "../pages/manager/Product";
+import Report from "../pages/manager/Report";
 
 const AppRouter = () => {
   return (
@@ -18,8 +19,9 @@ const AppRouter = () => {
         {/* /manager/dashboard */}
         <Route path="dashboard" element={<Dashboard />} />
 
+
         {/* /manager/products */}
-        <Route path="products" element={<Product />} />
+        <Route path="report" element={<Report />} />
       </Route>
 
       {/* 404 */}
