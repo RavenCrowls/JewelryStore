@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import ManagerLayout from "./layouts/ManagerLayout";
 import Dashboard from "./pages/manager/Dashboard";
 import Report from "./pages/manager/Report";
+import ReportRevenue from "./pages/manager/ReportRevenue/ReportRevenue";
 export default function App() {
   return (
     <Routes>
@@ -16,10 +17,11 @@ export default function App() {
 
         {/* /manager/dashboard */}
         <Route path="dashboard" element={<Dashboard />} />
-
-        {/* /manager/products */}
-        {/* <Route path="products" element={<Product />} /> */}
-        <Route path="report" element={<Report />} />
+        {/* /manager/report */}
+        <Route path="report">
+          <Route index element={<Report />} />
+          <Route path="revenue" element={<ReportRevenue />} />
+        </Route>
       </Route>
 
       {/* 404 */}

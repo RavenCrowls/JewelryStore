@@ -1,9 +1,7 @@
 import ReportFilterBar from "../../../components/Report/ReportFilterBar/ReportFilterBar";
-import ReportStats from "../../../components/Report/ReportStats/ReportStats";
-import ReportTable, {type ReportRow,} from "../../../components/Report/ReportTable/ReportTable";
-import ReportSearchBar from "../../../components/Report/ReportSearchBar/ReportSearchBar";
+import RevenueTable, {type RevenueRow} from "../../../components/Report/ReportRevenue/ReportRevenue";
 
-const reportRows: ReportRow[] = [
+const revenueRows: RevenueRow[] = [
   {
     id: "LOT1",
     content: "Import product",
@@ -38,20 +36,15 @@ const reportRows: ReportRow[] = [
   },
 ];
 
-export default function Report() {
+export default function ReportRevenue() {
   return (
     <div className="space-y-6 mt-3">
-      <div className="space-y-4">
-        <ReportSearchBar />
-        <ReportFilterBar />
-      </div>
+      {/* Thanh filter: search + date range + Monthly/Annually */}
+      <ReportFilterBar />
 
+      {/* Bảng Income and expenses */}
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-        <ReportStats />
-      </section>
-
-      <section className="bg-white rounded-2xl p-6 shadow-sm">
-        <ReportTable rows={reportRows} />
+        <RevenueTable rows={revenueRows} />
       </section>
     </div>
   );
