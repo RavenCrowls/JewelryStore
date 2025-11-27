@@ -1,3 +1,14 @@
+import { CompareLineChart } from "../../../components/common/StatLineCard/StatLineCard";
+
+const revenueCostData = [
+  { day: "01", revenue: 48, cost: 30 },
+  { day: "02", revenue: 40, cost: 25 },
+  { day: "03", revenue: 60, cost: 50 },
+  { day: "04", revenue: 50, cost: 45 },
+  { day: "05", revenue: 52, cost: 48 },
+  { day: "06", revenue: 65, cost: 40 },
+  { day: "07", revenue: 70, cost: 60 },
+];
 export default function ReportStats() {
   return (
     <div>
@@ -30,8 +41,12 @@ export default function ReportStats() {
 
       {/* Chart (placeholder) */}
       <div className="mt-6 h-64 rounded-xl border border-dashed border-slate-200 bg-slate-50 flex items-center justify-center text-slate-400 text-sm">
-        Line chart: Revenue vs Cost
-        {/* Sau này bạn thay bằng component chart thật (Recharts, Chart.js, ...) */}
+        <CompareLineChart
+          data={revenueCostData}
+          currentKey="revenue"
+          lastKey="cost"
+        />
+      
       </div>
 
       {/* Legend */}

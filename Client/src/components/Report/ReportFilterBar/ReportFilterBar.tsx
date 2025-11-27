@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-
+import { Search } from 'lucide-react';
 type Period = "monthly" | "annually";
 
 export default function ReportFilterBar() {
@@ -28,9 +28,11 @@ export default function ReportFilterBar() {
         {/* Search */}
         <div className="w-full max-w-sm">
           <label className="sr-only" htmlFor="report-search">
+            
             Search
           </label>
           <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               id="report-search"
               type="text"

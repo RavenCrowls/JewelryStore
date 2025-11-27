@@ -2,7 +2,18 @@ import { useNavigate } from "react-router-dom";
 import RevenueChart from "../../../components/Dashboard/RevenueChart/RevenueChart";
 import SalesList from "../../../components/Dashboard/SalesList/SalesList";
 import SellersList from "../../../components/Dashboard/SellersList/SellersList";
-import BillChart from "../../../components/Dashboard/BillChart/BillChart";
+import StatLineCard from "../../../components/common/StatLineCard/StatLineCard";
+
+const billData = [
+  { day: "01", thisWeek: 20, lastWeek: 35 },
+  { day: "02", thisWeek: 45, lastWeek: 40 },
+  { day: "03", thisWeek: 55, lastWeek: 52 },
+  { day: "04", thisWeek: 38, lastWeek: 37 },
+  { day: "05", thisWeek: 50, lastWeek: 43 },
+  { day: "06", thisWeek: 42, lastWeek: 39 },
+  { day: "07", thisWeek: 63, lastWeek: 52 },
+];
+
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -40,7 +51,15 @@ export default function Dashboard() {
       <section className="grid grid-cols-1 xl:grid-cols-3 gap-5">
         <SalesList />
         <SellersList />
-        <BillChart />
+        <StatLineCard
+        title="Bill"
+        total={120}
+        diffPercent={2.1}
+        isUp={false}
+        data={billData}
+        currentKey="thisWeek"
+        lastKey="lastWeek"
+      />
       </section>
     </div>
   );
