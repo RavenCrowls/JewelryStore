@@ -1,4 +1,4 @@
-export type ReportRow = {
+export type RevenueRow = {
   id: string;
   content: string;
   date: string;
@@ -7,14 +7,13 @@ export type ReportRow = {
   type: "income" | "expense";
 };
 
-type ReportTableProps = {
-  rows: ReportRow[];
+type RevenueTableProps = {
+  rows: RevenueRow[];
 };
 
-export default function ReportTable({ rows }: ReportTableProps) {
+export default function RevenueTable({ rows }: RevenueTableProps) {
   return (
     <div>
-      <h3 className="mb-4 text-lg font-semibold">Income and expenses</h3>
 
       <div className="overflow-x-auto">
         <table className="min-w-full text-center text-sm">
@@ -25,9 +24,10 @@ export default function ReportTable({ rows }: ReportTableProps) {
               <th className="px-4 py-3 font-medium">
                 Date <span className="text-xs">↕</span>
               </th>
-              <th className="px-4 py-3 rounded-r-xl font-medium">
+              <th className="px-4 py-3 font-medium">
                 Total <span className="text-xs">↕</span>
               </th>
+              <th className="px-4 py-3 rounded-r-xl font-medium">Actions</th>
             </tr>
           </thead>
 
@@ -58,6 +58,9 @@ export default function ReportTable({ rows }: ReportTableProps) {
                     {sign}
                     {row.total.toLocaleString("vi-VN")}{" "}
                     {row.currency ?? "VND"}
+                  </td>
+                  <td className="px-4 py-3 text-xs text-slate-600">
+                    <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition">View</button>
                   </td>
                 </tr>
               );

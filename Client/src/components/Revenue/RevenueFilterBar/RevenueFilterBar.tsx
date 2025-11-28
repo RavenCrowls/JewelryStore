@@ -25,7 +25,7 @@ export default function ReportFilterBar() {
         {/* Report + nút filter + popup date-range */}
         <div className="flex items-center gap-3" ref={filterRef}>
           <h2 className="text-xl font-semibold tracking-tight text-black">
-            Report
+            Revenue
           </h2>
 
           {/* nút 3 gạch */}

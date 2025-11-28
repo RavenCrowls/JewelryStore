@@ -1,5 +1,5 @@
 import { CompareLineChart } from "../../../components/common/StatLineCard/StatLineCard";
-
+import { useNavigate } from "react-router-dom";
 const revenueCostData = [
   { day: "01", revenue: 48, cost: 30 },
   { day: "02", revenue: 40, cost: 25 },
@@ -10,12 +10,20 @@ const revenueCostData = [
   { day: "07", revenue: 70, cost: 60 },
 ];
 export default function ReportStats() {
+  const navigate = useNavigate();
+
+  const handleGotoRevenue = () => {
+    navigate("/manager/report/revenue");
+  }
+  const handleGotoCost = () => {
+    navigate("/manager/report/cost");
+  }
   return (
     <div>
       {/* Revenue & Cost */}
       <div className="flex flex-wrap justify-between gap-8">
         {/* Revenue */}
-        <div>
+        <div onClick={handleGotoRevenue}>
           <p className="text-sm font-semibold text-slate-600">Revenue</p>
           <p className="mt-1 text-2xl font-bold">79.852.000 VND</p>
           <p className="mt-1 text-xs text-green-600">
@@ -28,6 +36,7 @@ export default function ReportStats() {
 
         {/* Cost */}
         <div>
+          <div onClick={handleGotoCost}>
           <p className="text-sm font-semibold text-slate-600">Cost</p>
           <p className="mt-1 text-2xl font-bold">75.852.000 VND</p>
           <p className="mt-1 text-xs text-green-600">
@@ -36,6 +45,7 @@ export default function ReportStats() {
           <p className="mt-1 text-[11px] text-slate-400">
             Sales from 1–7 Sep, 2024
           </p>
+          </div>
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-export type RevenueRow = {
+export type CostRows = {
   id: string;
   content: string;
   date: string;
@@ -7,20 +7,19 @@ export type RevenueRow = {
   type: "income" | "expense";
 };
 
-type RevenueTableProps = {
-  rows: RevenueRow[];
+type CostTableProps = {
+  rows: CostRows[];
 };
 
-export default function RevenueTable({ rows }: RevenueTableProps) {
+export default function CostTable({ rows }: CostTableProps) {
   return (
     <div>
-      <h3 className="mb-4 text-lg font-semibold">Income and expenses</h3>
 
       <div className="overflow-x-auto">
         <table className="min-w-full text-center text-sm">
           <thead>
             <tr className="bg-[#1279C3] text-white">
-              <th className="px-4 py-3 rounded-l-xl font-medium text-left">ID</th>
+              <th className="px-4 py-3 rounded-l-xl font-medium text-left">LOT</th>
               <th className="px-4 py-3 font-medium">Content</th>
               <th className="px-4 py-3 font-medium">
                 Date <span className="text-xs">↕</span>
@@ -36,7 +35,6 @@ export default function RevenueTable({ rows }: RevenueTableProps) {
             {rows.map((row, index) => {
               const isIncome = row.type === "income";
               const sign = isIncome ? "+" : "-";
-              const textColor = isIncome ? "text-green-600" : "text-red-500";
               const bg =
                 index % 2 === 0
                   ? "bg-slate-50/60 border-b border-slate-100"
@@ -45,7 +43,8 @@ export default function RevenueTable({ rows }: RevenueTableProps) {
               return (
                 <tr key={row.id} className={`${bg} text-center`}>
                   <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-left">
-                    {row.id}
+                    {row.id} 
+                    {/* LOT ma khong biet co giong id khong nen de tam */}
                   </td>
                   <td className="px-4 py-3 text-xs text-slate-600">
                     {row.content}
@@ -54,7 +53,7 @@ export default function RevenueTable({ rows }: RevenueTableProps) {
                     {row.date}
                   </td>
                   <td
-                    className={`px-4 py-3 text-xs text-center ${textColor}`}
+                    className={`px-4 py-3 text-xs text-center text-black`}
                   >
                     {sign}
                     {row.total.toLocaleString("vi-VN")}{" "}
