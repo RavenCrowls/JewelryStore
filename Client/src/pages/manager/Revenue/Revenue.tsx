@@ -36,7 +36,7 @@ const revenueRows: RevenueRow[] = [
   },
 ];
 
-export default function ReportRevenue() {
+export default function Revenue() {
   return (
     <div className="space-y-6 mt-3">
       {/* Thanh filter: search + date range + Monthly/Annually */}

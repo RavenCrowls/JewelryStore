@@ -1,4 +1,4 @@
-export type CostRows = {
+export type CostRow = {
   id: string;
   content: string;
   date: string;
@@ -8,7 +8,7 @@ export type CostRows = {
 };
 
 type CostTableProps = {
-  rows: CostRows[];
+  rows: CostRow[];
 };
 
 export default function CostTable({ rows }: CostTableProps) {

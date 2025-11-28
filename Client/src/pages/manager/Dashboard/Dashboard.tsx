@@ -26,12 +26,10 @@ export default function Dashboard() {
     <div className="space-y-5 mt-3">
       {/* Hàng tiêu đề + nút */}
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold tracking-tight">Dashboard</h2>
-
-        <button
+        <h2 className="text-xl font-semibold tracking-tight text-[#1279C3]">Dashboard</h2>
+        <button 
           onClick={handleGoToReport}
-          className="px-4 py-2 rounded-xl bg-[#1279C3] text-white text-sm font-medium hover:bg-[#0f69aa] active:scale-[0.98] transition"
-        >
+          className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition">
           View Report
         </button>
       </div>

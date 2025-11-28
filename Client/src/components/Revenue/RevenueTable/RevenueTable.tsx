@@ -35,7 +35,6 @@ export default function RevenueTable({ rows }: RevenueTableProps) {
             {rows.map((row, index) => {
               const isIncome = row.type === "income";
               const sign = isIncome ? "+" : "-";
-              const textColor = isIncome ? "text-green-600" : "text-red-500";
               const bg =
                 index % 2 === 0
                   ? "bg-slate-50/60 border-b border-slate-100"

@@ -1,90 +1,101 @@
-import { useEffect, useState } from 'react'
-import { Container } from '../../../components/common/Container'
-import styles from './ProductTable.module.css'
-import { ProductService, type ProductPreview } from '../../../services'
-import { Table, type Column } from '../../../components/common/Table'
+import { useNavigate } from "react-router-dom";
+import RevenueChart from "../../../components/Dashboard/RevenueChart/RevenueChart";
+import SalesList from "../../../components/Dashboard/SalesList/SalesList";
+import SellersList from "../../../components/Dashboard/SellersList/SellersList";
+import StatLineCard from "../../../components/common/StatLineCard/StatLineCard";
+import { useEffect, useRef, useState } from "react";
 
-function formatPriceVND(value: number) {
-    try {
-        return new Intl.NumberFormat('vi-VN').format(value) + ' VND'
-    } catch {
-        return String(value) + ' VND'
+const billData = [
+  { day: "01", thisWeek: 20, lastWeek: 35 },
+  { day: "02", thisWeek: 45, lastWeek: 40 },
+  { day: "03", thisWeek: 55, lastWeek: 52 },
+  { day: "04", thisWeek: 38, lastWeek: 37 },
+  { day: "05", thisWeek: 50, lastWeek: 43 },
+  { day: "06", thisWeek: 42, lastWeek: 39 },
+  { day: "07", thisWeek: 63, lastWeek: 52 },
+];
+
+
+
+export default function Dashboard() {
+  const navigate = useNavigate();
+
+  const handleGoToReport = () => {
+    navigate("/manager/report");
+  };
+
+  const [isDateOpen, setIsDateOpen] = useState(false);
+  const filterRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        filterRef.current &&
+        !filterRef.current.contains(e.target as Node)
+      ) {
+        setIsDateOpen(false);
+      }
     }
-}
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-export default function Product() {
-    const [rows, setRows] = useState<ProductPreview[]>([])
-    const [loading, setLoading] = useState<boolean>(true)
-    const [error, setError] = useState<string>('')
-
-    useEffect(() => {
-        const controller = new AbortController()
-        let didAbort = false
-        setLoading(true)
-        setError('')
-        ProductService.fetchProductPreview(0, 50, { signal: controller.signal })
-            .then(setRows)
-            .catch((e: unknown) => {
-                const name = (e as any)?.name
-                if (name === 'AbortError') {
-                    didAbort = true
-                    return
-                }
-                setError(e instanceof Error ? e.message : 'Failed to load products')
-            })
-            .finally(() => {
-                if (!didAbort) setLoading(false)
-            })
-        return () => {
-            didAbort = true
-            controller.abort()
-        }
-    }, [])
-
-    return (
-        <>
-            <Container title="Product" />
-            <div style={{ marginTop: 16 }}>
-                <Table<ProductPreview>
-                    columns={[
-                        { key: 'id', header: 'ID', width: 80 },
-                        { key: 'name', header: 'Name' },
-                        {
-                            key: 'imageUrl',
-                            header: 'Image',
-                            width: 84,
-                            render: (r) =>
-                                r.imageUrl ? (
-                                    <img className={styles.image} src={r.imageUrl} alt={r.name} />
-                                ) : (
-                                    <span className={styles.image} />
-                                ),
-                        },
-                        { key: 'categoryName', header: 'Category' },
-                        {
-                            key: 'price',
-                            header: 'Price',
-                            align: 'right',
-                            render: (r) => formatPriceVND(r.price),
-                        },
-                        { key: 'quantity', header: 'Quantity', align: 'right' },
-                        {
-                            key: 'actions',
-                            header: 'Actions',
-                            align: 'center',
-                            render: () => (
-                                <div className={styles.actions}>
-                                    <button className={styles.btn}>View</button>
-                                </div>
-                            ),
-                        },
-                    ] as Column<ProductPreview>[]}
-                    data={!loading && !error ? rows : []}
-                    rowKey={(r) => r.id}
-                    loading={loading}
-                    emptyText={error || 'No products'}
-                />
+  return (
+    <div className="space-y-5 mt-3">
+      {/* Hàng tiêu đề + nút */}
+        <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3" ref={filterRef}>
+                <h2 className="text-xl font-semibold tracking-tight text-[#1279C3]">
+                  Product
+                </h2>
+      
+                {/* nút 3 gạch */}
+                <button
+                  type="button"
+                  onClick={() => setIsDateOpen((prev) => !prev)}
+                  className="relative flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 text-xs hover:bg-slate-50 transition"
+                >
+                  ☰
+                </button>
+      
+                {/* Popup price-range */}
+                
             </div>
-        </>
-    )
+            <div className="justify-end">
+                <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition">
+                  Add new product
+                </button>
+                {/* Export button */}
+                <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition ml-3">
+                  Export
+                </button>
+            </div>
+                
+        </div>      
+      {/* Revenue Card */}
+      <section className="bg-white rounded-2xl p-6 shadow-sm">
+        <h3 className="font-semibold text-lg">Revenue</h3>
+        <p className="text-2xl font-bold mt-1">79.852.000 VND</p>
+        <span className="text-green-600 text-sm">↑ 2.1% vs last week</span>
+
+        <div className="mt-4">
+          <RevenueChart />
+        </div>
+      </section>
+
+      {/* Bottom section */}
+      <section className="grid grid-cols-1 xl:grid-cols-3 gap-5">
+        <SalesList />
+        <SellersList />
+        <StatLineCard
+        title="Bill"
+        total={120}
+        diffPercent={2.1}
+        isUp={false}
+        data={billData}
+        currentKey="thisWeek"
+        lastKey="lastWeek"
+      />
+      </section>
+    </div>
+  );
 }

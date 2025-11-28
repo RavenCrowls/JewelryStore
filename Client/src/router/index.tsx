@@ -2,30 +2,39 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import ManagerLayout from "../layouts/ManagerLayout";
 import Dashboard from "../pages/manager/Dashboard";
-// import Product from "../pages/manager/Product";
+import Product from "../pages/manager/Product";
 import Report from "../pages/manager/Report";
+import Revenue from "../pages/manager/Revenue/Revenue";
+import Cost from "../pages/manager/Cost/Cost";
+import LoginPage from "../pages/LoginPage";
 
 const AppRouter = () => {
   return (
     <Routes>
-      {/* redirect "/" về /manager */}
-      <Route path="/" element={<Navigate to="/manager" replace />} />
+      {/* "/" -> /manager */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
 
-      {/* layout manager */}
+      <Route path="/login" element={<LoginPage />}/>
       <Route path="/manager" element={<ManagerLayout />}>
-        {/* /manager -> Dashboard */}
+        {/* /manager */}
         <Route index element={<Dashboard />} />
 
         {/* /manager/dashboard */}
         <Route path="dashboard" element={<Dashboard />} />
 
+        {/* /manager/product */}
+        <Route path="product" element={<Product />} />
 
-        {/* /manager/products */}
-        <Route path="report" element={<Report />} />
+        {/* /manager/report/... */}
+        <Route path="report">
+          {/* /manager/report */}
+          <Route index element={<Report />} />
+          {/* /manager/report/revenue */}
+          <Route path="revenue" element={<Revenue />} />
+          {/* /manager/report/cost */}
+          <Route path="cost" element={<Cost />} />
+        </Route>
       </Route>
-
-      {/* 404 */}
-      <Route path="*" element={<div>Page not found</div>} />
     </Routes>
   );
 };

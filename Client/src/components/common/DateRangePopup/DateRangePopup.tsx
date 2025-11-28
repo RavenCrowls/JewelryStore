@@ -1,6 +1,3 @@
-// src/components/common/DateRangePopup/DateRangePopup.tsx
-import React from "react";
-
 type DateRangePopupProps = {
   isOpen: boolean;
 };

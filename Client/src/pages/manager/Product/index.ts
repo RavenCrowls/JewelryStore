@@ -1,1 +1,1 @@
-export { default as ManagerProduct } from './Product'
+export { default } from "./Product";
