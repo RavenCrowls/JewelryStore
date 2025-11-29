@@ -4,6 +4,7 @@ import SalesList from "../../../components/Dashboard/SalesList/SalesList";
 import SellersList from "../../../components/Dashboard/SellersList/SellersList";
 import StatLineCard from "../../../components/common/StatLineCard/StatLineCard";
 import { useEffect, useRef, useState } from "react";
+import PriceFilterPopup from "../../../components/common/PriceFilterPopup/PriceFilterPopup";
 
 const billData = [
   { day: "01", thisWeek: 20, lastWeek: 35 },
@@ -20,9 +21,7 @@ const billData = [
 export default function Dashboard() {
   const navigate = useNavigate();
 
-  const handleGoToReport = () => {
-    navigate("/manager/report");
-  };
+ 
 
   const [isDateOpen, setIsDateOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement | null>(null);
@@ -43,7 +42,7 @@ export default function Dashboard() {
     <div className="space-y-5 mt-3">
       {/* Hàng tiêu đề + nút */}
         <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3" ref={filterRef}>
+            <div className="flex items-center gap-3 relative" ref={filterRef}>
                 <h2 className="text-xl font-semibold tracking-tight text-[#1279C3]">
                   Product
                 </h2>
@@ -58,7 +57,10 @@ export default function Dashboard() {
                 </button>
       
                 {/* Popup price-range */}
-                
+                <PriceFilterPopup 
+                  isOpen={isDateOpen} 
+                  className="top-1 left-20"
+                />
             </div>
             <div className="justify-end">
                 <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition">

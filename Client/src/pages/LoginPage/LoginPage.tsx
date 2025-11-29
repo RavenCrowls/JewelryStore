@@ -3,9 +3,8 @@ import { User, KeyRound } from 'lucide-react';
 const LoginPage: React.FC = () => {
   return (
     <div className="min-h-screen w-full flex bg-slate-100">
-      {/* Left image */}
+      {/* Left: image */}
       <div className="hidden md:block md:flex-1 overflow-hidden">
-        {/* Đổi src thành ảnh của bạn */}
         <img
           src="../../public/img/loginbg.jpg"
           alt="Jewelry"
