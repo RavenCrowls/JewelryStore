@@ -1,50 +1,42 @@
 import { useNavigate } from "react-router-dom";
 import {  useRef } from "react";
-import EmployeeTable from "../../../../components/Employee/EmployeeTable/EmployeeTable";
-import { type EmployeeRow } from "../../../../components/Employee/EmployeeTable/EmployeeTable";
-export const EmployeeRows: EmployeeRow[] = [
+import CustomerTable from "../../../../components/Customer/CustomerTable/CustomerTable";
+import { type CustomerRow } from "../../../../components/Customer/CustomerTable/CustomerTable";
+export const CustomerRows: CustomerRow[] = [
   {
-    name: "Employee1",
-    imageUrl: "/img/avt.png",
+    name: "Customer1",
     address: "235 Tân Lập, Đông Hòa, Dĩ An, Bình Dương",
     phone:"0123456789",
     email: "em1@gmail.com",
-    position: "Manager",
-    account: "em1@123",
-    bill: 2,
+    birthday: "21/01/1999",
+    loyalty: 15961,
   },
   {
-    name: "Employee1",
-    imageUrl: "/img/avt.png",
+    name: "Customer1",
     address: "235 Tân Lập, Đông Hòa, Dĩ An, Bình Dương",
     phone:"0123456789",
     email: "em1@gmail.com",
-    position: "Manager",
-    account: "em1@123",
-    bill: 2,
+    birthday: "21/01/1999",
+    loyalty: 15961,
   },
   {
-    name: "Employee1",
-    imageUrl: "/img/avt.png",
+    name: "Customer1",
     address: "235 Tân Lập, Đông Hòa, Dĩ An, Bình Dương",
     phone:"0123456789",
     email: "em1@gmail.com",
-    position: "Manager",
-    account: "em1@123",
-    bill: 2,
+    birthday: "21/01/1999",
+    loyalty: 15961,
   },
   {
-    name: "Employee1",
-    imageUrl: "/img/avt.png",
+    name: "Customer1",
     address: "235 Tân Lập, Đông Hòa, Dĩ An, Bình Dương",
     phone:"0123456789",
     email: "em1@gmail.com",
-    position: "Manager",
-    account: "em1@123",
-    bill: 2,
+    birthday: "21/01/1999",
+    loyalty: 15961,
   },
 ];
-export default function Employee() {
+export default function Customer() {
   const navigate = useNavigate();
 
  
@@ -55,14 +47,10 @@ export default function Employee() {
         <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3 relative" ref={filterRef}>
                 <h2 className="text-xl font-semibold tracking-tight text-[#1279C3]">
-                  Employee
+                  Customer
                 </h2>
             </div>
             <div className="justify-end">
-                <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition">
-                  Add new employee
-                </button>
-                {/* Export button */}
                 <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition ml-3">
                   Export
                 </button>
@@ -70,7 +58,7 @@ export default function Employee() {
                 
         </div>      
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-              <EmployeeTable rows={EmployeeRows} />
+              <CustomerTable rows={CustomerRows} />
             </section>
     </div>
   );

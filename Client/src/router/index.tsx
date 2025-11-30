@@ -8,6 +8,7 @@ import Revenue from "../pages/manager/(Dashboard)/Revenue/Revenue";
 import Cost from "../pages/manager/(Dashboard)/Cost/Cost";
 import LoginPage from "../pages/LoginPage";
 import Employee from "../pages/manager/(Employee)/Employee/Employee";
+import Customer from "../pages/manager/(Customer)/Customer/Customer";
 
 const AppRouter = () => {
   return (
@@ -28,6 +29,9 @@ const AppRouter = () => {
 
         {/* /manager/employee */}
         <Route path="employee" element={<Employee />} />
+
+        {/* /manager/customer*/}
+        <Route path="customer" element={<Customer />} />
 
         {/* /manager/report/... */}
         <Route path="report">
