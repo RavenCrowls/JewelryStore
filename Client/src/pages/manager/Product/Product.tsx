@@ -1,23 +1,51 @@
 import { useNavigate } from "react-router-dom";
-import RevenueChart from "../../../components/Dashboard/RevenueChart/RevenueChart";
-import SalesList from "../../../components/Dashboard/SalesList/SalesList";
-import SellersList from "../../../components/Dashboard/SellersList/SellersList";
-import StatLineCard from "../../../components/common/StatLineCard/StatLineCard";
 import { useEffect, useRef, useState } from "react";
 import PriceFilterPopup from "../../../components/common/PriceFilterPopup/PriceFilterPopup";
+import ProductTable from "../../../components/Product/ProductTable/ProductTable";
+import { type ProductRow } from "../../../components/Product/ProductTable/ProductTable";
 
-const billData = [
-  { day: "01", thisWeek: 20, lastWeek: 35 },
-  { day: "02", thisWeek: 45, lastWeek: 40 },
-  { day: "03", thisWeek: 55, lastWeek: 52 },
-  { day: "04", thisWeek: 38, lastWeek: 37 },
-  { day: "05", thisWeek: 50, lastWeek: 43 },
-  { day: "06", thisWeek: 42, lastWeek: 39 },
-  { day: "07", thisWeek: 63, lastWeek: 52 },
+export const ProductRows: ProductRow[] = [
+  {
+    id: "PRO001",
+    name: "Product 1",
+    subtitle: "Gold, Amethyst",
+    imageUrl: "/public/img/image1.png",
+    category: "Necklace",
+    price: 10000000,
+    quantity: 2,
+    currency: "VND",
+  },
+  {
+    id: "PRO002",
+    name: "Product 2",
+    subtitle: "Silver, Emerald",
+    imageUrl: "/public/img/image1.png",
+    category: "Necklace",
+    price: 8500000,
+    quantity: 5,
+    currency: "VND",
+  },
+  {
+    id: "PRO003",
+    name: "Product 3",
+    subtitle: "Rose Gold, Diamond",
+    imageUrl: "/public/img/image1.png",
+    category: "Ring",
+    price: 15000000,
+    quantity: 1,
+    currency: "VND",
+  },
+  {
+    id: "PRO004",
+    name: "Product 4",
+    subtitle: "Gold, Ruby",
+    imageUrl: "/public/img/image1.png",
+    category: "Bracelet",
+    price: 12000000,
+    quantity: 3,
+    currency: "VND",
+  },
 ];
-
-
-
 export default function Dashboard() {
   const navigate = useNavigate();
 
@@ -73,31 +101,9 @@ export default function Dashboard() {
             </div>
                 
         </div>      
-      {/* Revenue Card */}
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-        <h3 className="font-semibold text-lg">Revenue</h3>
-        <p className="text-2xl font-bold mt-1">79.852.000 VND</p>
-        <span className="text-green-600 text-sm">↑ 2.1% vs last week</span>
-
-        <div className="mt-4">
-          <RevenueChart />
-        </div>
-      </section>
-
-      {/* Bottom section */}
-      <section className="grid grid-cols-1 xl:grid-cols-3 gap-5">
-        <SalesList />
-        <SellersList />
-        <StatLineCard
-        title="Bill"
-        total={120}
-        diffPercent={2.1}
-        isUp={false}
-        data={billData}
-        currentKey="thisWeek"
-        lastKey="lastWeek"
-      />
-      </section>
+              <ProductTable rows={ProductRows} />
+            </section>
     </div>
   );
 }
