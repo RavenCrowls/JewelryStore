@@ -1,7 +1,7 @@
-import RepvenueFilterBar from "../../../components/Report/ReportFilterBar/ReportFilterBar";
-import ReportStats from "../../../components/Report/ReportStats/ReportStats";
-import ReportTable, {type ReportRow,} from "../../../components/Report/ReportTable/ReportTable";
-import ReportSearchBar from "../../../components/Report/ReportSearchBar/ReportSearchBar";
+import ReportFilterBar from "../../../../components/Report/ReportFilterBar/ReportFilterBar";
+import ReportStats from "../../../../components/Report/ReportStats/ReportStats";
+import ReportTable, {type ReportRow,} from "../../../../components/Report/ReportTable/ReportTable";
+import ReportSearchBar from "../../../../components/Report/ReportSearchBar/ReportSearchBar";
 
 const reportRows: ReportRow[] = [
   {
@@ -43,7 +43,7 @@ export default function Report() {
     <div className="space-y-6 mt-3">
       <div className="space-y-4">
         <ReportSearchBar />
-        <RepvenueFilterBar />
+        <ReportFilterBar />
       </div>
 
       <section className="bg-white rounded-2xl p-6 shadow-sm">

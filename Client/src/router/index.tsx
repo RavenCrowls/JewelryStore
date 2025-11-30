@@ -1,12 +1,13 @@
 // src/router/index.tsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import ManagerLayout from "../layouts/ManagerLayout";
-import Dashboard from "../pages/manager/Dashboard";
-import Product from "../pages/manager/Product";
-import Report from "../pages/manager/Report";
-import Revenue from "../pages/manager/Revenue/Revenue";
-import Cost from "../pages/manager/Cost/Cost";
+import Dashboard from "../pages/manager/(Dashboard)/Dashboard";
+import Product from "../pages/manager/(Product)/Product";
+import Report from "../pages/manager/(Dashboard)/Report";
+import Revenue from "../pages/manager/(Dashboard)/Revenue/Revenue";
+import Cost from "../pages/manager/(Dashboard)/Cost/Cost";
 import LoginPage from "../pages/LoginPage";
+import Employee from "../pages/manager/(Employee)/Employee/Employee";
 
 const AppRouter = () => {
   return (
@@ -24,6 +25,9 @@ const AppRouter = () => {
 
         {/* /manager/product */}
         <Route path="product" element={<Product />} />
+
+        {/* /manager/employee */}
+        <Route path="employee" element={<Employee />} />
 
         {/* /manager/report/... */}
         <Route path="report">

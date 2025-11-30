@@ -1,19 +1,19 @@
-export type ProductRow = {
-  id: string;
+export type EmployeeRow = {
   name: string;
-  subtitle?: string;
   imageUrl: string;
-  category: string;
-  price: number;
-  quantity: number;
-  currency?: string;
+  address: string; 
+  phone: string;
+  email: string;
+  position: string;
+  account: string;
+  bill: number;
 };
 
-type ProductTableProps = {
-  rows: ProductRow[];
+type EmployeeTableProps = {
+  rows: EmployeeRow[];
 };
 
-export default function ProductTable({ rows }: ProductTableProps) {
+export default function EmployeeTable({ rows }: EmployeeTableProps) {
   return (
     <div>
 
@@ -22,15 +22,17 @@ export default function ProductTable({ rows }: ProductTableProps) {
           <thead>
             <tr className="bg-[#1279C3] text-white">
               <th className="px-4 py-3 rounded-l-xl font-medium text-left">
-                ID
+                Name
               </th>
-              <th className="px-4 py-3 font-medium">Name</th>
-              <th className="px-4 py-3 font-medium">Image</th>
-              <th className="px-4 py-3 font-medium">Category</th>
+              <th className="px-4 py-3 font-medium">Photo</th>
+              <th className="px-4 py-3 font-medium">Address</th>
+              <th className="px-4 py-3 font-medium">Phone</th>
+              <th className="px-4 py-3 font-medium">Email</th>
+              <th className="px-4 py-3 font-medium">Position</th>
+              <th className="px-4 py-3 font-medium">Account</th>
               <th className="px-4 py-3 font-medium">
-                Price <span className="text-xs">↕</span>
+                Bill <span className="text-xs">↕</span>
               </th>
-              <th className="px-4 py-3 font-medium">Quantity</th>
               <th className="px-4 py-3 rounded-r-xl font-medium">Actions</th>
             </tr>
           </thead>
@@ -43,23 +45,13 @@ export default function ProductTable({ rows }: ProductTableProps) {
                   : "border-b border-slate-100";
 
               return (
-                <tr key={row.id} className={`${bg} text-center`}>
-                  {/* ID */}
+                <tr key={row.name} className={`${bg} text-center`}>
+                  {/* Name */}
                   <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-left">
-                    {row.id}
+                    {row.name}
                   </td>
-
-                  {/* Name + subtitle */}
-                  <td className="px-4 py-3 text-xs text-slate-700">
-                    <div className="font-semibold text-sm">{row.name}</div>
-                    {row.subtitle && (
-                      <div className="text-[11px] text-slate-500">
-                        {row.subtitle}
-                      </div>
-                    )}
-                  </td>
-
-                  {/* Image */}
+                  
+                  {/* Photo */}
                   <td className="px-4 py-3">
                     <div className="flex justify-center">
                       <img
@@ -70,20 +62,36 @@ export default function ProductTable({ rows }: ProductTableProps) {
                     </div>
                   </td>
 
-                  {/* Category */}
-                  <td className="px-4 py-3 text-xs text-slate-600">
-                    {row.category}
+
+                  {/* Address */}
+                  <td className="px-4 py-3 text-xs text-slate-700">
+                    <div className="font-semibold text-sm">{row.name}</div>
+                    {row.address}
                   </td>
 
-                  {/* Price */}
+                  {/* Phone */}
                   <td className="px-4 py-3 text-xs text-slate-700">
-                    {row.price.toLocaleString("vi-VN")}{" "}
-                    {row.currency ?? "VND"}
+                    {row.phone}
                   </td>
 
-                  {/* Quantity */}
+                  {/* Email */}
                   <td className="px-4 py-3 text-xs text-slate-700">
-                    {row.quantity}
+                    {row.email}
+                  </td>
+
+                  {/* Position*/}
+                  <td className="px-4 py-3 text-xs text-slate-700">
+                    {row.position}
+                  </td>
+
+                  {/* Account*/}
+                  <td className="px-4 py-3 text-xs text-slate-700">
+                    {row.account}
+                  </td>
+
+                  {/* Bill */}
+                  <td className="px-4 py-3 text-xs text-slate-700">
+                    {row.bill}
                   </td>
 
                   {/* Actions */}
