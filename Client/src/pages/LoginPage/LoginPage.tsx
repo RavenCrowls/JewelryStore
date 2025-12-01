@@ -6,7 +6,7 @@ const LoginPage: React.FC = () => {
       {/* Left: image */}
       <div className="hidden md:block md:flex-1 overflow-hidden">
         <img
-          src="../../public/img/loginbg.jpg"
+          src="../../img/loginbg.jpg"
           alt="Jewelry"
           className="h-full w-full object-cover"
         />
@@ -86,7 +86,7 @@ const LoginPage: React.FC = () => {
           >
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-[14px] font-bold text-red-500">
               <img
-                src = "../../../public/img/google.png"
+                src = "../../../img/google.png"
                 alt="Google Logo"
                 className="h-full w-full object-cover"
               />
