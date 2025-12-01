@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import DatePopup from "../../common/DateRangePopup/DatePopup";
-export default function ImportFilterBar() {
+export default function LiquidationFilterBar() {
   
   const [isDateOpen, setIsDateOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement | null>(null);
@@ -24,7 +24,7 @@ export default function ImportFilterBar() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3" ref={filterRef}>
           <h2 className="text-xl font-semibold tracking-tight text-[#1279C3]">
-            Import
+            Liquidation
           </h2>
 
           <button

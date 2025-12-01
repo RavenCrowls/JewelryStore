@@ -10,6 +10,7 @@ import LoginPage from "../pages/LoginPage";
 import Employee from "../pages/manager/(Employee)/Employee/Employee";
 import Customer from "../pages/manager/(Customer)/Customer/Customer";
 import Import from "../pages/manager/(Import)/Import/Import";
+import Liquidation from "../pages/manager/(Liquidation)/Liquidation/Liquidation";
 
 const AppRouter = () => {
   return (
@@ -36,6 +37,9 @@ const AppRouter = () => {
 
         {/* /manager/import*/}
         <Route path="import" element={<Import />} />
+
+        {/* /manager/liquidation*/}
+        <Route path="liquidation" element={<Liquidation />} />
 
         {/* /manager/report/... */}
         <Route path="report">

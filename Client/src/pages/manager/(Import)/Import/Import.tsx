@@ -29,7 +29,7 @@ const ImportRows: ImportRow[] = [
     state: "failed",
   },
 ];
-export default function Customer() {
+export default function Import() {
   const navigate = useNavigate();
 
   return (
