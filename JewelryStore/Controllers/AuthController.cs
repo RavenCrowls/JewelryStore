@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.Extensions.Configuration;
 
 namespace JewelryStore.Controllers
 {
@@ -15,13 +16,21 @@ namespace JewelryStore.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly ILogger<AuthController> _logger;
+        private readonly string _spaBaseUrl;
 
-        public AuthController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IAuthenticationSchemeProvider schemeProvider, ILogger<AuthController> logger)
+        public AuthController(
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            IAuthenticationSchemeProvider schemeProvider,
+            ILogger<AuthController> logger,
+            IConfiguration configuration)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _schemeProvider = schemeProvider;
             _logger = logger;
+            var allowed = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+            _spaBaseUrl = allowed.FirstOrDefault() ?? "http://localhost:5173";
         }
 
         [HttpGet("google")]
@@ -56,6 +65,7 @@ namespace JewelryStore.Controllers
             var signIn = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
             if (signIn.Succeeded)
             {
+                await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
                 return LocalRedirect(returnUrl);
             }
 
@@ -95,6 +105,7 @@ namespace JewelryStore.Controllers
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
             return LocalRedirect(returnUrl);
         }
 
@@ -111,6 +122,25 @@ namespace JewelryStore.Controllers
                 name = User.Identity?.Name,
                 claims = User.Claims.Select(c => new { c.Type, c.Value })
             });
+        }
+
+        [HttpGet("external-failed")]
+        public IActionResult ExternalFailed([FromQuery] string? error = null, [FromQuery] string? returnUrl = "/login")
+        {
+            // Redirect back to SPA login on the same origin as returnUrl (if absolute), otherwise /login
+            var msg = string.IsNullOrWhiteSpace(error) ? "access_denied" : error;
+            string target;
+            if (!string.IsNullOrWhiteSpace(returnUrl) && Uri.TryCreate(returnUrl, UriKind.Absolute, out var abs))
+            {
+                var baseOrigin = abs.GetLeftPart(UriPartial.Authority);
+                target = $"{baseOrigin}/login";
+            }
+            else
+            {
+                target = $"{_spaBaseUrl}/login";
+            }
+            var connector = target.Contains('?') ? "&" : "?";
+            return Redirect($"{target}{connector}error={Uri.EscapeDataString(msg)}");
         }
 
         // Dev-only helper: ensure the current authenticated principal has a local user record

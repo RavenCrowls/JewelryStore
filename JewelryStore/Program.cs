@@ -3,6 +3,7 @@ using JewelryStore.Data.Seed;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Http;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +60,19 @@ if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(goo
             options.CorrelationCookie.SameSite = SameSiteMode.None;
             options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
             // options.CallbackPath = "/signin-google"; // default
+            options.Events = new OAuthEvents
+            {
+                OnRemoteFailure = context =>
+                {
+                    // User canceled or provider error -> redirect gracefully to login with message
+                    var msg = Uri.EscapeDataString(context.Failure?.Message ?? "access_denied");
+                    var returnUrl = context.Request.Query["returnUrl"].ToString();
+                    var encodedReturn = Uri.EscapeDataString(string.IsNullOrWhiteSpace(returnUrl) ? "/" : returnUrl);
+                    context.Response.Redirect($"/api/auth/external-failed?error={msg}&returnUrl={encodedReturn}");
+                    context.HandleResponse();
+                    return Task.CompletedTask;
+                }
+            };
         });
 }
 
