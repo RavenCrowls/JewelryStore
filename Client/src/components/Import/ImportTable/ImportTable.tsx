@@ -11,9 +11,10 @@ export type ImportRow = {
 
 type ImportTableProps = {
   rows: ImportRow[];
+  onView?: (row: ImportRow) => void;
 };
 
-export default function ImportTable({ rows }: ImportTableProps) {
+export default function ImportTable({ rows, onView }: ImportTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full text-sm text-center">
@@ -93,7 +94,9 @@ export default function ImportTable({ rows }: ImportTableProps) {
 
                 {/* Actions */}
                 <td className="px-4 py-3">
-                  <button className="rounded-md border border-[#DDE4F0] px-5 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5">
+                  <button className="rounded-md border border-[#DDE4F0] px-5 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5"
+                    onClick={() => onView?.(row)} 
+                  >
                     View
                   </button>
                 </td>
