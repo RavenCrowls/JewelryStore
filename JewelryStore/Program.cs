@@ -2,6 +2,8 @@ using JewelryStore.Data;
 using JewelryStore.Data.Seed;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Http;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -26,6 +28,55 @@ builder.Services
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+builder.Services.ConfigureExternalCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+
+// External authentication providers (Google)
+var googleClientId = builder.Configuration["Authentication:Google:ClientId"];
+var googleClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(googleClientSecret))
+{
+    builder.Services
+        .AddAuthentication(options =>
+        {
+            // Ensure we authenticate using Identity cookie by default
+            options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+            options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
+            options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+        })
+        .AddGoogle(options =>
+        {
+            options.ClientId = googleClientId!;
+            options.ClientSecret = googleClientSecret!;
+            options.CorrelationCookie.SameSite = SameSiteMode.None;
+            options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
+            // options.CallbackPath = "/signin-google"; // default
+        });
+}
+
+// CORS for SPA
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? new[]
+{
+    "http://localhost:5173",
+    "https://localhost:5173"
+};
+builder.Services.AddCors(p =>
+{
+    p.AddPolicy("spa", policy =>
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials());
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -36,6 +87,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("spa");
 
 app.UseAuthentication();
 app.UseAuthorization();

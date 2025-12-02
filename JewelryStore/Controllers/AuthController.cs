@@ -1,0 +1,164 @@
+using JewelryStore.Data;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
+namespace JewelryStore.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AuthController : ControllerBase
+    {
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IAuthenticationSchemeProvider _schemeProvider;
+        private readonly ILogger<AuthController> _logger;
+
+        public AuthController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IAuthenticationSchemeProvider schemeProvider, ILogger<AuthController> logger)
+        {
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _schemeProvider = schemeProvider;
+            _logger = logger;
+        }
+
+        [HttpGet("google")]
+        public async Task<IActionResult> GoogleLogin([FromQuery] string returnUrl = "/")
+        {
+            var googleScheme = await _schemeProvider.GetSchemeAsync(GoogleDefaults.AuthenticationScheme);
+            if (googleScheme == null)
+            {
+                return StatusCode(501, new { error = "Google authentication is not configured on the server." });
+            }
+            var callback = Url.ActionLink(nameof(ExternalLoginCallback), "Auth", new { returnUrl }) ?? "/api/auth/external-callback";
+            var props = _signInManager.ConfigureExternalAuthenticationProperties(GoogleDefaults.AuthenticationScheme, callback);
+            return Challenge(props, GoogleDefaults.AuthenticationScheme);
+        }
+
+        [HttpGet("external-callback")]
+        public async Task<IActionResult> ExternalLoginCallback([FromQuery] string returnUrl = "/")
+        {
+            var googleScheme = await _schemeProvider.GetSchemeAsync(GoogleDefaults.AuthenticationScheme);
+            if (googleScheme == null)
+            {
+                return StatusCode(501, new { error = "Google authentication is not configured on the server." });
+            }
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                // When info is null, restart the external login challenge
+                return Redirect($"/api/auth/google?returnUrl={Uri.EscapeDataString(returnUrl)}");
+            }
+
+            // Try sign-in by external login first
+            var signIn = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            if (signIn.Succeeded)
+            {
+                return LocalRedirect(returnUrl);
+            }
+
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
+            var name = info.Principal.Identity?.Name ?? email;
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                _logger.LogWarning("External login missing email. Provider={Provider}, ProviderKey={Key}", info.LoginProvider, info.ProviderKey);
+                return BadRequest(new { error = "Email not provided by external provider." });
+            }
+
+            // If user with this email exists, use it; otherwise create one
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                user = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email,
+                    FullName = string.IsNullOrWhiteSpace(name) ? email : name,
+                    EmailConfirmed = true
+                };
+                var create = await _userManager.CreateAsync(user);
+                if (!create.Succeeded)
+                {
+                    _logger.LogWarning("Failed to create user from external login. Errors={Errors}", string.Join(",", create.Errors.Select(e => e.Code)));
+                    return BadRequest(new { error = "Failed to create user", details = create.Errors });
+                }
+            }
+
+            var addLogin = await _userManager.AddLoginAsync(user, info);
+            if (!addLogin.Succeeded)
+            {
+                _logger.LogWarning("Failed to add external login. Errors={Errors}", string.Join(",", addLogin.Errors.Select(e => e.Code)));
+                return BadRequest(new { error = "Failed to link external login", details = addLogin.Errors });
+            }
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            return LocalRedirect(returnUrl);
+        }
+
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+            if (!User.Identity?.IsAuthenticated ?? true)
+            {
+                return Ok(new { authenticated = false });
+            }
+            return Ok(new
+            {
+                authenticated = true,
+                name = User.Identity?.Name,
+                claims = User.Claims.Select(c => new { c.Type, c.Value })
+            });
+        }
+
+        // Dev-only helper: ensure the current authenticated principal has a local user record
+        [HttpPost("ensure-user")]
+        public async Task<IActionResult> EnsureUser()
+        {
+            if (!User.Identity?.IsAuthenticated ?? true)
+            {
+                return Unauthorized(new { error = "Not authenticated" });
+            }
+
+            var email = User.Claims.FirstOrDefault(c => c.Type.EndsWith("/emailaddress"))?.Value
+                        ?? User.Claims.FirstOrDefault(c => c.Type.Contains("email", StringComparison.OrdinalIgnoreCase))?.Value
+                        ?? string.Empty;
+            var name = User.Identity?.Name ?? email;
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return BadRequest(new { error = "No email claim present" });
+            }
+
+            var existing = await _userManager.FindByEmailAsync(email);
+            if (existing != null)
+            {
+                return Ok(new { ensured = true, existed = true, userId = existing.Id, email });
+            }
+
+            var user = new ApplicationUser
+            {
+                UserName = email,
+                Email = email,
+                FullName = string.IsNullOrWhiteSpace(name) ? email : name,
+                EmailConfirmed = true
+            };
+            var create = await _userManager.CreateAsync(user);
+            if (!create.Succeeded)
+            {
+                return BadRequest(new { error = "Failed to create user", details = create.Errors });
+            }
+
+            // Try to attach the most recent external login if available
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info != null)
+            {
+                await _userManager.AddLoginAsync(user, info);
+            }
+
+            return Ok(new { ensured = true, existed = false, userId = user.Id, email });
+        }
+    }
+}

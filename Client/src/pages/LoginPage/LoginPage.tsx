@@ -1,6 +1,14 @@
 import React from "react";
-import { User, KeyRound } from 'lucide-react';
+import { Mail, KeyRound } from 'lucide-react';
 const LoginPage: React.FC = () => {
+  const startGoogleLogin = () => {
+    const API_BASE_URL: string | undefined = (import.meta as any)?.env?.VITE_API_BASE_URL || undefined;
+    const base = API_BASE_URL ? new URL(API_BASE_URL) : new URL(window.location.origin);
+    const url = new URL('/api/auth/google', base);
+    const returnUrl = `${window.location.origin}/manager`;
+    url.searchParams.set('returnUrl', returnUrl);
+    window.location.href = url.toString();
+  };
   return (
     <div className="min-h-screen w-full flex bg-slate-100">
       {/* Left: image */}
@@ -23,12 +31,12 @@ const LoginPage: React.FC = () => {
           <div className="space-y-1">
             <div className="relative">
               <input
-                type="text"
-                placeholder="Username"
+                type="email"
+                placeholder="Email"
                 className="w-full rounded-full border border-slate-300/80 bg-white/80 px-4 py-3 pr-11 text-sm outline-none placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
               />
               <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-lg text-slate-500/80">
-                <User/>
+                <Mail />
               </span>
             </div>
           </div>
@@ -42,7 +50,7 @@ const LoginPage: React.FC = () => {
                 className="w-full rounded-full border border-slate-300/80 bg-white/80 px-4 py-3 pr-11 text-sm outline-none placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
               />
               <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-lg text-slate-500/80">
-                <KeyRound/>
+                <KeyRound />
               </span>
             </div>
           </div>
@@ -72,6 +80,11 @@ const LoginPage: React.FC = () => {
           >
             Login
           </button>
+          <div className="text-center text-sm">
+            <a href="/signup" className="text-slate-700 hover:text-sky-700 hover:underline">
+              Don&apos;t have an account? Sign up
+            </a>
+          </div>
 
           <div className="flex items-center gap-3 text-xs text-slate-500">
             <div className="h-px flex-1 bg-slate-300/70" />
@@ -82,11 +95,12 @@ const LoginPage: React.FC = () => {
           {/* Google button */}
           <button
             type="button"
+            onClick={startGoogleLogin}
             className="flex w-full items-center justify-center gap-2 rounded-full bg-slate-200 py-3 text-sm font-medium text-slate-800 shadow-sm transition hover:bg-slate-300"
           >
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-[14px] font-bold text-red-500">
               <img
-                src = "../../../public/img/google.png"
+                src="../../../public/img/google.png"
                 alt="Google Logo"
                 className="h-full w-full object-cover"
               />

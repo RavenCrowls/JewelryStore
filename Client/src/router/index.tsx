@@ -7,6 +7,7 @@ import Report from "../pages/manager/Report";
 import Revenue from "../pages/manager/Revenue/Revenue";
 import Cost from "../pages/manager/Cost/Cost";
 import LoginPage from "../pages/LoginPage";
+import SignupPage from "../pages/SignupPage";
 
 const AppRouter = () => {
   return (
@@ -14,7 +15,8 @@ const AppRouter = () => {
       {/* "/" -> /manager */}
       <Route path="/" element={<Navigate to="/login" replace />} />
 
-      <Route path="/login" element={<LoginPage />}/>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
       <Route path="/manager" element={<ManagerLayout />}>
         {/* /manager */}
         <Route index element={<Dashboard />} />
