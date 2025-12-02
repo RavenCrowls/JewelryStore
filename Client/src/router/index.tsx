@@ -1,6 +1,7 @@
 // src/router/index.tsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import ManagerLayout from "../layouts/ManagerLayout";
+import Profile from "../pages/manager/(Profile)/Profile";
 import Dashboard from "../pages/manager/(Dashboard)/Dashboard";
 import Product from "../pages/manager/(Product)/Product";
 import Report from "../pages/manager/(Dashboard)/Report";
@@ -13,6 +14,7 @@ import Import from "../pages/manager/(Import)/Import/Import";
 import ImportDetail from "../pages/manager/(Import)/ImportDetail/ImportDetail";
 import Liquidation from "../pages/manager/(Liquidation)/Liquidation/Liquidation";
 import LiquidationDetail from "../pages/manager/(Liquidation)/LiquidationDetail/LiquidationDetail";
+
 const AppRouter = () => {
   return (
     <Routes>
@@ -21,11 +23,15 @@ const AppRouter = () => {
 
       <Route path="/login" element={<LoginPage />}/>
       <Route path="/manager" element={<ManagerLayout />}>
+
         {/* /manager */}
         <Route index element={<Dashboard />} />
 
         {/* /manager/dashboard */}
         <Route path="dashboard" element={<Dashboard />} />
+
+        {/* /manager/profile */}
+        <Route path="profile" element={<Profile />}/>
 
         {/* /manager/product */}
         <Route path="product" element={<Product />} />
