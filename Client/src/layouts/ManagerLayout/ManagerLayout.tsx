@@ -11,7 +11,7 @@ export default function ManagerLayout() {
 
       <div className="flex flex-col flex-1 h-full overflow-y-auto">
         <TopBarWithSearch />
-        {/* pt nhỏ hơn để sát topbar hơn một chút */}
+
         <main className="px-6 pt-4 pb-6">
           <Outlet />
         </main>

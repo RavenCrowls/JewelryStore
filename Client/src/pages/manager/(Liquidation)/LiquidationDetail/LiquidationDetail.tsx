@@ -1,44 +1,25 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {  useRef } from "react";
-import CustomerTable from "../../../../components/Customer/CustomerTable/CustomerTable";
-import { type CustomerRow } from "../../../../components/Customer/CustomerTable/CustomerTable";
-export const CustomerRows: CustomerRow[] = [
+import LiquidationInfo from "../../../../components/Liquidation/LiquidationInfo/LiquidationInfo";
+import LiquidationProductTable, { type LiquidationProductRow } from "../../../../components/Liquidation/LiquidationInfo/LiquidationProductTable";
+const rows: LiquidationProductRow[] = [
   {
-    name: "Customer1",
-    address: "235 Tân Lập, Đông Hòa, Dĩ An, Bình Dương",
-    phone:"0123456789",
-    email: "em1@gmail.com",
-    birthday: "21/01/1999",
-    loyalty: 15961,
-  },
-  {
-    name: "Customer1",
-    address: "235 Tân Lập, Đông Hòa, Dĩ An, Bình Dương",
-    phone:"0123456789",
-    email: "em1@gmail.com",
-    birthday: "21/01/1999",
-    loyalty: 15961,
-  },
-  {
-    name: "Customer1",
-    address: "235 Tân Lập, Đông Hòa, Dĩ An, Bình Dương",
-    phone:"0123456789",
-    email: "em1@gmail.com",
-    birthday: "21/01/1999",
-    loyalty: 15961,
-  },
-  {
-    name: "Customer1",
-    address: "235 Tân Lập, Đông Hòa, Dĩ An, Bình Dương",
-    phone:"0123456789",
-    email: "em1@gmail.com",
-    birthday: "21/01/1999",
-    loyalty: 15961,
+    no: 1,
+    name: "Product 1",
+    subtitle: "Gold, Amethyst",
+    imageUrl: "/img/image1.png",
+    category: "Necklace",
+    price: 10000000,
+    quantity: 2,
+    totalPrice: 20000000,
+    currency: "VND",
   },
 ];
-export default function Customer() {
-  const navigate = useNavigate();
 
+
+export default function LiquidationDetail() {
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
  
   const filterRef = useRef<HTMLDivElement | null>(null);
   return (
@@ -47,7 +28,7 @@ export default function Customer() {
         <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3 relative" ref={filterRef}>
                 <h2 className="text-xl font-semibold tracking-tight text-[#1279C3]">
-                  Customer
+                  Liquidation Detail
                 </h2>
             </div>
             <div className="justify-end">
@@ -58,7 +39,15 @@ export default function Customer() {
                 
         </div>      
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-              <CustomerTable rows={CustomerRows} />
+        <LiquidationInfo
+          id={id ?? "LIQ001"}
+          creator="Employee3"
+          inspector=""
+          dateCreated="02/09/2024"
+          state="Waiting"
+        />
+
+      <LiquidationProductTable rows={rows} />
             </section>
     </div>
   );

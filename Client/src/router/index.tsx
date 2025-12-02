@@ -11,7 +11,7 @@ import Employee from "../pages/manager/(Employee)/Employee/Employee";
 import Customer from "../pages/manager/(Customer)/Customer/Customer";
 import Import from "../pages/manager/(Import)/Import/Import";
 import Liquidation from "../pages/manager/(Liquidation)/Liquidation/Liquidation";
-
+import LiquidationDetail from "../pages/manager/(Liquidation)/LiquidationDetail/LiquidationDetail";
 const AppRouter = () => {
   return (
     <Routes>
@@ -41,6 +41,7 @@ const AppRouter = () => {
         {/* /manager/liquidation*/}
         <Route path="liquidation" element={<Liquidation />} />
 
+        <Route path="liquidation/:id" element={<LiquidationDetail />} />
         {/* /manager/report/... */}
         <Route path="report">
           {/* /manager/report */}
