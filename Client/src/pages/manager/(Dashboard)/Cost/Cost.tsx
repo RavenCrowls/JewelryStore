@@ -1,7 +1,7 @@
-import RevenueFilterBar from "../../../components/Revenue/RevenueFilterBar/RevenueFilterBar";
-import RevenueTable, {type RevenueRow} from "../../../components/Revenue/RevenueTable/RevenueTable";
+import CostFilterBar from "../../../../components/Cost/CostFilterBar/CostFilterBar";
+import CostTable, {type CostRow} from "../../../../components/Cost/CostTable/CostTable";
 
-const revenueRows: RevenueRow[] = [
+const CostRows: CostRow[] = [
   {
     id: "LOT1",
     content: "Import product",
@@ -36,15 +36,15 @@ const revenueRows: RevenueRow[] = [
   },
 ];
 
-export default function Revenue() {
+export default function Cost() {
   return (
     <div className="space-y-6 mt-3">
       {/* Thanh filter: search + date range + Monthly/Annually */}
-      <RevenueFilterBar />
+      <CostFilterBar />
 
       {/* Bảng Income and expenses */}
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-        <RevenueTable rows={revenueRows} />
+        <CostTable rows={CostRows} />
       </section>
     </div>
   );

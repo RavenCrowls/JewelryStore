@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import RevenueChart from "../../../components/Dashboard/RevenueChart/RevenueChart";
-import SalesList from "../../../components/Dashboard/SalesList/SalesList";
-import SellersList from "../../../components/Dashboard/SellersList/SellersList";
-import StatLineCard from "../../../components/common/StatLineCard/StatLineCard";
+import RevenueChart from "../../../../components/Dashboard/RevenueChart/RevenueChart";
+import SalesList from "../../../../components/Dashboard/SalesList/SalesList";
+import SellersList from "../../../../components/Dashboard/SellersList/SellersList";
+import StatLineCard from "../../../../components/common/StatLineCard/StatLineCard";
 
 const billData = [
   { day: "01", thisWeek: 20, lastWeek: 35 },

@@ -12,6 +12,27 @@ export default function TopBarWithSearch() {
 
   return (
     <header className="w-full px-6 py-3 flex items-center justify-between bg-white">
+      {/* Search bar */}
+      <div className="flex-1 max-w-xl">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search"
+            className="w-full rounded-lg border border-transparent bg-[#F3F7FC] px-4 py-2 pr-9 text-xs text-slate-600 placeholder:text-slate-400 outline-none focus:border-[#1279C3] focus:bg-white"
+          />
+          <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
+            {/* icon kính lúp */}
+            <Search className="h-4 w-4" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 21l-4.35-4.35M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14z"
+              />
+            
+          </span>
+        </div>
+      </div>
+
       {/* Right side: avatar + username + logout + bell */}
       <div className="ml-4 flex items-center gap-4">
         {/* Avatar + username */}

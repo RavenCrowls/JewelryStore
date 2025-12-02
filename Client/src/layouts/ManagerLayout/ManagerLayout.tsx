@@ -2,6 +2,7 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "../../components/common/Sidebar/Sidebar";
 import Topbar from "../../components/common/Topbar/Topbar";
+import TopBarWithSearch from "../../components/common/Topbar/TopBarWithSearch";
 
 export default function ManagerLayout() {
   return (
@@ -9,7 +10,7 @@ export default function ManagerLayout() {
       <Sidebar />
 
       <div className="flex flex-col flex-1 h-full overflow-y-auto">
-        <Topbar />
+        <TopBarWithSearch />
         {/* pt nhỏ hơn để sát topbar hơn một chút */}
         <main className="px-6 pt-4 pb-6">
           <Outlet />
