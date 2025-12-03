@@ -39,7 +39,9 @@ export const CustomerRows: CustomerRow[] = [
 export default function Customer() {
   const navigate = useNavigate();
 
- 
+  const handleViewCustomer = (row: CustomerRow) => {
+    navigate(`/manager/customer/${row.name}`);
+  };
   const filterRef = useRef<HTMLDivElement | null>(null);
   return (
     <div className="space-y-5 mt-3">
@@ -58,7 +60,7 @@ export default function Customer() {
                 
         </div>      
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-              <CustomerTable rows={CustomerRows} />
+              <CustomerTable rows={CustomerRows} onView={handleViewCustomer}/>
             </section>
     </div>
   );
