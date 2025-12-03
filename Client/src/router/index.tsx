@@ -12,6 +12,7 @@ import Employee from "../pages/manager/(Employee)/Employee/Employee";
 import Customer from "../pages/manager/(Customer)/Customer/Customer";
 import Import from "../pages/manager/(Import)/Import/Import";
 import Liquidation from "../pages/manager/(Liquidation)/Liquidation/Liquidation";
+import RequireAuth from "./RequireAuth";
 
 const AppRouter = () => {
   return (
@@ -21,7 +22,17 @@ const AppRouter = () => {
 
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
-      <Route path="/manager" element={<ManagerLayout />}>
+      {/* Public customer page */}
+      <Route path="/customer" element={<Customer />} />
+      {/* Protected manager area */}
+      <Route
+        path="/manager"
+        element={
+          <RequireAuth>
+            <ManagerLayout />
+          </RequireAuth>
+        }
+      >
         {/* /manager */}
         <Route index element={<Dashboard />} />
 

@@ -66,7 +66,7 @@ namespace JewelryStore.Controllers
             if (signIn.Succeeded)
             {
                 await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-                return LocalRedirect(returnUrl);
+                return RedirectToSpa(returnUrl);
             }
 
             var email = info.Principal.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
@@ -106,7 +106,31 @@ namespace JewelryStore.Controllers
 
             await _signInManager.SignInAsync(user, isPersistent: false);
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-            return LocalRedirect(returnUrl);
+            return RedirectToSpa(returnUrl);
+        }
+
+        private IActionResult RedirectToSpa(string? returnUrl)
+        {
+            // Allow only relative local paths OR absolute URLs whose origin matches configured SPA origins
+            if (!string.IsNullOrWhiteSpace(returnUrl))
+            {
+                if (Url.IsLocalUrl(returnUrl))
+                {
+                    return LocalRedirect(returnUrl);
+                }
+                if (Uri.TryCreate(returnUrl, UriKind.Absolute, out var abs))
+                {
+                    var allowed = HttpContext.RequestServices.GetRequiredService<IConfiguration>()
+                        .GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+                    var origin = abs.GetLeftPart(UriPartial.Authority);
+                    if (allowed.Contains(origin, StringComparer.OrdinalIgnoreCase))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                }
+            }
+            // Fallback to SPA base /manager
+            return Redirect($"{_spaBaseUrl}/manager");
         }
 
         [HttpGet("me")]
