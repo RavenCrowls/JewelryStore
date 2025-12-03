@@ -36,28 +36,34 @@ namespace JewelryStore.Controllers
         [HttpGet("google")]
         public async Task<IActionResult> GoogleLogin([FromQuery] string returnUrl = "/")
         {
+            _logger.LogInformation("Starting Google login. returnUrl={ReturnUrl}", returnUrl);
             var googleScheme = await _schemeProvider.GetSchemeAsync(GoogleDefaults.AuthenticationScheme);
             if (googleScheme == null)
             {
+                _logger.LogWarning("Google authentication scheme is not configured.");
                 return StatusCode(501, new { error = "Google authentication is not configured on the server." });
             }
             var callback = Url.ActionLink(nameof(ExternalLoginCallback), "Auth", new { returnUrl }) ?? "/api/auth/external-callback";
             var props = _signInManager.ConfigureExternalAuthenticationProperties(GoogleDefaults.AuthenticationScheme, callback);
+            _logger.LogInformation("Redirecting to Google. callback={Callback}", callback);
             return Challenge(props, GoogleDefaults.AuthenticationScheme);
         }
 
         [HttpGet("external-callback")]
         public async Task<IActionResult> ExternalLoginCallback([FromQuery] string returnUrl = "/")
         {
+            _logger.LogInformation("ExternalLoginCallback invoked. returnUrl={ReturnUrl}", returnUrl);
             var googleScheme = await _schemeProvider.GetSchemeAsync(GoogleDefaults.AuthenticationScheme);
             if (googleScheme == null)
             {
+                _logger.LogWarning("Google authentication scheme is not configured on callback.");
                 return StatusCode(501, new { error = "Google authentication is not configured on the server." });
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
                 // When info is null, restart the external login challenge
+                _logger.LogWarning("External login info is null. Restarting challenge.");
                 return Redirect($"/api/auth/google?returnUrl={Uri.EscapeDataString(returnUrl)}");
             }
 
@@ -65,6 +71,7 @@ namespace JewelryStore.Controllers
             var signIn = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
             if (signIn.Succeeded)
             {
+                _logger.LogInformation("External login sign-in succeeded. Provider={Provider} Key={Key}", info.LoginProvider, info.ProviderKey);
                 await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
                 return RedirectToSpa(returnUrl);
             }
@@ -82,6 +89,7 @@ namespace JewelryStore.Controllers
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
+                _logger.LogInformation("Creating new user for email {Email}", email);
                 user = new ApplicationUser
                 {
                     UserName = email,
@@ -95,6 +103,10 @@ namespace JewelryStore.Controllers
                     _logger.LogWarning("Failed to create user from external login. Errors={Errors}", string.Join(",", create.Errors.Select(e => e.Code)));
                     return BadRequest(new { error = "Failed to create user", details = create.Errors });
                 }
+                else
+                {
+                    _logger.LogInformation("User created. userId={UserId}", user.Id);
+                }
             }
 
             var addLogin = await _userManager.AddLoginAsync(user, info);
@@ -103,9 +115,14 @@ namespace JewelryStore.Controllers
                 _logger.LogWarning("Failed to add external login. Errors={Errors}", string.Join(",", addLogin.Errors.Select(e => e.Code)));
                 return BadRequest(new { error = "Failed to link external login", details = addLogin.Errors });
             }
+            else
+            {
+                _logger.LogInformation("External login linked. userId={UserId} provider={Provider}", user.Id, info.LoginProvider);
+            }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            _logger.LogInformation("User signed in via external provider. userId={UserId}", user.Id);
             return RedirectToSpa(returnUrl);
         }
 

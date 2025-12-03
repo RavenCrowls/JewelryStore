@@ -32,6 +32,8 @@ const LoginPage: React.FC = () => {
             <div className="relative">
               <input
                 type="email"
+                id="email"
+                name="email"
                 placeholder="Email"
                 className="w-full rounded-full border border-slate-300/80 bg-white/80 px-4 py-3 pr-11 text-sm outline-none placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
               />
@@ -46,6 +48,8 @@ const LoginPage: React.FC = () => {
             <div className="relative">
               <input
                 type="password"
+                id="password"
+                name="password"
                 placeholder="Password"
                 className="w-full rounded-full border border-slate-300/80 bg-white/80 px-4 py-3 pr-11 text-sm outline-none placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
               />
@@ -100,7 +104,7 @@ const LoginPage: React.FC = () => {
           >
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-[14px] font-bold text-red-500">
               <img
-                src = "../../../img/google.png"
+                src="../../../img/google.png"
                 alt="Google Logo"
                 className="h-full w-full object-cover"
               />

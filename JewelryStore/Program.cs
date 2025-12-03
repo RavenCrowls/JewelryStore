@@ -46,19 +46,19 @@ var googleClientSecret = builder.Configuration["Authentication:Google:ClientSecr
 if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(googleClientSecret))
 {
     builder.Services
-        .AddAuthentication(options =>
-        {
-            // Ensure we authenticate using Identity cookie by default
-            options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
-            options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
-            options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
-        })
+        .AddAuthentication()
         .AddGoogle(options =>
         {
             options.ClientId = googleClientId!;
             options.ClientSecret = googleClientSecret!;
             options.CorrelationCookie.SameSite = SameSiteMode.None;
             options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
+            // Ensure email and basic profile are requested and mapped
+            options.Scope.Clear();
+            options.Scope.Add("openid");
+            options.Scope.Add("profile");
+            options.Scope.Add("email");
+            options.SaveTokens = true;
             // options.CallbackPath = "/signin-google"; // default
             options.Events = new OAuthEvents
             {

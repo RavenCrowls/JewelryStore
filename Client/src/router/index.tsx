@@ -13,15 +13,30 @@ import Customer from "../pages/manager/(Customer)/Customer/Customer";
 import Import from "../pages/manager/(Import)/Import/Import";
 import Liquidation from "../pages/manager/(Liquidation)/Liquidation/Liquidation";
 import RequireAuth from "./RequireAuth";
+import RedirectIfAuthed from "./RedirectIfAuthed";
 
 const AppRouter = () => {
   return (
     <Routes>
-      {/* "/" -> /manager */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      {/* "/" -> prefer /manager if authed, else /login */}
+      <Route path="/" element={<Navigate to="/manager" replace />} />
 
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignupPage />} />
+      <Route
+        path="/login"
+        element={
+          <RedirectIfAuthed>
+            <LoginPage />
+          </RedirectIfAuthed>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <RedirectIfAuthed>
+            <SignupPage />
+          </RedirectIfAuthed>
+        }
+      />
       {/* Public customer page */}
       <Route path="/customer" element={<Customer />} />
       {/* Protected manager area */}
