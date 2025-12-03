@@ -10,6 +10,7 @@ import Cost from "../pages/manager/(Dashboard)/Cost/Cost";
 import LoginPage from "../pages/LoginPage";
 import Employee from "../pages/manager/(Employee)/Employee/Employee";
 import Customer from "../pages/manager/(Customer)/Customer/Customer";
+import CustomerDetail from "../pages/manager/(Customer)/CustomerDetail/CustomerDetail";
 import Import from "../pages/manager/(Import)/Import/Import";
 import ImportDetail from "../pages/manager/(Import)/ImportDetail/ImportDetail";
 import Liquidation from "../pages/manager/(Liquidation)/Liquidation/Liquidation";
@@ -41,6 +42,8 @@ const AppRouter = () => {
 
         {/* /manager/customer*/}
         <Route path="customer" element={<Customer />} />
+        {/* /manager/detail*/}  
+        <Route path="customer/:name" element={<CustomerDetail />} />
         
         {/* /manager/import*/}
         <Route path="import" element={<Import />} />

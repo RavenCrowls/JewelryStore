@@ -3,7 +3,9 @@ import { LogOut, Bell } from "lucide-react";
 
 export default function Topbar() {
   const navigate = useNavigate();
-
+  const handleProfileClick = () => {
+    navigate("/manager/profile");
+  };
   const handleLogout = () => {
     navigate("/login");
   };
@@ -15,9 +17,10 @@ export default function Topbar() {
         {/* Avatar + username */}
         <div className="flex items-center gap-2">
           <img
+            onClick={handleProfileClick}
             src="/img/avt.png"
             alt="Avatar"
-            className="h-8 w-8 rounded-full object-cover"
+            className="h-8 w-8 rounded-full object-cover cursor-pointer"
           />
           <span className="text-xs font-medium text-slate-600">
             admin123

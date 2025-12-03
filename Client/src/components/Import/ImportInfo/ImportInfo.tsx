@@ -1,4 +1,3 @@
-
 export type ImportInfoProps = {
   lot: string;
   supplier: string;
