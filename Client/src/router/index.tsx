@@ -8,23 +8,49 @@ import Report from "../pages/manager/(Dashboard)/Report";
 import Revenue from "../pages/manager/(Dashboard)/Revenue/Revenue";
 import Cost from "../pages/manager/(Dashboard)/Cost/Cost";
 import LoginPage from "../pages/LoginPage";
+import SignupPage from "../pages/SignupPage";
 import Employee from "../pages/manager/(Employee)/Employee/Employee";
 import Customer from "../pages/manager/(Customer)/Customer/Customer";
 import CustomerDetail from "../pages/manager/(Customer)/CustomerDetail/CustomerDetail";
 import Import from "../pages/manager/(Import)/Import/Import";
 import ImportDetail from "../pages/manager/(Import)/ImportDetail/ImportDetail";
 import Liquidation from "../pages/manager/(Liquidation)/Liquidation/Liquidation";
-import LiquidationDetail from "../pages/manager/(Liquidation)/LiquidationDetail/LiquidationDetail";
+import RequireAuth from "./RequireAuth";
+import RedirectIfAuthed from "./RedirectIfAuthed";
 
 const AppRouter = () => {
   return (
     <Routes>
-      {/* "/" -> /manager */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      {/* "/" -> prefer /manager if authed, else /login */}
+      <Route path="/" element={<Navigate to="/manager" replace />} />
 
-      <Route path="/login" element={<LoginPage />}/>
-      <Route path="/manager" element={<ManagerLayout />}>
-
+      <Route
+        path="/login"
+        element={
+          <RedirectIfAuthed>
+            <LoginPage />
+          </RedirectIfAuthed>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <RedirectIfAuthed>
+            <SignupPage />
+          </RedirectIfAuthed>
+        }
+      />
+      {/* Public customer page */}
+      <Route path="/customer" element={<Customer />} />
+      {/* Protected manager area */}
+      <Route
+        path="/manager"
+        element={
+          <RequireAuth>
+            <ManagerLayout />
+          </RequireAuth>
+        }
+      >
         {/* /manager */}
         <Route index element={<Dashboard />} />
 

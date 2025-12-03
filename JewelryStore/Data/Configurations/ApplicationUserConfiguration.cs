@@ -12,8 +12,8 @@ namespace JewelryStore.Data.Configurations
             entity.Property(u => u.Id).HasColumnName("id");
             entity.Property(u => u.FullName).HasColumnName("full_name").HasMaxLength(100).IsRequired();
             entity.Property(u => u.Email).HasColumnName("email").HasMaxLength(100).IsRequired();
-            entity.Property(u => u.PasswordHash).HasColumnName("password").IsRequired();
-            entity.Property(u => u.PhoneNumber).HasColumnName("phone").HasMaxLength(15).IsRequired();
+            entity.Property(u => u.PasswordHash).HasColumnName("password");
+            entity.Property(u => u.PhoneNumber).HasColumnName("phone").HasMaxLength(15);
             entity.Property(u => u.Address).HasColumnName("address");
             entity.Property(u => u.Birthday).HasColumnName("birthday");
             entity.Property(u => u.Status).HasColumnName("status").HasDefaultValue(true).IsRequired();
