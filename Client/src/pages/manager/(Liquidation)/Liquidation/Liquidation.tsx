@@ -25,6 +25,11 @@ const LiquidationRows: LiquidationRow[] = [
 export default function Liquidation() {
   const navigate = useNavigate();
 
+  const handleView = (row: LiquidationRow) => {
+    // tuỳ route của bạn
+    navigate(`/manager/liquidation/${row.id}`);
+  };
+
   return (
     <div className="space-y-5 mt-3">
       {/* Hàng tiêu đề + nút */}
@@ -32,7 +37,7 @@ export default function Liquidation() {
                 <LiquidationFilterBar />
         </div>   
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-              <LiquidationTable rows={LiquidationRows} />
+              <LiquidationTable rows={LiquidationRows} onView={handleView}/>
             </section>
     </div>
   );

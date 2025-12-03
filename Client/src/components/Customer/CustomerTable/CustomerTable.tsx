@@ -9,9 +9,10 @@ export type CustomerRow = {
 
 type CustomerTableProps = {
   rows: CustomerRow[];
+  onView?: (row:CustomerRow) => void;
 };
 
-export default function CustomerTable({ rows }: CustomerTableProps) {
+export default function CustomerTable({ rows,onView }: CustomerTableProps) {
   return (
     <div>
 
@@ -76,7 +77,8 @@ export default function CustomerTable({ rows }: CustomerTableProps) {
                   {/* Actions */}
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-center gap-2">
-                      <button className="rounded-md border border-[#DDE4F0] px-4 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5">
+                      <button className="rounded-md border border-[#DDE4F0] px-4 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5"
+                        onClick={() => onView?.(row)}>
                         Edit
                       </button>
                       <button className="rounded-md border border-[#FACDC3] px-4 py-1 text-xs font-medium text-[#EB2F06] hover:bg-[#1279C3]/5">

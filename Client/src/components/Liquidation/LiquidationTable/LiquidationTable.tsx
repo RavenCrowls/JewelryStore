@@ -9,9 +9,10 @@ export type LiquidationRow = {
 
 type LiquidationTableProps = {
   rows: LiquidationRow[];
+  onView?: (row: LiquidationRow) => void; 
 };
 
-export default function LiquidationTable({ rows }: LiquidationTableProps) {
+export default function LiquidationTable({ rows, onView }: LiquidationTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full text-sm text-center">
@@ -19,7 +20,7 @@ export default function LiquidationTable({ rows }: LiquidationTableProps) {
           <tr className="bg-[#1279C3] text-white">
             <th className="px-4 py-3 rounded-l-xl font-medium text-left">
               ID
-            </th>            
+            </th>
             <th className="px-4 py-3 font-medium">
               Date <span className="text-xs">↕</span>
             </th>
@@ -36,7 +37,6 @@ export default function LiquidationTable({ rows }: LiquidationTableProps) {
                 ? "bg-slate-50/60 border-b border-slate-100"
                 : "border-b border-slate-100";
 
-            // icon trực tiếp từ public/img
             let stateIcon = "";
             let stateBorder = "";
 
@@ -52,24 +52,22 @@ export default function LiquidationTable({ rows }: LiquidationTableProps) {
             }
 
             return (
-              <tr key={row.id} className={`${bg} text-center`}>
-                {/* LOT */}
+              <tr
+                key={row.id}
+                className={`${bg} text-center`}
+              >
                 <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-left">
                   {row.id}
                 </td>
 
-                {/* Date */}
                 <td className="px-4 py-3 text-xs text-slate-700">
                   {row.date}
                 </td>
-                
-                {/* Creator */}
+
                 <td className="px-4 py-3 text-xs text-slate-700">
                   {row.creator}
                 </td>
 
-
-                {/* State */}
                 <td className="px-4 py-3 text-xs">
                   <div
                     className={`inline-flex h-8 w-10 items-center justify-center rounded-md border ${stateBorder}`}
@@ -82,9 +80,11 @@ export default function LiquidationTable({ rows }: LiquidationTableProps) {
                   </div>
                 </td>
 
-                {/* Actions */}
                 <td className="px-4 py-3">
-                  <button className="rounded-md border border-[#DDE4F0] px-5 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5">
+                  <button
+                    className="rounded-md border border-[#DDE4F0] px-5 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5"
+                    onClick={() => onView?.(row)} 
+                  >
                     View
                   </button>
                 </td>

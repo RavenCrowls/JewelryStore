@@ -32,6 +32,11 @@ const ImportRows: ImportRow[] = [
 export default function Import() {
   const navigate = useNavigate();
 
+  const handleView = (row: ImportRow) => {
+      // tuỳ route của bạn
+      navigate(`/manager/import/${row.lot}`);
+    };
+
   return (
     <div className="space-y-5 mt-3">
       {/* Hàng tiêu đề + nút */}
@@ -39,7 +44,7 @@ export default function Import() {
                 <ImportFilterBar />
         </div>   
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-              <ImportTable rows={ImportRows} />
+              <ImportTable rows={ImportRows} onView={handleView}/>
             </section>
     </div>
   );

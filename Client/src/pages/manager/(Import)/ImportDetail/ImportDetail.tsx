@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import {  useRef } from "react";
-import LiquidationInfo from "../../../../components/Liquidation/LiquidationInfo/LiquidationInfo";
-import LiquidationProductTable, { type LiquidationProductRow } from "../../../../components/Liquidation/LiquidationInfo/LiquidationProductTable";
-const rows: LiquidationProductRow[] = [
+import ImportInfo from "../../../../components/Import/ImportInfo/ImportInfo";
+import ImportProductTable, { type ImportProductRow } from "../../../../components/Import/ImportInfo/ImportProductTable";
+const rows: ImportProductRow[] = [
   {
     no: 1,
     name: "Product 1",
@@ -17,9 +17,9 @@ const rows: LiquidationProductRow[] = [
 ];
 
 
-export default function LiquidationDetail() {
+export default function ImportDetail() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { lot } = useParams<{ lot: string }>();
  
   const filterRef = useRef<HTMLDivElement | null>(null);
   return (
@@ -28,7 +28,7 @@ export default function LiquidationDetail() {
         <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3 relative" ref={filterRef}>
                 <h2 className="text-xl font-semibold tracking-tight text-[#1279C3]">
-                  Liquidation Detail
+                  Import Detail
                 </h2>
             </div>
             <div className="justify-end">
@@ -39,15 +39,16 @@ export default function LiquidationDetail() {
                 
         </div>      
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-        <LiquidationInfo
-          id={id ?? "LIQ001"}
-          creator="Employee3"
-          inspector=""
-          dateCreated="02/09/2024"
+        <ImportInfo
+          lot={lot ?? "LIQ001"}
+          supplier="Supllier1"
+          staff="Employee1"
+          dateCreated="02/12/2025"
+          dateAccepted="05/12/2025"
           state="Waiting"
         />
 
-      <LiquidationProductTable rows={rows} />
+      <ImportProductTable rows={rows} />
             </section>
     </div>
   );

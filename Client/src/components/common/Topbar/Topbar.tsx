@@ -1,25 +1,26 @@
-// src/components/common/Topbar/Topbar.tsx
 import { useNavigate } from "react-router-dom";
-import {Search, LogOut,Bell } from "lucide-react";
-export default function TopBarWithSearch() {
-  const navigate = useNavigate();
+import { LogOut, Bell } from "lucide-react";
 
+export default function Topbar() {
+  const navigate = useNavigate();
+  const handleProfileClick = () => {
+    navigate("/manager/profile");
+  };
   const handleLogout = () => {
-    // TODO: clear token, user info, v.v...
-    // localStorage.removeItem("token");
     navigate("/login");
   };
 
   return (
-    <header className="w-full px-6 py-3 flex items-center justify-between bg-white">
+    <header className="w-full px-6 py-3 flex items-center justify-end bg-white">
       {/* Right side: avatar + username + logout + bell */}
-      <div className="ml-4 flex items-center gap-4">
+      <div className="flex items-center gap-4">
         {/* Avatar + username */}
         <div className="flex items-center gap-2">
           <img
+            onClick={handleProfileClick}
             src="/img/avt.png"
             alt="Avatar"
-            className="h-8 w-8 rounded-full object-cover"
+            className="h-8 w-8 rounded-full object-cover cursor-pointer"
           />
           <span className="text-xs font-medium text-slate-600">
             admin123
@@ -32,8 +33,7 @@ export default function TopBarWithSearch() {
           className="flex h-8 w-8 items-center justify-center rounded-md border border-[#DDE4F0] text-[#1279C3] hover:bg-[#1279C3]/5"
           title="Logout"
         >
-          {/* icon logout đơn giản */}
-          <LogOut className="h-4 w-4"/>
+          <LogOut className="h-4 w-4" />
         </button>
 
         {/* Notification bell */}
@@ -41,7 +41,7 @@ export default function TopBarWithSearch() {
           className="flex h-8 w-8 items-center justify-center rounded-md border border-[#DDE4F0] text-[#1279C3] hover:bg-[#1279C3]/5"
           title="Notifications"
         >
-          <Bell className="h-4 w-4"/>         
+          <Bell className="h-4 w-4" />
         </button>
       </div>
     </header>

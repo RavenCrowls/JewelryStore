@@ -1,6 +1,7 @@
 // src/router/index.tsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import ManagerLayout from "../layouts/ManagerLayout";
+import Profile from "../pages/manager/(Profile)/Profile";
 import Dashboard from "../pages/manager/(Dashboard)/Dashboard";
 import Product from "../pages/manager/(Product)/Product";
 import Report from "../pages/manager/(Dashboard)/Report";
@@ -10,7 +11,9 @@ import LoginPage from "../pages/LoginPage";
 import SignupPage from "../pages/SignupPage";
 import Employee from "../pages/manager/(Employee)/Employee/Employee";
 import Customer from "../pages/manager/(Customer)/Customer/Customer";
+import CustomerDetail from "../pages/manager/(Customer)/CustomerDetail/CustomerDetail";
 import Import from "../pages/manager/(Import)/Import/Import";
+import ImportDetail from "../pages/manager/(Import)/ImportDetail/ImportDetail";
 import Liquidation from "../pages/manager/(Liquidation)/Liquidation/Liquidation";
 import RequireAuth from "./RequireAuth";
 import RedirectIfAuthed from "./RedirectIfAuthed";
@@ -54,6 +57,9 @@ const AppRouter = () => {
         {/* /manager/dashboard */}
         <Route path="dashboard" element={<Dashboard />} />
 
+        {/* /manager/profile */}
+        <Route path="profile" element={<Profile />}/>
+
         {/* /manager/product */}
         <Route path="product" element={<Product />} />
 
@@ -62,13 +68,18 @@ const AppRouter = () => {
 
         {/* /manager/customer*/}
         <Route path="customer" element={<Customer />} />
-
+        {/* /manager/detail*/}  
+        <Route path="customer/:name" element={<CustomerDetail />} />
+        
         {/* /manager/import*/}
         <Route path="import" element={<Import />} />
+        {/* /manager/detail*/}  
+        <Route path="import/:lot" element={<ImportDetail />} />
 
         {/* /manager/liquidation*/}
         <Route path="liquidation" element={<Liquidation />} />
 
+        <Route path="liquidation/:id" element={<LiquidationDetail />} />
         {/* /manager/report/... */}
         <Route path="report">
           {/* /manager/report */}
