@@ -1,7 +1,6 @@
-import { Outlet } from "react-router-dom";
-import { BellOutlined, LogoutOutlined } from "@ant-design/icons";
-import { Layout, Avatar, Badge, Input } from "antd";
-import { Link } from "react-router-dom";
+import { LogoutOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { Avatar, Badge, Input, Layout } from "antd";
+import { Link, Outlet } from "react-router-dom";
 
 const { Search } = Input;
 
@@ -29,16 +28,16 @@ export default function CustomerLayout() {
           </Link>
 
           <div className="flex items-center absolute top-0 right-0 h-full gap-6">
-            <button className="mr-2">
+            <button className="mr-2 relative top-0.5">
               <Badge count={5} size="small">
-                <BellOutlined className="text-xl text-white" />
+                <ShoppingCartOutlined className="text-2xl text-white" />
               </Badge>
             </button>
             <div className="flex items-center gap-2">
               <Avatar className="border border-solid border-white" src="/src/assets/avatar.jpg" />
               <span>em2@123</span>
             </div>
-            <LogoutOutlined />
+            <LogoutOutlined className="text-xl" />
           </div>
         </div>
       </header>
