@@ -8,7 +8,7 @@ export default function ManagerLayout() {
     <div className="flex w-full h-screen bg-[#eef1f7]">
       <Sidebar />
 
-      <div className="flex flex-col flex-1 h-full overflow-y-auto">
+      <div className="flex flex-col flex-1 h-full overflow-y-auto [scrollbar-gutter:stable]">
         <Topbar />
         {/* pt nhỏ hơn để sát topbar hơn một chút */}
         <main className="px-6 pt-4 pb-6">

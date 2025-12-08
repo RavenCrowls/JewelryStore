@@ -165,6 +165,31 @@ namespace JewelryStore.Controllers
             });
         }
 
+        public record LoginDto(string Email, string Password, bool RememberMe = false);
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
+        {
+            _logger.LogInformation("Password login attempt for {Email}", dto.Email);
+            var result = await _signInManager.PasswordSignInAsync(dto.Email, dto.Password, dto.RememberMe, lockoutOnFailure: false);
+            if (!result.Succeeded)
+            {
+                _logger.LogWarning("Password login failed for {Email}. IsLockedOut={LockedOut}, IsNotAllowed={NotAllowed}", dto.Email, result.IsLockedOut, result.IsNotAllowed);
+                return Unauthorized(new { error = "Invalid email or password" });
+            }
+            return Ok(new { ok = true });
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                await _signInManager.SignOutAsync();
+            }
+            return Ok(new { ok = true });
+        }
+
         [HttpGet("external-failed")]
         public IActionResult ExternalFailed([FromQuery] string? error = null, [FromQuery] string? returnUrl = "/login")
         {

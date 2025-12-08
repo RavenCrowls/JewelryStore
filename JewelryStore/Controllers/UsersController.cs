@@ -76,7 +76,11 @@ namespace JewelryStore.Controllers
                 var result = await _userManager.CreateAsync(user, dto.Password);
                 if (!result.Succeeded)
                 {
-                    return BadRequest(new { error = "Error creating user" });
+                    return BadRequest(new
+                    {
+                        error = "Error creating user",
+                        details = result.Errors.Select(e => new { e.Code, e.Description })
+                    });
                 }
 
                 return CreatedAtAction(nameof(GetById), new { id = user.Id }, new UserListItemDto(user.Id, user.FullName, user.Email ?? string.Empty, user.PhoneNumber ?? string.Empty, user.Address, user.Birthday, user.Status));
