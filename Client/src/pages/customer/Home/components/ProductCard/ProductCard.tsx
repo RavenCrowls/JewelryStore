@@ -42,6 +42,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productImageUrl, productName,
           style={{
             display: "block",
             color: "#ed8383",
+            margin: "4px 0 2px",
             fontWeight: "bold",
             fontSize: "18px"
           }}
