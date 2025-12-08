@@ -46,7 +46,9 @@ export const EmployeeRows: EmployeeRow[] = [
 ];
 export default function Employee() {
   const navigate = useNavigate();
-
+  const handleEmployeeInfo = (row: EmployeeRow) => {
+    navigate(`/manager/employee/${row.name}`);
+  };
  
   const filterRef = useRef<HTMLDivElement | null>(null);
   return (
@@ -70,7 +72,7 @@ export default function Employee() {
                 
         </div>      
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-              <EmployeeTable rows={EmployeeRows} />
+              <EmployeeTable rows={EmployeeRows}  onView={handleEmployeeInfo} />
             </section>
     </div>
   );
