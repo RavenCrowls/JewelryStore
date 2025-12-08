@@ -20,7 +20,7 @@ import LiquidationDetail from "../pages/manager/(Liquidation)/LiquidationDetail/
 import RequireAuth from "./RequireAuth";
 import RedirectIfAuthed from "./RedirectIfAuthed";
 import CustomerLayout from "../layouts/CustomerLayout";
-import Home from "../components/Customer/Home";
+import Home from "../pages/customer/Home";
 
 const AppRouter = () => {
   return (
