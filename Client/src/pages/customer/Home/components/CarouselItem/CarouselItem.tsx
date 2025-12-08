@@ -22,8 +22,7 @@ const Carousel: React.FC<CarouselProps> = ({
     <div
       style={{
         display: "flex",
-        height: "calc(100vh - 81px)",
-        fontFamily: "Josefin Sans, sans-serif"
+        height: "calc(100vh - 81px)"
       }}
     >
       {/* Left side */}
