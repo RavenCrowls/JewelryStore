@@ -1,13 +1,18 @@
 // src/components/common/Topbar/Topbar.tsx
 import { useNavigate } from "react-router-dom";
-import {Search, LogOut,Bell } from "lucide-react";
+import { Search, LogOut, Bell } from "lucide-react";
+import { AuthService } from "../../../services";
 export default function TopBarWithSearch() {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    // TODO: clear token, user info, v.v...
-    // localStorage.removeItem("token");
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await AuthService.logout();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      navigate("/login", { replace: true });
+    }
   };
 
   return (
@@ -23,12 +28,12 @@ export default function TopBarWithSearch() {
           <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
             {/* icon kính lúp */}
             <Search className="h-4 w-4" />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21 21l-4.35-4.35M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14z"
-              />
-            
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M21 21l-4.35-4.35M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14z"
+            />
+
           </span>
         </div>
       </div>
@@ -54,7 +59,7 @@ export default function TopBarWithSearch() {
           title="Logout"
         >
           {/* icon logout đơn giản */}
-          <LogOut className="h-4 w-4"/>
+          <LogOut className="h-4 w-4" />
         </button>
 
         {/* Notification bell */}
@@ -62,7 +67,7 @@ export default function TopBarWithSearch() {
           className="flex h-8 w-8 items-center justify-center rounded-md border border-[#DDE4F0] text-[#1279C3] hover:bg-[#1279C3]/5"
           title="Notifications"
         >
-          <Bell className="h-4 w-4"/>         
+          <Bell className="h-4 w-4" />
         </button>
       </div>
     </header>

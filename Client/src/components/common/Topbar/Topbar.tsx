@@ -1,13 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import { LogOut, Bell } from "lucide-react";
+import { AuthService } from "../../../services";
 
 export default function Topbar() {
   const navigate = useNavigate();
   const handleProfileClick = () => {
     navigate("/manager/profile");
   };
-  const handleLogout = () => {
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await AuthService.logout();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      navigate("/login", { replace: true });
+    }
   };
 
   return (
