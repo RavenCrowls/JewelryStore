@@ -19,6 +19,8 @@ import Liquidation from "../pages/manager/(Liquidation)/Liquidation/Liquidation"
 import LiquidationDetail from "../pages/manager/(Liquidation)/LiquidationDetail/LiquidationDetail";
 import RequireAuth from "./RequireAuth";
 import RedirectIfAuthed from "./RedirectIfAuthed";
+import CustomerLayout from "../layouts/CustomerLayout";
+import Home from "../components/Customer/Home";
 
 const AppRouter = () => {
   return (
@@ -42,8 +44,13 @@ const AppRouter = () => {
           </RedirectIfAuthed>
         }
       />
+
       {/* Public customer page */}
-      <Route path="/customer" element={<Customer />} />
+      <Route path="/" element={<CustomerLayout />}>
+        {/* / */}
+        <Route index element={<Home />} />
+      </Route>
+
       {/* Protected manager area */}
       <Route
         path="/manager"
@@ -60,7 +67,7 @@ const AppRouter = () => {
         <Route path="dashboard" element={<Dashboard />} />
 
         {/* /manager/profile */}
-        <Route path="profile" element={<Profile />}/>
+        <Route path="profile" element={<Profile />} />
 
         {/* /manager/product */}
         <Route path="product" element={<Product />} />
@@ -70,15 +77,14 @@ const AppRouter = () => {
 
         {/* /manager/customer*/}
         <Route path="customer" element={<Customer />} />
-        {/* /manager/detail*/}  
+        {/* /manager/detail*/}
         <Route path="customer/:name" element={<CustomerDetail />} />
-        {/* /manager/detail*/}  
+        {/* /manager/detail*/}
         <Route path="customer/:name/:id" element={<Bill />} />
 
-        
         {/* /manager/import*/}
         <Route path="import" element={<Import />} />
-        {/* /manager/detail*/}  
+        {/* /manager/detail*/}
         <Route path="import/:lot" element={<ImportDetail />} />
 
         {/* /manager/liquidation*/}
