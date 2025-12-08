@@ -9,9 +9,10 @@ export type CustomerPurchaseRow = {
 
 type CustomerPurchaseProps = {
   rows: CustomerPurchaseRow[];
+  onView?: (row:CustomerPurchaseRow) => void;
 };
 
-export default function CustomerPurchaseTable({ rows }: CustomerPurchaseProps) {
+export default function CustomerPurchaseTable({ rows,onView }: CustomerPurchaseProps) {
   return (
     <div>
       <h3 className="mb-4 text-lg font-semibold text-[#1279C3]">Purchase History</h3>
@@ -63,7 +64,7 @@ export default function CustomerPurchaseTable({ rows }: CustomerPurchaseProps) {
 
                   <td className="px-4 py-3">
                   <button className="rounded-md border border-[#DDE4F0] px-5 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5"
-                    // onClick={() => onView?.(row)} route to bill info page
+                    onClick={() => onView?.(row)}
                   >
                     View
                   </button>

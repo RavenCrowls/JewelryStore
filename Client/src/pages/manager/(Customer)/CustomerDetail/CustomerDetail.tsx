@@ -50,8 +50,10 @@ const purchaseRows: CustomerPurchaseRow[] = [
 
 export default function CustomerDetail() {
   const navigate = useNavigate();
-  const { lot } = useParams<{ lot: string }>();
- 
+
+  const handleViewBill = (row: CustomerPurchaseRow) => {
+      navigate(`/manager/customer/${encodeURIComponent(customer.name)}/${row.id}`);
+  };
   const filterRef = useRef<HTMLDivElement | null>(null);
   return (
     <div className="space-y-5 mt-3">
@@ -67,7 +69,7 @@ export default function CustomerDetail() {
       <section className="bg-white rounded-2xl p-6 shadow-sm">
         <CustomerInfo customer={customer} onDelete={() => console.log("deny")} />;
 
-        <CustomerPurchaseTable rows={purchaseRows} /> 
+        <CustomerPurchaseTable rows={purchaseRows} onView={handleViewBill} /> 
         </section>
     </div>
   );

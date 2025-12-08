@@ -72,7 +72,7 @@ const AppRouter = () => {
         <Route path="customer" element={<Customer />} />
         {/* /manager/detail*/}  
         <Route path="customer/:name" element={<CustomerDetail />} />
-        {/* /manager/detail*/}  
+        {/* /manager/detail/bill*/}  
         <Route path="customer/:name/:id" element={<Bill />} />
 
         
