@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Http;
+using JewelryStore.Options;
+using JewelryStore.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -28,6 +30,9 @@ builder.Services
     })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.Configure<CloudinaryOptions>(builder.Configuration.GetSection(CloudinaryOptions.SectionName));
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {

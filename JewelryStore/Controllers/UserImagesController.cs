@@ -66,11 +66,23 @@ namespace JewelryStore.Controllers
             try
             {
                 var item = await _db.UserImages.FirstOrDefaultAsync(i => i.UserId == userId);
-                if (item == null) return NotFound(new { error = "User image not found" });
-
-                item.ImageUrl = dto.ImageUrl;
-                await _db.SaveChangesAsync();
-                return NoContent();
+                if (item == null)
+                {
+                    var created = new UserImage
+                    {
+                        UserId = userId,
+                        ImageUrl = dto.ImageUrl
+                    };
+                    _db.UserImages.Add(created);
+                    await _db.SaveChangesAsync();
+                    return CreatedAtAction(nameof(Get), new { userId }, created);
+                }
+                else
+                {
+                    item.ImageUrl = dto.ImageUrl;
+                    await _db.SaveChangesAsync();
+                    return NoContent();
+                }
             }
             catch (Exception)
             {

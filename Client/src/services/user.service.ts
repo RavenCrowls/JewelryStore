@@ -110,6 +110,33 @@ export async function getUserImage(userId: number, options?: { signal?: AbortSig
     return null;
 }
 
+export async function updateUserImage(userId: number, imageUrl: string, options?: { signal?: AbortSignal }): Promise<void> {
+    const url = buildUrl(`/api/users/${userId}/images`);
+    const res = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ imageUrl }),
+        signal: options?.signal,
+    });
+
+    if (!res.ok) {
+        let message = `Failed to update user image (${res.status})`;
+        try {
+            const data = await res.json();
+            if (typeof data?.error === 'string' && data.error.trim().length > 0) {
+                message = data.error;
+            }
+        } catch {
+            // ignore parse errors
+        }
+        throw new Error(message);
+    }
+}
+
 export async function getUserById(id: number, options?: { signal?: AbortSignal }): Promise<UserProfile> {
     const url = buildUrl(`/api/users/${id}`);
     const res = await fetch(url, {
@@ -159,4 +186,5 @@ export const UserService = {
     getUserImage,
     getUserById,
     updateUser,
+    updateUserImage,
 };

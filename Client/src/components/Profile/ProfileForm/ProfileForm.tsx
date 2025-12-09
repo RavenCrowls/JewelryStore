@@ -2,7 +2,9 @@
 import { Image as ImageIcon } from "lucide-react";
 import { useProfileForm } from "../../../hooks/useProfileForm";
 import { useChangePassword } from "../../../hooks/useChangePassword";
+import { useAvatarUpload } from "../../../hooks/useAvatarUpload";
 import { createPortal } from "react-dom";
+import { useRef } from "react";
 import type { ProfileData } from "../../../hooks/useProfile";
 
 type Props = {
@@ -45,6 +47,12 @@ function ProfileForm({ data, form }: Props) {
   const { loading, profile, error } = data;
   const { values, isEditing, isSaving, saveError, onChange, onEdit, onCancel, onSave } = form;
   const pwd = useChangePassword();
+  const avatar = useAvatarUpload(profile);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
 
   return (
     <div className="mt-4 space-y-6">
@@ -162,20 +170,29 @@ function ProfileForm({ data, form }: Props) {
             {/* Right: avatar */}
             <div className="flex w-full justify-center md:w-auto">
               <div className="relative h-80 w-80 overflow-hidden rounded-full border border-slate-200">
-                <img src={profile.avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
+                <img src={avatar.avatarUrl || profile.avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
 
                 <button
                   className="absolute bottom-0 left-0 flex w-full items-center justify-center gap-2 bg-black/30 py-2 text-xs font-medium text-white backdrop-blur"
                   type="button"
+                  onClick={handleAvatarClick}
                 >
                   <ImageIcon className="h-4 w-4" />
-                  Edit avatar
+                  {avatar.uploading ? "Uploading..." : "Edit avatar"}
                 </button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  className="hidden"
+                  onChange={avatar.onFileChange}
+                />
               </div>
             </div>
           </div>
         )}
       </section>
+      {avatar.error && <div className="text-sm text-red-600">{avatar.error}</div>}
 
       {pwd.show &&
         createPortal(
