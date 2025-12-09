@@ -10,7 +10,8 @@ import Cost from "../pages/manager/(Dashboard)/Cost/Cost";
 import LoginPage from "../pages/LoginPage";
 import SignupPage from "../pages/SignupPage";
 import Employee from "../pages/manager/(Employee)/Employee/Employee";
-import EmployeeProfile from "../pages/manager/(Employee)/EmployeeDetail/EmployeeDetail";
+import EmployeeDetail from "../pages/manager/(Employee)/EmployeeDetail/EmployeeDetail";
+import EmployeeAddPage from "../pages/manager/(Employee)/EmployeeNew/EmployeeAddPage";
 import Customer from "../pages/manager/(Customer)/Customer/Customer";
 import CustomerDetail from "../pages/manager/(Customer)/CustomerDetail/CustomerDetail";
 import Bill from "../pages/manager/(Customer)/Bill/Bill";
@@ -69,7 +70,9 @@ const AppRouter = () => {
         {/* /manager/employee */}
         <Route path="employee" element={<Employee />} />
         {/* /manager/employee/employeeinfo */}
-        <Route path="employee/:name" element={<EmployeeProfile />} />
+        <Route path="employee/:name" element={<EmployeeDetail />} />
+        {/* /manager/employee/employeeinfo */}
+        <Route path="employee/add" element={<EmployeeAddPage />} />
 
         {/* /manager/customer*/}
         <Route path="customer" element={<Customer />} />

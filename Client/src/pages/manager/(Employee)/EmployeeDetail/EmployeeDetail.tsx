@@ -46,10 +46,6 @@ export default function EmployeeDetail() {
             Employee Information
           </h2>
         </div>
-        <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition ml-3">
-          Add new employee
-        </button>
-
       </div>
 
       <section className="bg-white rounded-2xl p-6 shadow-sm">

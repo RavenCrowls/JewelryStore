@@ -48,10 +48,6 @@ export default function EmployeeAdd({ onSave, onCancel }: AddEmployeeProps) {
       <div className="max-w-5xl w-full flex gap-16">
         {/* LEFT FORM */}
         <div className="flex-1">
-          <h2 className="text-xl font-semibold text-sky-700 mb-6">
-            Add new employee
-          </h2>
-
           <div className="space-y-3 text-sm">
             <InfoRow label="Name:">
               <input
@@ -117,7 +113,7 @@ export default function EmployeeAdd({ onSave, onCancel }: AddEmployeeProps) {
           </div>
 
           {/* BUTTONS */}
-          <div className="mt-6 flex gap-4">
+          <div className="mt-6 flex gap-4 justify-end">
             <button
               type="button"
               onClick={onCancel}
@@ -152,7 +148,6 @@ export default function EmployeeAdd({ onSave, onCancel }: AddEmployeeProps) {
             )}
 
             <label className="absolute bottom-0 left-0 right-0 flex cursor-pointer items-center justify-center bg-black/5 py-2 text-xs text-black gap-1">
-              <span>🖼</span>
               <span>Upload</span>
               <input
                 type="file"
