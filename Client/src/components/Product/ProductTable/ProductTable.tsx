@@ -16,22 +16,17 @@ type ProductTableProps = {
 export default function ProductTable({ rows }: ProductTableProps) {
   return (
     <div>
-
       <div className="overflow-x-auto">
-        <table className="min-w-full text-sm text-center">
+        <table className="min-w-full text-sm">
           <thead>
             <tr className="bg-[#1279C3] text-white">
-              <th className="px-4 py-3 rounded-l-xl font-medium text-left">
-                ID
-              </th>
-              <th className="px-4 py-3 font-medium">Name</th>
-              <th className="px-4 py-3 font-medium">Image</th>
-              <th className="px-4 py-3 font-medium">Category</th>
-              <th className="px-4 py-3 font-medium">
-                Price <span className="text-xs">↕</span>
-              </th>
-              <th className="px-4 py-3 font-medium">Quantity</th>
-              <th className="px-4 py-3 rounded-r-xl font-medium">Actions</th>
+              <th className="px-4 py-3 rounded-l-xl font-medium text-center">ID</th>
+              <th className="px-4 py-3 font-medium text-center">Name</th>
+              <th className="px-4 py-3 font-medium text-center">Image</th>
+              <th className="px-4 py-3 font-medium text-center">Category</th>
+              <th className="px-4 py-3 font-medium text-center">Price</th>
+              <th className="px-4 py-3 font-medium text-center">Quantity</th>
+              <th className="px-4 py-3 rounded-r-xl font-medium text-center">Actions</th>
             </tr>
           </thead>
 
@@ -43,24 +38,22 @@ export default function ProductTable({ rows }: ProductTableProps) {
                   : "border-b border-slate-100";
 
               return (
-                <tr key={row.id} className={`${bg} text-center`}>
+                <tr key={row.id} className={`${bg}`}>
                   {/* ID */}
-                  <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-left">
+                  <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-center">
                     {row.id}
                   </td>
 
                   {/* Name + subtitle */}
-                  <td className="px-4 py-3 text-xs text-slate-700">
+                  <td className="px-4 py-3 text-xs text-slate-700 text-left">
                     <div className="font-semibold text-sm">{row.name}</div>
                     {row.subtitle && (
-                      <div className="text-[11px] text-slate-500">
-                        {row.subtitle}
-                      </div>
+                      <div className="text-[11px] text-slate-500">{row.subtitle}</div>
                     )}
                   </td>
 
                   {/* Image */}
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 text-center">
                     <div className="flex justify-center">
                       <img
                         src={row.imageUrl}
@@ -71,23 +64,18 @@ export default function ProductTable({ rows }: ProductTableProps) {
                   </td>
 
                   {/* Category */}
-                  <td className="px-4 py-3 text-xs text-slate-600">
-                    {row.category}
-                  </td>
+                  <td className="px-4 py-3 text-xs text-slate-600 text-center">{row.category}</td>
 
                   {/* Price */}
-                  <td className="px-4 py-3 text-xs text-slate-700">
-                    {row.price.toLocaleString("vi-VN")}{" "}
-                    {row.currency ?? "VND"}
+                  <td className="px-4 py-3 text-xs text-slate-700 text-center">
+                    {row.price.toLocaleString("vi-VN")} {row.currency ?? "VND"}
                   </td>
 
                   {/* Quantity */}
-                  <td className="px-4 py-3 text-xs text-slate-700">
-                    {row.quantity}
-                  </td>
+                  <td className="px-4 py-3 text-xs text-slate-700 text-center">{row.quantity}</td>
 
                   {/* Actions */}
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 text-center">
                     <div className="flex items-center justify-center gap-2">
                       <button className="rounded-md border border-[#DDE4F0] px-4 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5">
                         Edit

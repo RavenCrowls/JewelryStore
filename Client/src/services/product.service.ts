@@ -3,6 +3,7 @@ const API_BASE_URL: string | undefined = (import.meta as any)?.env?.VITE_API_BAS
 export type ProductPreview = {
     id: number;
     name: string;
+    material: string;
     imageUrl: string;
     categoryName: string;
     price: number;

@@ -18,6 +18,7 @@ namespace JewelryStore.Controllers
         public record ProductPreviewDto(
             int Id,
             string Name,
+            string Material,
             string? ImageUrl,
             string CategoryName,
             decimal Price,
@@ -37,6 +38,7 @@ namespace JewelryStore.Controllers
                     .Select(p => new ProductPreviewDto(
                         p.Id,
                         p.Name,
+                        p.Material,
                         _db.ProductImages
                             .Where(i => i.ProductId == p.Id)
                             .OrderBy(i => i.ImageOrder)
