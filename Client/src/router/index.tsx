@@ -21,6 +21,7 @@ import RequireAuth from "./RequireAuth";
 import RedirectIfAuthed from "./RedirectIfAuthed";
 import CustomerLayout from "../layouts/CustomerLayout";
 import Home from "../pages/customer/Home";
+import ProductDetail from "../pages/customer/ProductDetail";
 
 const AppRouter = () => {
   return (
@@ -49,6 +50,9 @@ const AppRouter = () => {
       <Route path="/" element={<CustomerLayout />}>
         {/* / */}
         <Route index element={<Home />} />
+
+        {/* /product-detail */}
+        <Route path="/product-detail" element={<ProductDetail />} />
       </Route>
 
       {/* Protected manager area */}

@@ -1,29 +1,29 @@
+import { Splide, SplideSlide } from "@splidejs/react-splide";
+import "@splidejs/react-splide/css";
 import {
   Carousel,
   Col,
   ConfigProvider,
-  Row,
   Input,
-  Slider,
   InputNumber,
+  Pagination,
+  Row,
+  Slider,
+  Tree,
   type SliderSingleProps,
   type TreeDataNode,
-  type TreeProps,
-  Tree,
-  Pagination
+  type TreeProps
 } from "antd";
-import { Splide, SplideSlide } from "@splidejs/react-splide";
-import CarouselItem from "./components/CarouselItem";
-import "./Home.css";
-import ProductCard from "./components/ProductCard";
-import "@splidejs/react-splide/css";
-import BenefitItem from "./components/BenefitItem";
+import { useState } from "react";
 import FastDeliveryIcon from "../../../assets/benefit-icons/FastDeliveryIcon.svg";
 import GemstoneIcon from "../../../assets/benefit-icons/GemstoneIcon.svg";
 import ProtectedIcon from "../../../assets/benefit-icons/ProtectedIcon.svg";
-import { useState } from "react";
 import formatNumberWithDots from "../../../helpers/formatNumberWithDots";
 import parseNumberFromDots from "../../../helpers/parseNumberFromDots";
+import BenefitItem from "./components/BenefitItem";
+import CarouselItem from "./components/CarouselItem";
+import ProductCard from "./components/ProductCard";
+import Heading from "../components/Heading";
 
 const { Search } = Input;
 
@@ -208,7 +208,7 @@ export default function Home() {
       </ConfigProvider>
       <div style={{ backgroundColor: "#faf2e7" }}>
         {/* NEW PRODUCTS */}
-        <h1 className="heading">NEW PRODUCTS</h1>
+        <Heading text="NEW PRODUCTS" />
         <div className="mx-8">
           <Splide
             options={{
@@ -256,7 +256,7 @@ export default function Home() {
         </div>
 
         {/* ALL PRODUCTS */}
-        <h1 className="heading">ALL PRODUCTS</h1>
+        <Heading text="ALL PRODUCTS" />
         <div className="mx-8">
           <Row gutter={[24, 24]}>
             <Col span={6}>
