@@ -44,8 +44,8 @@ export default function Import() {
                 <ImportFilterBar />
         </div>   
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-              <ImportTable rows={ImportRows} onView={handleView}/>
-            </section>
+          <ImportTable rows={ImportRows} onView={handleView}/>
+      </section>
     </div>
   );
 }

@@ -10,11 +10,15 @@ import Cost from "../pages/manager/(Dashboard)/Cost/Cost";
 import LoginPage from "../pages/LoginPage";
 import SignupPage from "../pages/SignupPage";
 import Employee from "../pages/manager/(Employee)/Employee/Employee";
+import EmployeeDetail from "../pages/manager/(Employee)/EmployeeDetail/EmployeeDetail";
+import EmployeeAddPage from "../pages/manager/(Employee)/EmployeeNew/EmployeeAddPage";
 import Customer from "../pages/manager/(Customer)/Customer/Customer";
 import CustomerDetail from "../pages/manager/(Customer)/CustomerDetail/CustomerDetail";
+import Bill from "../pages/manager/(Customer)/Bill/Bill";
 import Import from "../pages/manager/(Import)/Import/Import";
 import ImportDetail from "../pages/manager/(Import)/ImportDetail/ImportDetail";
 import Liquidation from "../pages/manager/(Liquidation)/Liquidation/Liquidation";
+import LiquidationDetail from "../pages/manager/(Liquidation)/LiquidationDetail/LiquidationDetail";
 import RequireAuth from "./RequireAuth";
 import RedirectIfAuthed from "./RedirectIfAuthed";
 
@@ -65,12 +69,19 @@ const AppRouter = () => {
 
         {/* /manager/employee */}
         <Route path="employee" element={<Employee />} />
+        {/* /manager/employee/employeeinfo */}
+        <Route path="employee/:name" element={<EmployeeDetail />} />
+        {/* /manager/employee/employeeinfo */}
+        <Route path="employee/add" element={<EmployeeAddPage />} />
 
         {/* /manager/customer*/}
         <Route path="customer" element={<Customer />} />
         {/* /manager/detail*/}
         <Route path="customer/:name" element={<CustomerDetail />} />
+        {/* /manager/detail/bill*/}  
+        <Route path="customer/:name/:id" element={<Bill />} />
 
+        
         {/* /manager/import*/}
         <Route path="import" element={<Import />} />
         {/* /manager/detail*/}

@@ -46,7 +46,12 @@ export const EmployeeRows: EmployeeRow[] = [
 ];
 export default function Employee() {
   const navigate = useNavigate();
-
+  const handleEmployeeInfo = (row: EmployeeRow) => {
+    navigate(`/manager/employee/${row.name}`);
+  };
+  const handleEmployeeNew = () => {
+    navigate(`/manager/employee/add`);
+  };
  
   const filterRef = useRef<HTMLDivElement | null>(null);
   return (
@@ -59,7 +64,8 @@ export default function Employee() {
                 </h2>
             </div>
             <div className="justify-end">
-                <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition">
+                <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition"
+                  onClick ={() => handleEmployeeNew()}>
                   Add new employee
                 </button>
                 {/* Export button */}
@@ -70,7 +76,7 @@ export default function Employee() {
                 
         </div>      
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-              <EmployeeTable rows={EmployeeRows} />
+              <EmployeeTable rows={EmployeeRows}  onView={handleEmployeeInfo}  />
             </section>
     </div>
   );
