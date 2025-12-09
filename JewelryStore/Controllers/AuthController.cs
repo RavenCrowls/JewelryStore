@@ -151,16 +151,18 @@ namespace JewelryStore.Controllers
         }
 
         [HttpGet("me")]
-        public IActionResult Me()
+        public async Task<IActionResult> Me()
         {
             if (!User.Identity?.IsAuthenticated ?? true)
             {
                 return Ok(new { authenticated = false });
             }
+            var user = await _userManager.GetUserAsync(User);
             return Ok(new
             {
                 authenticated = true,
                 name = User.Identity?.Name,
+                fullName = user?.FullName,
                 claims = User.Claims.Select(c => new { c.Type, c.Value })
             });
         }

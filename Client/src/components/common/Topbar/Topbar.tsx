@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { LogOut, Bell } from "lucide-react";
 import { AuthService } from "../../../services";
+import { useDisplayName } from "../../../hooks/useDisplayName";
 
 export default function Topbar() {
   const navigate = useNavigate();
+  const displayName = useDisplayName();
   const handleProfileClick = () => {
     navigate("/manager/profile");
   };
@@ -29,9 +31,7 @@ export default function Topbar() {
             alt="Avatar"
             className="h-8 w-8 rounded-full object-cover cursor-pointer"
           />
-          <span className="text-xs font-medium text-slate-600">
-            admin123
-          </span>
+          <span className="text-xs font-medium text-slate-600">{displayName || "Account"}</span>
         </div>
 
         {/* Logout button */}

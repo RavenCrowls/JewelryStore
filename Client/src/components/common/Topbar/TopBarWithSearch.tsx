@@ -2,9 +2,11 @@
 import { useNavigate } from "react-router-dom";
 import { Search, LogOut, Bell } from "lucide-react";
 import { AuthService } from "../../../services";
+import { useDisplayName } from "../../../hooks/useDisplayName";
+
 export default function TopBarWithSearch() {
   const navigate = useNavigate();
-
+  const displayName = useDisplayName();
   const handleLogout = async () => {
     try {
       await AuthService.logout();
@@ -33,7 +35,6 @@ export default function TopBarWithSearch() {
               strokeLinejoin="round"
               d="M21 21l-4.35-4.35M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14z"
             />
-
           </span>
         </div>
       </div>
@@ -42,14 +43,8 @@ export default function TopBarWithSearch() {
       <div className="ml-4 flex items-center gap-4">
         {/* Avatar + username */}
         <div className="flex items-center gap-2">
-          <img
-            src="/img/avt.png"
-            alt="Avatar"
-            className="h-8 w-8 rounded-full object-cover"
-          />
-          <span className="text-xs font-medium text-slate-600">
-            admin123
-          </span>
+          <img src="/img/avt.png" alt="Avatar" className="h-8 w-8 rounded-full object-cover" />
+          <span className="text-xs font-medium text-slate-600">{displayName || "Account"}</span>
         </div>
 
         {/* Logout button */}
