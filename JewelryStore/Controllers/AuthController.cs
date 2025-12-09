@@ -33,6 +33,8 @@ namespace JewelryStore.Controllers
             _spaBaseUrl = allowed.FirstOrDefault() ?? "http://localhost:5173";
         }
 
+        public record ChangePasswordDto(string CurrentPassword, string NewPassword);
+
         [HttpGet("google")]
         public async Task<IActionResult> GoogleLogin([FromQuery] string returnUrl = "/")
         {
@@ -198,6 +200,46 @@ namespace JewelryStore.Controllers
             {
                 await _signInManager.SignOutAsync();
             }
+            return Ok(new { ok = true });
+        }
+
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            if (!User.Identity?.IsAuthenticated ?? true)
+            {
+                return Unauthorized(new { error = "Not authenticated" });
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized(new { error = "User not found" });
+
+            var hasPassword = await _userManager.HasPasswordAsync(user);
+
+            if (hasPassword && string.IsNullOrWhiteSpace(dto.CurrentPassword))
+            {
+                return BadRequest(new { error = "Current password is required" });
+            }
+
+            IdentityResult result;
+            if (hasPassword)
+            {
+                result = await _userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+            }
+            else
+            {
+                result = await _userManager.AddPasswordAsync(user, dto.NewPassword);
+            }
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(new
+                {
+                    error = "Failed to change password",
+                    details = result.Errors.Select(e => new { e.Code, e.Description })
+                });
+            }
+
             return Ok(new { ok = true });
         }
 

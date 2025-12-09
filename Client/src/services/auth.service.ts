@@ -64,6 +64,43 @@ export async function logout(options?: { signal?: AbortSignal }): Promise<void> 
   }
 }
 
+export async function changePassword(
+  dto: { currentPassword: string; newPassword: string },
+  options?: { signal?: AbortSignal }
+): Promise<void> {
+  const response = await fetch(buildUrl("/api/auth/change-password"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify(dto),
+    signal: options?.signal
+  });
+
+  if (!response.ok) {
+    let message = "Failed to change password";
+    try {
+      const data = await response.json();
+      if (typeof data?.error === "string" && data.error.trim().length > 0) {
+        message = data.error;
+      }
+      if (Array.isArray(data?.details) && data.details.length > 0) {
+        const first = data.details[0];
+        if (typeof first?.Description === "string" && first.Description.trim().length > 0) {
+          message = first.Description;
+        } else if (typeof first?.description === "string" && first.description.trim().length > 0) {
+          message = first.description;
+        }
+      }
+    } catch {
+      // ignore parse errors
+    }
+    throw new Error(message);
+  }
+}
+
 export type MeResponse = {
   authenticated: boolean;
   name?: string;
@@ -87,3 +124,4 @@ export async function me(options?: { signal?: AbortSignal }): Promise<MeResponse
 }
 
 export const AuthService = { login, logout, me };
+export const PasswordService = { changePassword };

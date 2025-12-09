@@ -1,6 +1,8 @@
 // src/pages/manager/Profile/Profile.tsx
 import { Image as ImageIcon } from "lucide-react";
 import { useProfileForm } from "../../../hooks/useProfileForm";
+import { useChangePassword } from "../../../hooks/useChangePassword";
+import { createPortal } from "react-dom";
 import type { ProfileData } from "../../../hooks/useProfile";
 
 type Props = {
@@ -42,6 +44,7 @@ export default function ProfileFormContainer() {
 function ProfileForm({ data, form }: Props) {
   const { loading, profile, error } = data;
   const { values, isEditing, isSaving, saveError, onChange, onEdit, onCancel, onSave } = form;
+  const pwd = useChangePassword();
 
   return (
     <div className="mt-4 space-y-6">
@@ -117,7 +120,11 @@ function ProfileForm({ data, form }: Props) {
               </div>
 
               <div className="mt-6 flex flex-wrap gap-4 md:justify-start">
-                <button className="rounded-xl border border-[#1279C3] bg-[#F3F7FC] px-5 py-2 text-xs font-medium text-[#1279C3] hover:bg-[#e5f0ff]">
+                <button
+                  className="rounded-xl border border-[#1279C3] bg-[#F3F7FC] px-5 py-2 text-xs font-medium text-[#1279C3] hover:bg-[#e5f0ff]"
+                  type="button"
+                  onClick={pwd.open}
+                >
                   Change password
                 </button>
                 {!isEditing && (
@@ -169,6 +176,55 @@ function ProfileForm({ data, form }: Props) {
           </div>
         )}
       </section>
+
+      {pwd.show &&
+        createPortal(
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40">
+            <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
+              <h3 className="text-lg font-semibold text-slate-800 mb-4">Change password</h3>
+              {pwd.error && <div className="mb-3 text-sm text-red-600">{pwd.error}</div>}
+              <div className="space-y-4">
+                <div>
+                  <label className="mb-1 block text-xs text-slate-500">Current password</label>
+                  <input
+                    type="password"
+                    className="h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-700 outline-none focus:border-[#1279C3]"
+                    value={pwd.form.currentPassword}
+                    onChange={pwd.onChange("currentPassword")}
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs text-slate-500">New password</label>
+                  <input
+                    type="password"
+                    className="h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-700 outline-none focus:border-[#1279C3]"
+                    value={pwd.form.newPassword}
+                    onChange={pwd.onChange("newPassword")}
+                  />
+                </div>
+              </div>
+              <div className="mt-6 flex justify-end gap-3">
+                <button
+                  className="rounded-md border border-[#DDE4F0] bg-white px-4 py-2 text-xs font-medium text-[#1279C3] hover:bg-[#F3F7FC]"
+                  type="button"
+                  onClick={pwd.close}
+                  disabled={pwd.saving}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="rounded-md border border-[#1279C3] bg-[#1279C3] px-4 py-2 text-xs font-medium text-white hover:bg-[#0f6aa9]"
+                  type="button"
+                  onClick={pwd.save}
+                  disabled={pwd.saving}
+                >
+                  {pwd.saving ? "Saving..." : "Save"}
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
