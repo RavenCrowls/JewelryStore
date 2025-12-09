@@ -22,6 +22,19 @@ export type UserImageResponse = {
     imageUrl: string;
 };
 
+export type UserProfile = {
+    id: number;
+    fullName: string;
+    roleId?: number;
+    role?: string;
+    roles?: string[];
+    email: string;
+    phone: string;
+    address: string | null;
+    birthday: string | null;
+    status: boolean;
+};
+
 export async function createUser(dto: CreateUserDto, options?: { signal?: AbortSignal }): Promise<void> {
     const url = buildUrl('/api/Users');
     const response = await fetch(url, {
@@ -88,7 +101,25 @@ export async function getUserImage(userId: number, options?: { signal?: AbortSig
     return null;
 }
 
+export async function getUserById(id: number, options?: { signal?: AbortSignal }): Promise<UserProfile> {
+    const url = buildUrl(`/api/users/${id}`);
+    const res = await fetch(url, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        credentials: 'include',
+        signal: options?.signal,
+    });
+
+    if (!res.ok) {
+        throw new Error(`Failed to fetch user (${res.status})`);
+    }
+
+    const data = (await res.json()) as UserProfile;
+    return data;
+}
+
 export const UserService = {
     createUser,
     getUserImage,
+    getUserById,
 };

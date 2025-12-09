@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 
 namespace JewelryStore.Controllers
 {
@@ -18,6 +19,7 @@ namespace JewelryStore.Controllers
         }
 
         public record UserListItemDto(int Id, string FullName, string Email, string Phone, string? Address, DateTime? Birthday, bool Status);
+        public record UserDetailDto(int Id, string FullName, string Email, string Phone, string? Address, DateTime? Birthday, bool Status, IReadOnlyList<string> Roles);
         public record CreateUserDto(string FullName, string Email, string Password, string Phone, string? Address, DateTime? Birthday, bool Status = true);
         public record UpdateUserDto(string FullName, string Email, string Phone, string? Address, DateTime? Birthday, bool Status);
 
@@ -49,7 +51,8 @@ namespace JewelryStore.Controllers
             {
                 var user = await _userManager.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
                 if (user == null) return NotFound(new { error = "User not found" });
-                return Ok(new UserListItemDto(user.Id, user.FullName, user.Email ?? string.Empty, user.PhoneNumber ?? string.Empty, user.Address, user.Birthday, user.Status));
+                var roles = await _userManager.GetRolesAsync(user);
+                return Ok(new UserDetailDto(user.Id, user.FullName, user.Email ?? string.Empty, user.PhoneNumber ?? string.Empty, user.Address, user.Birthday, user.Status, roles.ToList()));
             }
             catch (Exception)
             {
@@ -82,6 +85,8 @@ namespace JewelryStore.Controllers
                         details = result.Errors.Select(e => new { e.Code, e.Description })
                     });
                 }
+
+                await _userManager.AddToRoleAsync(user, "customer");
 
                 return CreatedAtAction(nameof(GetById), new { id = user.Id }, new UserListItemDto(user.Id, user.FullName, user.Email ?? string.Empty, user.PhoneNumber ?? string.Empty, user.Address, user.Birthday, user.Status));
             }

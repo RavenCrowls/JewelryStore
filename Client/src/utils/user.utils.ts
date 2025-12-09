@@ -25,6 +25,10 @@ export function extractUserId(me: MeResponse | null | undefined): number | null 
     return null;
   }
 
+  if (typeof me.userId === "number" && Number.isFinite(me.userId)) {
+    return me.userId;
+  }
+
   const idClaim = me.claims?.find(
     (c) => /nameidentifier/i.test(c.Type) || /\/nameidentifier$/i.test(c.Type)
   );

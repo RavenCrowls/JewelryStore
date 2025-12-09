@@ -120,6 +120,12 @@ namespace JewelryStore.Controllers
                 _logger.LogInformation("External login linked. userId={UserId} provider={Provider}", user.Id, info.LoginProvider);
             }
 
+            var existingRoles = await _userManager.GetRolesAsync(user);
+            if (!existingRoles.Any())
+            {
+                await _userManager.AddToRoleAsync(user, "customer");
+            }
+
             await _signInManager.SignInAsync(user, isPersistent: false);
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
             _logger.LogInformation("User signed in via external provider. userId={UserId}", user.Id);
@@ -158,11 +164,14 @@ namespace JewelryStore.Controllers
                 return Ok(new { authenticated = false });
             }
             var user = await _userManager.GetUserAsync(User);
+            var roles = user != null ? await _userManager.GetRolesAsync(user) : Array.Empty<string>();
             return Ok(new
             {
                 authenticated = true,
                 name = User.Identity?.Name,
+                userId = user?.Id,
                 fullName = user?.FullName,
+                roles,
                 claims = User.Claims.Select(c => new { c.Type, c.Value })
             });
         }

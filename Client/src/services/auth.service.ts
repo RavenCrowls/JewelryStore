@@ -68,6 +68,7 @@ export type MeResponse = {
   authenticated: boolean;
   name?: string;
   fullName?: string;
+  userId?: number;
   claims?: Array<{ Type: string; Value: string }>;
 };
 
