@@ -33,6 +33,8 @@ namespace JewelryStore.Controllers
             _spaBaseUrl = allowed.FirstOrDefault() ?? "http://localhost:5173";
         }
 
+        public record ChangePasswordDto(string CurrentPassword, string NewPassword);
+
         [HttpGet("google")]
         public async Task<IActionResult> GoogleLogin([FromQuery] string returnUrl = "/")
         {
@@ -120,6 +122,12 @@ namespace JewelryStore.Controllers
                 _logger.LogInformation("External login linked. userId={UserId} provider={Provider}", user.Id, info.LoginProvider);
             }
 
+            var existingRoles = await _userManager.GetRolesAsync(user);
+            if (!existingRoles.Any())
+            {
+                await _userManager.AddToRoleAsync(user, "customer");
+            }
+
             await _signInManager.SignInAsync(user, isPersistent: false);
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
             _logger.LogInformation("User signed in via external provider. userId={UserId}", user.Id);
@@ -151,18 +159,88 @@ namespace JewelryStore.Controllers
         }
 
         [HttpGet("me")]
-        public IActionResult Me()
+        public async Task<IActionResult> Me()
         {
             if (!User.Identity?.IsAuthenticated ?? true)
             {
                 return Ok(new { authenticated = false });
             }
+            var user = await _userManager.GetUserAsync(User);
+            var roles = user != null ? await _userManager.GetRolesAsync(user) : Array.Empty<string>();
             return Ok(new
             {
                 authenticated = true,
                 name = User.Identity?.Name,
+                userId = user?.Id,
+                fullName = user?.FullName,
+                roles,
                 claims = User.Claims.Select(c => new { c.Type, c.Value })
             });
+        }
+
+        public record LoginDto(string Email, string Password, bool RememberMe = false);
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
+        {
+            _logger.LogInformation("Password login attempt for {Email}", dto.Email);
+            var result = await _signInManager.PasswordSignInAsync(dto.Email, dto.Password, dto.RememberMe, lockoutOnFailure: false);
+            if (!result.Succeeded)
+            {
+                _logger.LogWarning("Password login failed for {Email}. IsLockedOut={LockedOut}, IsNotAllowed={NotAllowed}", dto.Email, result.IsLockedOut, result.IsNotAllowed);
+                return Unauthorized(new { error = "Invalid email or password" });
+            }
+            return Ok(new { ok = true });
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                await _signInManager.SignOutAsync();
+            }
+            return Ok(new { ok = true });
+        }
+
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            if (!User.Identity?.IsAuthenticated ?? true)
+            {
+                return Unauthorized(new { error = "Not authenticated" });
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized(new { error = "User not found" });
+
+            var hasPassword = await _userManager.HasPasswordAsync(user);
+
+            if (hasPassword && string.IsNullOrWhiteSpace(dto.CurrentPassword))
+            {
+                return BadRequest(new { error = "Current password is required" });
+            }
+
+            IdentityResult result;
+            if (hasPassword)
+            {
+                result = await _userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+            }
+            else
+            {
+                result = await _userManager.AddPasswordAsync(user, dto.NewPassword);
+            }
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(new
+                {
+                    error = "Failed to change password",
+                    details = result.Errors.Select(e => new { e.Code, e.Description })
+                });
+            }
+
+            return Ok(new { ok = true });
         }
 
         [HttpGet("external-failed")]

@@ -1,6 +1,28 @@
 import React from "react";
 import { Mail, KeyRound } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
+import { AuthService } from "../../services";
 const LoginPage: React.FC = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [remember, setRemember] = React.useState(false);
+  const [submitting, setSubmitting] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+
+  const handleLogin = async () => {
+    if (submitting) return;
+    setError(null);
+    setSubmitting(true);
+    try {
+      await AuthService.login({ email, password, rememberMe: remember });
+      navigate("/manager", { replace: true });
+    } catch (err: any) {
+      setError(err?.message ?? "Login failed");
+    } finally {
+      setSubmitting(false);
+    }
+  };
   const startGoogleLogin = () => {
     const API_BASE_URL: string | undefined = (import.meta as any)?.env?.VITE_API_BASE_URL || undefined;
     const base = API_BASE_URL ? new URL(API_BASE_URL) : new URL(window.location.origin);
@@ -34,6 +56,8 @@ const LoginPage: React.FC = () => {
                 type="email"
                 id="email"
                 name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
                 className="w-full rounded-full border border-slate-300/80 bg-white/80 px-4 py-3 pr-11 text-sm outline-none placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
               />
@@ -50,6 +74,8 @@ const LoginPage: React.FC = () => {
                 type="password"
                 id="password"
                 name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
                 className="w-full rounded-full border border-slate-300/80 bg-white/80 px-4 py-3 pr-11 text-sm outline-none placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
               />
@@ -64,6 +90,8 @@ const LoginPage: React.FC = () => {
             <label className="inline-flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
                 className="h-3.5 w-3.5 rounded border border-slate-400 text-sky-600 focus:ring-0"
               />
               <span>Remember me</span>
@@ -77,12 +105,19 @@ const LoginPage: React.FC = () => {
             </button>
           </div>
 
+          {error && (
+            <div className="text-sm text-red-600" role="alert">
+              {error}
+            </div>
+          )}
           {/* Login button */}
           <button
             type="button"
-            className="mt-1 w-full rounded-full bg-slate-500 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-600"
+            onClick={handleLogin}
+            disabled={submitting}
+            className="mt-1 w-full rounded-full bg-slate-500 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-600 disabled:opacity-60"
           >
-            Login
+            {submitting ? "Logging in..." : "Login"}
           </button>
           <div className="text-center text-sm">
             <a href="/signup" className="text-slate-700 hover:text-sky-700 hover:underline">

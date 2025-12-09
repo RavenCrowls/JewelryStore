@@ -21,6 +21,7 @@ namespace JewelryStore.Data
         public DbSet<ImportForm> ImportForms => Set<ImportForm>();
         public DbSet<ImportDetail> ImportDetails => Set<ImportDetail>();
         public DbSet<ProductImage> ProductImages => Set<ProductImage>();
+        public DbSet<UserImage> UserImages => Set<UserImage>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
