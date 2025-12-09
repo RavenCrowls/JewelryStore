@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Search, LogOut, Bell } from "lucide-react";
 import { AuthService } from "../../../services";
 import { useDisplayName } from "../../../hooks/useDisplayName";
+import { useUserAvatar } from "../../../hooks/useUserAvatar";
 
 export default function TopBarWithSearch() {
   const navigate = useNavigate();
   const displayName = useDisplayName();
+  const avatarUrl = useUserAvatar();
   const handleLogout = async () => {
     try {
       await AuthService.logout();
@@ -43,7 +45,7 @@ export default function TopBarWithSearch() {
       <div className="ml-4 flex items-center gap-4">
         {/* Avatar + username */}
         <div className="flex items-center gap-2">
-          <img src="/img/avt.png" alt="Avatar" className="h-8 w-8 rounded-full object-cover" />
+          <img src={avatarUrl || "/img/avt.png"} alt="Avatar" className="h-8 w-8 rounded-full object-cover" />
           <span className="text-xs font-medium text-slate-600">{displayName || "Account"}</span>
         </div>
 

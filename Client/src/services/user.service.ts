@@ -1,5 +1,12 @@
 const API_BASE_URL: string | undefined = (import.meta as any)?.env?.VITE_API_BASE_URL || undefined;
 
+function buildUrl(path: string): string {
+    if (API_BASE_URL) {
+        return new URL(path, API_BASE_URL).toString();
+    }
+    return path;
+}
+
 export type CreateUserDto = {
     fullName: string;
     email: string;
@@ -10,13 +17,13 @@ export type CreateUserDto = {
     status?: boolean;
 };
 
+export type UserImageResponse = {
+    userId: number;
+    imageUrl: string;
+};
+
 export async function createUser(dto: CreateUserDto, options?: { signal?: AbortSignal }): Promise<void> {
-    let url: string;
-    if (API_BASE_URL) {
-        url = new URL('/api/Users', API_BASE_URL).toString();
-    } else {
-        url = '/api/Users';
-    }
+    const url = buildUrl('/api/Users');
     const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -61,6 +68,27 @@ export async function createUser(dto: CreateUserDto, options?: { signal?: AbortS
     }
 }
 
+export async function getUserImage(userId: number, options?: { signal?: AbortSignal }): Promise<UserImageResponse | null> {
+    const url = buildUrl(`/api/users/${userId}/images`);
+    const res = await fetch(url, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        credentials: 'include',
+        signal: options?.signal,
+    });
+
+    if (!res.ok) {
+        return null;
+    }
+
+    const data = (await res.json()) as UserImageResponse;
+    if (typeof data?.imageUrl === 'string' && data.imageUrl.trim().length > 0) {
+        return data;
+    }
+    return null;
+}
+
 export const UserService = {
     createUser,
+    getUserImage,
 };

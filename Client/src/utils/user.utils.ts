@@ -19,3 +19,19 @@ export function extractDisplayName(me: MeResponse | null | undefined): string {
 
   return fromFullNameClaim ?? me.name ?? fromNameClaim ?? "";
 }
+
+export function extractUserId(me: MeResponse | null | undefined): number | null {
+  if (!me?.authenticated) {
+    return null;
+  }
+
+  const idClaim = me.claims?.find(
+    (c) => /nameidentifier/i.test(c.Type) || /\/nameidentifier$/i.test(c.Type)
+  );
+  if (idClaim?.Value) {
+    const parsed = Number(idClaim.Value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  return null;
+}
