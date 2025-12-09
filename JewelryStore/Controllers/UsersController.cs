@@ -109,13 +109,19 @@ namespace JewelryStore.Controllers
                 user.UserName = dto.Email;
                 user.PhoneNumber = dto.Phone;
                 user.Address = dto.Address;
-                user.Birthday = dto.Birthday;
+                user.Birthday = dto.Birthday.HasValue
+                    ? DateTime.SpecifyKind(dto.Birthday.Value, DateTimeKind.Utc)
+                    : null;
                 user.Status = dto.Status;
 
                 var result = await _userManager.UpdateAsync(user);
                 if (!result.Succeeded)
                 {
-                    return BadRequest(new { error = "Error updating user" });
+                    return BadRequest(new
+                    {
+                        error = "Error updating user",
+                        details = result.Errors.Select(e => new { e.Code, e.Description })
+                    });
                 }
 
                 return NoContent();

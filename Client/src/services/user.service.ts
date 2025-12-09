@@ -35,6 +35,15 @@ export type UserProfile = {
     status: boolean;
 };
 
+export type UpdateUserDto = {
+    fullName: string;
+    email: string;
+    phone: string;
+    address?: string | null;
+    birthday?: string | null;
+    status: boolean;
+};
+
 export async function createUser(dto: CreateUserDto, options?: { signal?: AbortSignal }): Promise<void> {
     const url = buildUrl('/api/Users');
     const response = await fetch(url, {
@@ -118,8 +127,36 @@ export async function getUserById(id: number, options?: { signal?: AbortSignal }
     return data;
 }
 
+export async function updateUser(id: number, dto: UpdateUserDto, options?: { signal?: AbortSignal }): Promise<void> {
+    const url = buildUrl(`/api/users/${id}`);
+    const res = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(dto),
+        signal: options?.signal,
+    });
+
+    if (!res.ok) {
+        let message = `Failed to update user (${res.status})`;
+        try {
+            const data = await res.json();
+            if (typeof data?.error === 'string' && data.error.trim().length > 0) {
+                message = data.error;
+            }
+        } catch {
+            // ignore parse errors
+        }
+        throw new Error(message);
+    }
+}
+
 export const UserService = {
     createUser,
     getUserImage,
     getUserById,
+    updateUser,
 };

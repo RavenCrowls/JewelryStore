@@ -19,6 +19,8 @@ type Props = {
       email: string;
     };
     isEditing: boolean;
+    isSaving: boolean;
+    saveError: string | null;
     onChange: ReturnType<typeof useProfileForm>["handleChange"];
     onEdit: () => void;
     onCancel: () => void;
@@ -27,19 +29,19 @@ type Props = {
 };
 
 export default function ProfileFormContainer() {
-  const { loading, profile, error, form, isEditing, handleChange, startEdit, cancelEdit, saveEdit } = useProfileForm();
+  const { loading, profile, error, form, isEditing, isSaving, saveError, handleChange, startEdit, cancelEdit, saveEdit } = useProfileForm();
 
   return (
     <ProfileForm
       data={{ loading, profile, error }}
-      form={{ values: form, isEditing, onChange: handleChange, onEdit: startEdit, onCancel: cancelEdit, onSave: saveEdit }}
+      form={{ values: form, isEditing, isSaving, saveError, onChange: handleChange, onEdit: startEdit, onCancel: cancelEdit, onSave: saveEdit }}
     />
   );
 }
 
 function ProfileForm({ data, form }: Props) {
   const { loading, profile, error } = data;
-  const { values, isEditing, onChange, onEdit, onCancel, onSave } = form;
+  const { values, isEditing, isSaving, saveError, onChange, onEdit, onCancel, onSave } = form;
 
   return (
     <div className="mt-4 space-y-6">
@@ -48,6 +50,7 @@ function ProfileForm({ data, form }: Props) {
       <section className="rounded-2xl bg-white p-8 shadow-sm">
         {loading && <div className="text-sm text-slate-500">Loading profile...</div>}
         {!loading && error && <div className="text-sm text-red-600">Failed to load profile: {error}</div>}
+        {!loading && !error && saveError && <div className="text-sm text-red-600">Failed to save: {saveError}</div>}
         {!loading && profile && (
           <div className="flex flex-col gap-12 md:flex-row md:items-start">
             {/* Left: form info */}
@@ -95,6 +98,7 @@ function ProfileForm({ data, form }: Props) {
                 <div>
                   <label className="mb-1 block text-xs text-slate-500">Birthday</label>
                   <input
+                    type="date"
                     className="h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-700 outline-none focus:border-[#1279C3]"
                     value={values.birthday}
                     onChange={onChange("birthday")}
@@ -108,8 +112,7 @@ function ProfileForm({ data, form }: Props) {
                 <input
                   className="h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-700 outline-none focus:border-[#1279C3]"
                   value={values.email}
-                  onChange={onChange("email")}
-                  readOnly={!isEditing}
+                  readOnly
                 />
               </div>
 
@@ -132,13 +135,15 @@ function ProfileForm({ data, form }: Props) {
                       className="rounded-xl border border-[#1279C3] bg-[#1279C3] px-8 py-2 text-xs font-medium text-white hover:bg-[#0f6aa9]"
                       onClick={onSave}
                       type="button"
+                      disabled={isSaving}
                     >
-                      Save
+                      {isSaving ? "Saving..." : "Save"}
                     </button>
                     <button
                       className="rounded-xl border border-[#DDE4F0] bg-white px-8 py-2 text-xs font-medium text-[#1279C3] hover:bg-[#F3F7FC]"
                       onClick={onCancel}
                       type="button"
+                      disabled={isSaving}
                     >
                       Cancel
                     </button>
