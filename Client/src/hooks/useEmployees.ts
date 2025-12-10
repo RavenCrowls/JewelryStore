@@ -13,7 +13,12 @@ export function useEmployees(skip = 0, take = 100) {
       setLoading(true);
       try {
         const data = await UserService.fetchUserSummary(skip, take, { signal: controller.signal });
-        const mapped: EmployeeRow[] = data.map((u) => ({
+        const allowed = new Set(["manager", "employee"]);
+        const filtered = data.filter((u) => {
+          const role = (u.role ?? "").toLowerCase();
+          return allowed.has(role);
+        });
+        const mapped: EmployeeRow[] = filtered.map((u) => ({
           name: u.fullName,
           imageUrl: u.imageUrl || "/img/avt.png",
           address: u.address ?? "",

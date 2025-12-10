@@ -22,7 +22,7 @@ namespace JewelryStore.Controllers
 
         public record UserListItemDto(int Id, string FullName, string Email, string Phone, string? Address, DateTime? Birthday, bool Status);
         public record UserDetailDto(int Id, string FullName, string Email, string Phone, string? Address, DateTime? Birthday, bool Status, string? Role);
-        public record UserSummaryDto(int Id, string FullName, string Email, string Phone, string? Address, string? Role, string? ImageUrl, string Account, int Bill);
+        public record UserSummaryDto(int Id, string FullName, string Email, string Phone, string? Address, DateTime? Birthday, string? Role, string? ImageUrl, string Account, int Bill);
         public record CreateUserDto(string FullName, string Email, string Password, string Phone, string? Address, DateTime? Birthday, bool Status = true);
         public record UpdateUserDto(string FullName, string Email, string Phone, string? Address, DateTime? Birthday, bool Status);
 
@@ -95,6 +95,7 @@ namespace JewelryStore.Controllers
                         user.Email ?? string.Empty,
                         user.PhoneNumber ?? string.Empty,
                         user.Address,
+                        user.Birthday,
                         role,
                         imageUrl,
                         user.Email ?? string.Empty,

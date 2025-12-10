@@ -15,6 +15,8 @@ namespace JewelryStore.Controllers
         private readonly AppDbContext _db;
         public OrdersController(AppDbContext db) => _db = db;
 
+        public record OrderSummaryDto(int Id, string CustomerName, decimal TotalPrice, DateTime DateCreated, string Status);
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderForm>>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 50)
         {
@@ -27,6 +29,34 @@ namespace JewelryStore.Controllers
             catch (Exception)
             {
                 return StatusCode(500, new { error = "error fetching orders" });
+            }
+        }
+
+        [HttpGet("summary")]
+        public async Task<ActionResult<IEnumerable<OrderSummaryDto>>> GetSummary([FromQuery] int skip = 0, [FromQuery] int take = 50)
+        {
+            try
+            {
+                if (take <= 0 || take > 200) take = 50;
+                var items = await _db.Orders
+                    .AsNoTracking()
+                    .OrderBy(o => o.Id)
+                    .Skip(skip)
+                    .Take(take)
+                    .Select(o => new OrderSummaryDto(
+                        o.Id,
+                        _db.Users.Where(u => u.Id == o.UserId).Select(u => u.FullName ?? $"User #{o.UserId}").FirstOrDefault() ?? $"User #{o.UserId}",
+                        o.TotalPrice,
+                        o.DateCreated,
+                        o.Status
+                    ))
+                    .ToListAsync();
+
+                return Ok(items);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "error fetching order summaries" });
             }
         }
 

@@ -245,6 +245,7 @@ export type UserSummary = {
   email: string;
   phone: string;
   address: string | null;
+  birthday: string | null;
   role?: string | null;
   imageUrl?: string | null;
   account: string;

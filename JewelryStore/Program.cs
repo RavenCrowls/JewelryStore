@@ -117,8 +117,8 @@ using (var scope = app.Services.CreateScope())
 {
     await IdentitySeeder.SeedAsync(scope);
     await CatalogSeeder.SeedAsync(scope);
-    // await OrderSeeder.SeedAsync(scope); // uncomment when users exist
-    // await ImportSeeder.SeedAsync(scope); // suppliers + imports
+    await OrderSeeder.SeedAsync(scope); // uncomment when users exist
+    await ImportSeeder.SeedAsync(scope); // suppliers + imports
 }
 
 app.Run();

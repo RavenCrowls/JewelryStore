@@ -4,7 +4,6 @@ export type CustomerRow = {
   phone: string;
   email: string;
   birthday: string;
-  loyalty: number;
 };
 
 type CustomerTableProps = {
@@ -27,9 +26,6 @@ export default function CustomerTable({ rows,onView }: CustomerTableProps) {
               <th className="px-4 py-3 font-medium">Phone</th>
               <th className="px-4 py-3 font-medium">Email</th>
               <th className="px-4 py-3 font-medium">Birthday</th>
-              <th className="px-4 py-3 font-medium">
-                Loyalty <span className="text-xs">↕</span>
-              </th>
               <th className="px-4 py-3 rounded-r-xl font-medium">Actions</th>
             </tr>
           </thead>
@@ -50,7 +46,6 @@ export default function CustomerTable({ rows,onView }: CustomerTableProps) {
 
                   {/* Address */}
                   <td className="px-4 py-3 text-xs text-slate-700">
-                    <div className="font-semibold text-sm">{row.name}</div>
                     {row.address}
                   </td>
 
@@ -64,14 +59,9 @@ export default function CustomerTable({ rows,onView }: CustomerTableProps) {
                     {row.email}
                   </td>
 
-                  {/* Position*/}
+                  {/* Birthday */}
                   <td className="px-4 py-3 text-xs text-slate-700">
                     {row.birthday}
-                  </td>
-
-                  {/* Loyalty*/}
-                  <td className="px-4 py-3 text-xs text-slate-700">
-                    {row.loyalty}
                   </td>
 
                   {/* Actions */}

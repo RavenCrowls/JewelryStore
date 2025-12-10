@@ -82,7 +82,7 @@ export default function BillTable({ rows, discount = 100000 }: BillTableProps) {
 
                   {/* Price */}
                   <td className="px-4 py-3 text-xs text-slate-700">
-                    {row.price.toLocaleString("vi-VN")} {row.currency ?? "VND"}
+                    {row.price.toLocaleString("vi-VN", { maximumFractionDigits: 0 })} {row.currency ?? "VND"}
                   </td>
 
                   {/* Quantity */}
@@ -90,7 +90,7 @@ export default function BillTable({ rows, discount = 100000 }: BillTableProps) {
 
                   {/* Total price */}
                   <td className="px-4 py-3 text-xs text-slate-700">
-                    {row.totalPrice.toLocaleString("vi-VN")} {row.currency ?? "VND"}
+                    {row.totalPrice.toLocaleString("vi-VN", { maximumFractionDigits: 0 })} {row.currency ?? "VND"}
                   </td>
                 </tr>
               );

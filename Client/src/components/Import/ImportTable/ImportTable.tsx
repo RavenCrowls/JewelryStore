@@ -76,7 +76,7 @@ export default function ImportTable({ rows, onView }: ImportTableProps) {
 
                 {/* Total */}
                 <td className="px-4 py-3 text-xs text-slate-700">
-                  {row.total.toLocaleString("vi-VN")} {row.currency ?? "VND"}
+                  {row.total.toLocaleString("vi-VN", { maximumFractionDigits: 0 })} {row.currency ?? "VND"}
                 </td>
 
                 {/* State */}

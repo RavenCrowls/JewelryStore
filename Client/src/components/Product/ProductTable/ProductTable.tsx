@@ -74,7 +74,7 @@ export default function ProductTable({ rows }: ProductTableProps) {
 
                   {/* Price */}
                   <td className="px-4 py-3 text-xs text-slate-700 text-center">
-                    {row.price.toLocaleString("vi-VN")} {row.currency ?? "VND"}
+                    {row.price.toLocaleString("vi-VN", { maximumFractionDigits: 0 })} {row.currency ?? "VND"}
                   </td>
 
                   {/* Quantity */}

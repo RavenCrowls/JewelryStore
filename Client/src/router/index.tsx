@@ -16,6 +16,7 @@ import Customer from "../pages/manager/(Customer)/Customer/Customer";
 import CustomerDetail from "../pages/manager/(Customer)/CustomerDetail/CustomerDetail";
 import Bill from "../pages/manager/(Customer)/Bill/Bill";
 import Import from "../pages/manager/(Import)/Import/Import";
+import Order from "../pages/manager/(Order)/Order/Order";
 import ImportDetail from "../pages/manager/(Import)/ImportDetail/ImportDetail";
 import Liquidation from "../pages/manager/(Liquidation)/Liquidation/Liquidation";
 import LiquidationDetail from "../pages/manager/(Liquidation)/LiquidationDetail/LiquidationDetail";
@@ -86,6 +87,9 @@ const AppRouter = () => {
         <Route path="import" element={<Import />} />
         {/* /manager/detail*/}
         <Route path="import/:lot" element={<ImportDetail />} />
+
+        {/* /manager/order*/}
+        <Route path="order" element={<Order />} />
 
         {/* /manager/liquidation*/}
         <Route path="liquidation" element={<Liquidation />} />

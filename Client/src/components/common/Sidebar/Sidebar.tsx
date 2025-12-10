@@ -6,6 +6,7 @@ const navItems = [
   { label: "Product", to: "/manager/product" },
   { label: "Employee", to: "/manager/employee" },
   { label: "Customer", to: "/manager/customer" },
+  { label: "Order", to: "/manager/order" },
   { label: "Import", to: "/manager/import" },
   { label: "Liquidation", to: "/manager/liquidation" },
 ];
