@@ -44,6 +44,16 @@ export default function Product() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // CLICK 1 DÒNG PRODUCT → TRANG DETAIL
+  const handleViewProduct = (row: ProductRow) => {
+    navigate(`/manager/product/${row.id}`);
+  };
+
+  // CLICK NÚT ADD NEW PRODUCT
+  const handleAddNew = () => {
+    navigate("/manager/product/add");
+  };
+
   return (
     <div className="space-y-5 mt-3">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -56,12 +66,23 @@ export default function Product() {
           >
             ☰
           </button>
-          <PriceFilterPopup isOpen={isDateOpen} className="top-1 left-20" />
+
+          {/* Popup price-range */}
+          <PriceFilterPopup
+            isOpen={isDateOpen}
+            className="top-1 left-20"
+          />
         </div>
-        <div className="justify-end">
-          <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition">
+
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={handleAddNew}
+            className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition"
+          >
             Add new product
           </button>
+
           <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition ml-3">
             Export
           </button>
@@ -69,6 +90,10 @@ export default function Product() {
       </div>
       <section className="bg-white rounded-2xl p-6 shadow-sm">
         {error ? <div className="text-red-600 text-sm">{error}</div> : <ProductTable rows={rows} />}
+        <ProductTable
+          rows={ProductRows}
+          onRowClick={handleViewProduct} // ⬅ thêm prop này
+        />
       </section>
     </div>
   );

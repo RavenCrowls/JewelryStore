@@ -11,11 +11,12 @@ export type ProductRow = {
 
 type ProductTableProps = {
   rows: ProductRow[];
+  onRowClick?: (row: ProductRow) => void;
 };
 
 import { displayOrDash } from "../../../utils/display";
+export default function ProductTable({ rows, onRowClick}: ProductTableProps) {
 
-export default function ProductTable({ rows }: ProductTableProps) {
   return (
     <div>
       <div className="overflow-x-auto">
@@ -83,7 +84,8 @@ export default function ProductTable({ rows }: ProductTableProps) {
                   {/* Actions */}
                   <td className="px-4 py-3 text-center">
                     <div className="flex items-center justify-center gap-2">
-                      <button className="rounded-md border border-[#DDE4F0] px-4 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5">
+                      <button className="rounded-md border border-[#DDE4F0] px-4 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5"
+                      onClick={() => onRowClick?.(row)}>
                         Edit
                       </button>
                       <button className="rounded-md border border-[#FACDC3] px-4 py-1 text-xs font-medium text-[#EB2F06] hover:bg-[#1279C3]/5">
