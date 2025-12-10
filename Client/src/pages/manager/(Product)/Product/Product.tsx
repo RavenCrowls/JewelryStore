@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PriceFilterPopup from "../../../../components/common/PriceFilterPopup/PriceFilterPopup";
 import ProductTable, { type ProductRow } from "../../../../components/Product/ProductTable/ProductTable";
 import { ProductService } from "../../../../services";
 
 export default function Product() {
+  const navigate = useNavigate();
   const [isDateOpen, setIsDateOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement | null>(null);
   const [rows, setRows] = useState<ProductRow[]>([]);
@@ -89,11 +91,11 @@ export default function Product() {
         </div>
       </div>
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-        {error ? <div className="text-red-600 text-sm">{error}</div> : <ProductTable rows={rows} />}
-        <ProductTable
-          rows={ProductRows}
-          onRowClick={handleViewProduct} // ⬅ thêm prop này
-        />
+        {error ? (
+          <div className="text-red-600 text-sm">{error}</div>
+        ) : (
+          <ProductTable rows={rows} onRowClick={handleViewProduct} />
+        )}
       </section>
     </div>
   );

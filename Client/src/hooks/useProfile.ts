@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AuthService, UserService, RoleService } from "../services";
+import { AuthService, UserService } from "../services";
 import { extractUserId } from "../utils/user.utils";
 
 const DEFAULT_AVATAR = "/img/avt.png";
@@ -49,14 +49,6 @@ export function useProfile(): State {
         ]);
 
         let roleName = user.role ?? "";
-        if (!roleName && Array.isArray(user.roles) && user.roles.length > 0)
-        {
-            roleName = user.roles[0];
-        }
-        if (!roleName && typeof user.roleId === "number") {
-          const role = await RoleService.getRoleById(user.roleId, { signal: controller.signal });
-          roleName = role?.name ?? "";
-        }
 
         if (cancelled) return;
         setState({
@@ -64,7 +56,7 @@ export function useProfile(): State {
           profile: {
             ...user,
             role: roleName,
-            roles: user.roles,
+            roles: roleName ? [roleName] : undefined,
             avatarUrl: image?.imageUrl || DEFAULT_AVATAR
           },
           error: null

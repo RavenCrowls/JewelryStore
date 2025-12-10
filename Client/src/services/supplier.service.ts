@@ -1,12 +1,5 @@
 const API_BASE_URL: string | undefined = (import.meta as any)?.env?.VITE_API_BASE_URL || undefined;
 
-function buildUrl(path: string): string {
-  if (API_BASE_URL) {
-    return new URL(path, API_BASE_URL).toString();
-  }
-  return path;
-}
-
 export type SupplierDto = {
   id: number;
   name: string;

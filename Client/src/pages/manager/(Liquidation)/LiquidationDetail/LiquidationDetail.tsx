@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {  useRef } from "react";
 import LiquidationInfo from "../../../../components/Liquidation/LiquidationInfo/LiquidationInfo";
 import LiquidationProductTable, { type LiquidationProductRow } from "../../../../components/Liquidation/LiquidationInfo/LiquidationProductTable";
@@ -18,7 +18,6 @@ const rows: LiquidationProductRow[] = [
 
 
 export default function LiquidationDetail() {
-  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
  
   const filterRef = useRef<HTMLDivElement | null>(null);
