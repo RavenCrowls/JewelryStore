@@ -22,6 +22,7 @@ import RedirectIfAuthed from "./RedirectIfAuthed";
 import CustomerLayout from "../layouts/CustomerLayout";
 import Home from "../pages/customer/Home";
 import ProductDetail from "../pages/customer/ProductDetail";
+import Cart from "../pages/customer/Cart";
 
 const AppRouter = () => {
   return (
@@ -53,6 +54,9 @@ const AppRouter = () => {
 
         {/* /product-detail */}
         <Route path="/product-detail" element={<ProductDetail />} />
+
+        {/* /cart */}
+        <Route path="/cart" element={<Cart />} />
       </Route>
 
       {/* Protected manager area */}

@@ -110,7 +110,7 @@ export const ProductDetail: React.FC = () => {
                 <Image
                   styles={{
                     cover: {
-                      background: "rgba(0, 0, 0, 0.02)"
+                      background: "rgba(0, 0, 0, 0.03)"
                     }
                   }}
                   src={image}
