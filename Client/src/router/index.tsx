@@ -65,7 +65,7 @@ const AppRouter = () => {
         <Route path="dashboard" element={<Dashboard />} />
 
         {/* /manager/profile */}
-        <Route path="profile" element={<Profile />}/>
+        <Route path="profile" element={<Profile />} />
 
         {/* /manager/product */}
         <Route path="product" element={<Product />} />        
@@ -85,7 +85,7 @@ const AppRouter = () => {
 
         {/* /manager/customer*/}
         <Route path="customer" element={<Customer />} />
-        {/* /manager/detail*/}  
+        {/* /manager/detail*/}
         <Route path="customer/:name" element={<CustomerDetail />} />
         {/* /manager/detail/bill*/}  
         <Route path="customer/:name/:id" element={<Bill />} />
@@ -93,13 +93,13 @@ const AppRouter = () => {
         
         {/* /manager/import*/}
         <Route path="import" element={<Import />} />
-        {/* /manager/detail*/}  
+        {/* /manager/detail*/}
         <Route path="import/:lot" element={<ImportDetail />} />
 
         {/* /manager/liquidation*/}
         <Route path="liquidation" element={<Liquidation />} />
 
-        <Route path="liquidation/:id" element={<LiquidationDetail />} />
+        {/* <Route path="liquidation/:id" element={<LiquidationDetail />} /> */}
         {/* /manager/report/... */}
         <Route path="report">
           {/* /manager/report */}

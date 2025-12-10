@@ -1,13 +1,24 @@
 import { useNavigate } from "react-router-dom";
 import { LogOut, Bell } from "lucide-react";
+import { AuthService } from "../../../services";
+import { useDisplayName } from "../../../hooks/useDisplayName";
+import { useUserAvatar } from "../../../hooks/useUserAvatar";
 
 export default function Topbar() {
   const navigate = useNavigate();
+  const displayName = useDisplayName();
+  const avatarUrl = useUserAvatar();
   const handleProfileClick = () => {
     navigate("/manager/profile");
   };
-  const handleLogout = () => {
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await AuthService.logout();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      navigate("/login", { replace: true });
+    }
   };
 
   return (
@@ -18,13 +29,11 @@ export default function Topbar() {
         <div className="flex items-center gap-2">
           <img
             onClick={handleProfileClick}
-            src="/img/avt.png"
+            src={avatarUrl || "/img/avt.png"}
             alt="Avatar"
             className="h-8 w-8 rounded-full object-cover cursor-pointer"
           />
-          <span className="text-xs font-medium text-slate-600">
-            admin123
-          </span>
+          <span className="text-xs font-medium text-slate-600">{displayName || "Account"}</span>
         </div>
 
         {/* Logout button */}
