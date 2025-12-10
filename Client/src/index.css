@@ -2,8 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary-color: #ed8383;
+}
+
 body {
   margin: 0;
   background-color: #f5f7fa;
   overflow-y: auto;
+}
+
+.main-container {
+  width: 1280px;
+  margin: 0 auto;
 }

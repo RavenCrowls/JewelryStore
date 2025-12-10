@@ -24,6 +24,10 @@ import Liquidation from "../pages/manager/(Liquidation)/Liquidation/Liquidation"
 import LiquidationDetail from "../pages/manager/(Liquidation)/LiquidationDetail/LiquidationDetail";
 import RequireAuth from "./RequireAuth";
 import RedirectIfAuthed from "./RedirectIfAuthed";
+import CustomerLayout from "../layouts/CustomerLayout";
+import Home from "../pages/customer/Home";
+import { default as CustomerProductDetail } from "../pages/customer/ProductDetail";
+import Cart from "../pages/customer/Cart";
 
 const AppRouter = () => {
   return (
@@ -47,8 +51,19 @@ const AppRouter = () => {
           </RedirectIfAuthed>
         }
       />
+
       {/* Public customer page */}
-      <Route path="/customer" element={<Customer />} />
+      <Route path="/" element={<CustomerLayout />}>
+        {/* / */}
+        <Route index element={<Home />} />
+
+        {/* /product-detail */}
+        <Route path="/product-detail" element={<CustomerProductDetail />} />
+
+        {/* /cart */}
+        <Route path="/cart" element={<Cart />} />
+      </Route>
+
       {/* Protected manager area */}
       <Route
         path="/manager"
@@ -68,7 +83,7 @@ const AppRouter = () => {
         <Route path="profile" element={<Profile />} />
 
         {/* /manager/product */}
-        <Route path="product" element={<Product />} />        
+        <Route path="product" element={<Product />} />
         {/* /manager/product/add */}
         <Route path="product/add" element={<ProductAddPage />} />
         {/* /manager/product/:id */}
@@ -87,10 +102,9 @@ const AppRouter = () => {
         <Route path="customer" element={<Customer />} />
         {/* /manager/detail*/}
         <Route path="customer/:name" element={<CustomerDetail />} />
-        {/* /manager/detail/bill*/}  
+        {/* /manager/detail/bill*/}
         <Route path="customer/:name/:id" element={<Bill />} />
 
-        
         {/* /manager/import*/}
         <Route path="import" element={<Import />} />
         {/* /manager/detail*/}
