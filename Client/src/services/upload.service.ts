@@ -7,7 +7,7 @@ function buildUrl(path: string): string {
   return path;
 }
 
-export async function uploadImage(file: File, options?: { signal?: AbortSignal }): Promise<string> {
+async function uploadImage(file: File, options?: { signal?: AbortSignal }): Promise<string> {
   const formData = new FormData();
   formData.append("file", file);
 

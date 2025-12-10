@@ -10,7 +10,7 @@ export type ProductPreview = {
     quantity: number;
 };
 
-export async function fetchProductPreview(
+async function fetchProductPreview(
     skip = 0,
     take = 50,
     options?: { signal?: AbortSignal },

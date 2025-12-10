@@ -13,7 +13,7 @@ function buildUrl(path: string): string {
   return path;
 }
 
-export async function login(dto: LoginDto, options?: { signal?: AbortSignal }): Promise<void> {
+async function login(dto: LoginDto, options?: { signal?: AbortSignal }): Promise<void> {
   const response = await fetch(buildUrl("/api/auth/login"), {
     method: "POST",
     headers: {
@@ -47,7 +47,7 @@ export async function login(dto: LoginDto, options?: { signal?: AbortSignal }): 
   }
 }
 
-export async function logout(options?: { signal?: AbortSignal }): Promise<void> {
+async function logout(options?: { signal?: AbortSignal }): Promise<void> {
   const response = await fetch(buildUrl("/api/auth/logout"), {
     method: "POST",
     headers: {
@@ -64,7 +64,7 @@ export async function logout(options?: { signal?: AbortSignal }): Promise<void> 
   }
 }
 
-export async function changePassword(
+async function changePassword(
   dto: { currentPassword: string; newPassword: string },
   options?: { signal?: AbortSignal }
 ): Promise<void> {
@@ -109,7 +109,7 @@ export type MeResponse = {
   claims?: Array<{ Type: string; Value: string }>;
 };
 
-export async function me(options?: { signal?: AbortSignal }): Promise<MeResponse> {
+async function me(options?: { signal?: AbortSignal }): Promise<MeResponse> {
   const response = await fetch(buildUrl("/api/auth/me"), {
     method: "GET",
     headers: { Accept: "application/json" },

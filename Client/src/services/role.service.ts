@@ -9,7 +9,7 @@ function buildUrl(path: string): string {
 
 export type RoleDto = { id: number; name: string };
 
-export async function getRoleById(id: number, options?: { signal?: AbortSignal }): Promise<RoleDto | null> {
+async function getRoleById(id: number, options?: { signal?: AbortSignal }): Promise<RoleDto | null> {
   const url = buildUrl(`/api/roles/${id}`);
   const res = await fetch(url, {
     method: "GET",

@@ -42,7 +42,7 @@ export type UpdateUserDto = {
   status: boolean;
 };
 
-export async function createUser(
+async function createUser(
   dto: CreateUserDto,
   options?: { signal?: AbortSignal }
 ): Promise<void> {
@@ -92,7 +92,7 @@ export async function createUser(
   }
 }
 
-export async function getUserImage(
+async function getUserImage(
   userId: number,
   options?: { signal?: AbortSignal }
 ): Promise<UserImageResponse | null> {
@@ -115,7 +115,7 @@ export async function getUserImage(
   return null;
 }
 
-export async function updateUserImage(
+async function updateUserImage(
   userId: number,
   imageUrl: string,
   options?: { signal?: AbortSignal }
@@ -146,7 +146,7 @@ export async function updateUserImage(
   }
 }
 
-export async function getUserById(
+async function getUserById(
   id: number,
   options?: { signal?: AbortSignal }
 ): Promise<UserProfile> {
@@ -166,7 +166,7 @@ export async function getUserById(
   return data;
 }
 
-export async function updateUser(
+async function updateUser(
   id: number,
   dto: UpdateUserDto,
   options?: { signal?: AbortSignal }
@@ -197,28 +197,7 @@ export async function updateUser(
   }
 }
 
-export const UserService = {
-  createUser,
-  getUserImage,
-  getUserById,
-  updateUser,
-  updateUserImage,
-  fetchUserSummary
-};
-
-export type UserSummary = {
-  id: number;
-  fullName: string;
-  email: string;
-  phone: string;
-  address: string | null;
-  role?: string | null;
-  imageUrl?: string | null;
-  account: string;
-  bill: number;
-};
-
-export async function fetchUserSummary(
+async function fetchUserSummary(
   skip = 0,
   take = 100,
   options?: { signal?: AbortSignal }
@@ -250,3 +229,24 @@ export async function fetchUserSummary(
 
   return (await res.json()) as UserSummary[];
 }
+
+export const UserService = {
+  createUser,
+  getUserImage,
+  getUserById,
+  updateUser,
+  updateUserImage,
+  fetchUserSummary
+};
+
+export type UserSummary = {
+  id: number;
+  fullName: string;
+  email: string;
+  phone: string;
+  address: string | null;
+  role?: string | null;
+  imageUrl?: string | null;
+  account: string;
+  bill: number;
+};
