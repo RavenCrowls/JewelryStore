@@ -6,6 +6,8 @@ export { OrderService } from './order.service';
 export type { OrderDto } from './order.service';
 export { SupplierService } from './supplier.service';
 export type { SupplierDto } from './supplier.service';
+export { ImportService } from './import.service';
+export type { ImportDto } from './import.service';
 export { AuthService, PasswordService } from './auth.service';
 export type { LoginDto, MeResponse } from './auth.service';
 export { RoleService } from './role.service';

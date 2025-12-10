@@ -22,7 +22,7 @@ export default function OrderTable({ rows, onView }: OrderTableProps) {
       <table className="min-w-full text-sm text-center">
         <thead>
           <tr className="bg-[#1279C3] text-white">
-            <th className="px-4 py-3 rounded-l-xl font-medium text-left">Order</th>
+            <th className="px-4 py-3 rounded-l-xl font-medium text-left">ID</th>
             <th className="px-4 py-3 font-medium">Customer</th>
             <th className="px-4 py-3 font-medium">Date</th>
             <th className="px-4 py-3 font-medium">Total</th>
