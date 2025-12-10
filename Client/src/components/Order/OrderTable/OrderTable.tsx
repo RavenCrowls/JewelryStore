@@ -24,12 +24,8 @@ export default function OrderTable({ rows, onView }: OrderTableProps) {
           <tr className="bg-[#1279C3] text-white">
             <th className="px-4 py-3 rounded-l-xl font-medium text-left">Order</th>
             <th className="px-4 py-3 font-medium">Customer</th>
-            <th className="px-4 py-3 font-medium">
-              Date <span className="text-xs">↕</span>
-            </th>
-            <th className="px-4 py-3 font-medium">
-              Total <span className="text-xs">↕</span>
-            </th>
+            <th className="px-4 py-3 font-medium">Date</th>
+            <th className="px-4 py-3 font-medium">Total</th>
             <th className="px-4 py-3 font-medium">State</th>
             <th className="px-4 py-3 rounded-r-xl font-medium">Actions</th>
           </tr>
@@ -37,7 +33,10 @@ export default function OrderTable({ rows, onView }: OrderTableProps) {
 
         <tbody>
           {rows.map((row, index) => {
-            const bg = index % 2 === 0 ? "bg-slate-50/60 border-b border-slate-100" : "border-b border-slate-100";
+            const bg =
+              index % 2 === 0
+                ? "bg-slate-50/60 border-b border-slate-100"
+                : "border-b border-slate-100";
 
             let stateIcon = "";
             let stateBorder = "";
@@ -55,14 +54,19 @@ export default function OrderTable({ rows, onView }: OrderTableProps) {
 
             return (
               <tr key={row.order} className={`${bg} text-center`}>
-                <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-left">{row.order}</td>
+                <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-left">
+                  {row.order}
+                </td>
                 <td className="px-4 py-3 text-xs text-slate-700">{displayOrDash(row.customer)}</td>
                 <td className="px-4 py-3 text-xs text-slate-700">{displayOrDash(row.date)}</td>
                 <td className="px-4 py-3 text-xs text-slate-700">
-                  {row.total.toLocaleString("vi-VN", { maximumFractionDigits: 0 })} {row.currency ?? "VND"}
+                  {row.total.toLocaleString("vi-VN", { maximumFractionDigits: 0 })}{" "}
+                  {row.currency ?? "VND"}
                 </td>
                 <td className="px-4 py-3 text-xs">
-                  <div className={`inline-flex h-8 w-10 items-center justify-center rounded-md border ${stateBorder}`}>
+                  <div
+                    className={`inline-flex h-8 w-10 items-center justify-center rounded-md border ${stateBorder}`}
+                  >
                     <img src={stateIcon} alt={row.state} className="h-5 w-5 object-contain" />
                   </div>
                 </td>
@@ -82,4 +86,3 @@ export default function OrderTable({ rows, onView }: OrderTableProps) {
     </div>
   );
 }
-

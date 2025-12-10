@@ -22,12 +22,8 @@ export default function ReportTable({ rows }: ReportTableProps) {
             <tr className="bg-[#1279C3] text-white">
               <th className="px-4 py-3 rounded-l-xl font-medium text-left">ID</th>
               <th className="px-4 py-3 font-medium">Content</th>
-              <th className="px-4 py-3 font-medium">
-                Date <span className="text-xs">↕</span>
-              </th>
-              <th className="px-4 py-3 rounded-r-xl font-medium">
-                Total <span className="text-xs">↕</span>
-              </th>
+              <th className="px-4 py-3 font-medium">Date</th>
+              <th className="px-4 py-3 rounded-r-xl font-medium">Total</th>
             </tr>
           </thead>
 
@@ -45,18 +41,11 @@ export default function ReportTable({ rows }: ReportTableProps) {
                   <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-left">
                     {row.id}
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-600">
-                    {row.content}
-                  </td>
-                  <td className="px-4 py-3 text-xs text-slate-500">
-                    {row.date}
-                  </td>
-                  <td
-                    className={`px-4 py-3 text-xs text-center text-black`}
-                  >
+                  <td className="px-4 py-3 text-xs text-slate-600">{row.content}</td>
+                  <td className="px-4 py-3 text-xs text-slate-500">{row.date}</td>
+                  <td className={`px-4 py-3 text-xs text-center text-black`}>
                     {sign}
-                    {row.total.toLocaleString("vi-VN")}{" "}
-                    {row.currency ?? "VND"}
+                    {row.total.toLocaleString("vi-VN")} {row.currency ?? "VND"}
                   </td>
                 </tr>
               );

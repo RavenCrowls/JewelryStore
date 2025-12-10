@@ -9,7 +9,7 @@ export type LiquidationRow = {
 
 type LiquidationTableProps = {
   rows: LiquidationRow[];
-  onView?: (row: LiquidationRow) => void; 
+  onView?: (row: LiquidationRow) => void;
 };
 
 export default function LiquidationTable({ rows, onView }: LiquidationTableProps) {
@@ -18,12 +18,8 @@ export default function LiquidationTable({ rows, onView }: LiquidationTableProps
       <table className="min-w-full text-sm text-center">
         <thead>
           <tr className="bg-[#1279C3] text-white">
-            <th className="px-4 py-3 rounded-l-xl font-medium text-left">
-              ID
-            </th>
-            <th className="px-4 py-3 font-medium">
-              Date <span className="text-xs">↕</span>
-            </th>
+            <th className="px-4 py-3 rounded-l-xl font-medium text-left">ID</th>
+            <th className="px-4 py-3 font-medium">Date</th>
             <th className="px-4 py-3 font-medium">Creator</th>
             <th className="px-4 py-3 font-medium">State</th>
             <th className="px-4 py-3 rounded-r-xl font-medium">Actions</th>
@@ -52,38 +48,27 @@ export default function LiquidationTable({ rows, onView }: LiquidationTableProps
             }
 
             return (
-              <tr
-                key={row.id}
-                className={`${bg} text-center`}
-              >
+              <tr key={row.id} className={`${bg} text-center`}>
                 <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-left">
                   {row.id}
                 </td>
 
-                <td className="px-4 py-3 text-xs text-slate-700">
-                  {row.date}
-                </td>
+                <td className="px-4 py-3 text-xs text-slate-700">{row.date}</td>
 
-                <td className="px-4 py-3 text-xs text-slate-700">
-                  {row.creator}
-                </td>
+                <td className="px-4 py-3 text-xs text-slate-700">{row.creator}</td>
 
                 <td className="px-4 py-3 text-xs">
                   <div
                     className={`inline-flex h-8 w-10 items-center justify-center rounded-md border ${stateBorder}`}
                   >
-                    <img
-                      src={stateIcon}
-                      alt={row.state}
-                      className="h-5 w-5 object-contain"
-                    />
+                    <img src={stateIcon} alt={row.state} className="h-5 w-5 object-contain" />
                   </div>
                 </td>
 
                 <td className="px-4 py-3">
                   <button
                     className="rounded-md border border-[#DDE4F0] px-5 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5"
-                    onClick={() => onView?.(row)} 
+                    onClick={() => onView?.(row)}
                   >
                     View
                   </button>

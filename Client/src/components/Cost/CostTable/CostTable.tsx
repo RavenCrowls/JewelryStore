@@ -14,19 +14,14 @@ type CostTableProps = {
 export default function CostTable({ rows }: CostTableProps) {
   return (
     <div>
-
       <div className="overflow-x-auto">
         <table className="min-w-full text-center text-sm">
           <thead>
             <tr className="bg-[#1279C3] text-white">
               <th className="px-4 py-3 rounded-l-xl font-medium text-left">LOT</th>
               <th className="px-4 py-3 font-medium">Content</th>
-              <th className="px-4 py-3 font-medium">
-                Date <span className="text-xs">↕</span>
-              </th>
-              <th className="px-4 py-3 font-medium">
-                Total <span className="text-xs">↕</span>
-              </th>
+              <th className="px-4 py-3 font-medium">Date</th>
+              <th className="px-4 py-3 font-medium">Total</th>
               <th className="px-4 py-3 rounded-r-xl font-medium">Actions</th>
             </tr>
           </thead>
@@ -43,24 +38,19 @@ export default function CostTable({ rows }: CostTableProps) {
               return (
                 <tr key={row.id} className={`${bg} text-center`}>
                   <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-left">
-                    {row.id} 
+                    {row.id}
                     {/* LOT ma khong biet co giong id khong nen de tam */}
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-600">
-                    {row.content}
-                  </td>
-                  <td className="px-4 py-3 text-xs text-slate-500">
-                    {row.date}
-                  </td>
-                  <td
-                    className={`px-4 py-3 text-xs text-center text-black`}
-                  >
+                  <td className="px-4 py-3 text-xs text-slate-600">{row.content}</td>
+                  <td className="px-4 py-3 text-xs text-slate-500">{row.date}</td>
+                  <td className={`px-4 py-3 text-xs text-center text-black`}>
                     {sign}
-                    {row.total.toLocaleString("vi-VN")}{" "}
-                    {row.currency ?? "VND"}
+                    {row.total.toLocaleString("vi-VN")} {row.currency ?? "VND"}
                   </td>
                   <td className="px-4 py-3 text-xs text-slate-600">
-                    <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition">View</button>
+                    <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition">
+                      View
+                    </button>
                   </td>
                 </tr>
               );

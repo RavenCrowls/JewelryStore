@@ -4,6 +4,8 @@ export { UserService } from './user.service';
 export type { UserProfile, UserSummary, UserImageResponse, CreateUserDto, UpdateUserDto } from './user.service';
 export { OrderService } from './order.service';
 export type { OrderDto } from './order.service';
+export { SupplierService } from './supplier.service';
+export type { SupplierDto } from './supplier.service';
 export { AuthService, PasswordService } from './auth.service';
 export type { LoginDto, MeResponse } from './auth.service';
 export { RoleService } from './role.service';

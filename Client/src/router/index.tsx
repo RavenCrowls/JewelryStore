@@ -18,8 +18,7 @@ import Bill from "../pages/manager/(Customer)/Bill/Bill";
 import Import from "../pages/manager/(Import)/Import/Import";
 import Order from "../pages/manager/(Order)/Order/Order";
 import ImportDetail from "../pages/manager/(Import)/ImportDetail/ImportDetail";
-import Liquidation from "../pages/manager/(Liquidation)/Liquidation/Liquidation";
-import LiquidationDetail from "../pages/manager/(Liquidation)/LiquidationDetail/LiquidationDetail";
+import Supplier from "../pages/manager/(Supplier)/Supplier/Supplier";
 import RequireAuth from "./RequireAuth";
 import RedirectIfAuthed from "./RedirectIfAuthed";
 
@@ -82,7 +81,9 @@ const AppRouter = () => {
         {/* /manager/detail/bill*/}  
         <Route path="customer/:name/:id" element={<Bill />} />
 
-        
+        {/* /manager/supplier*/}
+        <Route path="supplier" element={<Supplier />} />
+
         {/* /manager/import*/}
         <Route path="import" element={<Import />} />
         {/* /manager/detail*/}
@@ -91,10 +92,6 @@ const AppRouter = () => {
         {/* /manager/order*/}
         <Route path="order" element={<Order />} />
 
-        {/* /manager/liquidation*/}
-        <Route path="liquidation" element={<Liquidation />} />
-
-        {/* <Route path="liquidation/:id" element={<LiquidationDetail />} /> */}
         {/* /manager/report/... */}
         <Route path="report">
           {/* /manager/report */}
