@@ -4,11 +4,13 @@ import PriceFilterPopup from "../../../../components/common/PriceFilterPopup/Pri
 import ProductTable, { type ProductRow } from "../../../../components/Product/ProductTable/ProductTable";
 import { ProductService } from "../../../../services";
 
+let productCache: ProductRow[] = [];
+
 export default function Product() {
   const navigate = useNavigate();
   const [isDateOpen, setIsDateOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement | null>(null);
-  const [rows, setRows] = useState<ProductRow[]>([]);
+  const [rows, setRows] = useState<ProductRow[]>(productCache);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -26,6 +28,7 @@ export default function Product() {
           quantity: p.quantity,
           currency: "VND",
         }));
+        productCache = mapped;
         setRows(mapped);
       } catch (err) {
         if ((err as any)?.name === "AbortError") return;

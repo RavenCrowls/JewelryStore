@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { UserService } from "../services/user.service";
 import type { EmployeeRow } from "../components/Employee/EmployeeTable/EmployeeTable";
 
+let employeeCache: EmployeeRow[] = [];
+
 export function useEmployees(skip = 0, take = 100) {
-  const [rows, setRows] = useState<EmployeeRow[]>([]);
+  const [rows, setRows] = useState<EmployeeRow[]>(employeeCache);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -27,6 +29,7 @@ export function useEmployees(skip = 0, take = 100) {
           position: u.role ?? "",
           bill: u.bill ?? 0,
         }));
+        employeeCache = mapped;
         setRows(mapped);
       } catch (err) {
         if ((err as any)?.name === "AbortError") return;

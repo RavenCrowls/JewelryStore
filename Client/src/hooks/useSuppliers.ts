@@ -3,8 +3,10 @@ import { SupplierService } from "../services";
 import type { SupplierRow } from "../components/Supplier/SupplierTable/SupplierTable";
 import { displayOrDash } from "../utils/display";
 
+let supplierCache: SupplierRow[] = [];
+
 export function useSuppliers(skip = 0, take = 100) {
-  const [rows, setRows] = useState<SupplierRow[]>([]);
+  const [rows, setRows] = useState<SupplierRow[]>(supplierCache);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -20,6 +22,7 @@ export function useSuppliers(skip = 0, take = 100) {
           address: displayOrDash(s.address),
           phone: displayOrDash(s.phone),
         }));
+        supplierCache = mapped;
         setRows(mapped);
       } catch (err) {
         if ((err as any)?.name === "AbortError") return;

@@ -17,9 +17,11 @@ const toState = (status?: string) => {
   return "failed" as const;
 };
 
+let orderCache: OrderRow[] = [];
+
 export default function Order() {
   const navigate = useNavigate();
-  const [rows, setRows] = useState<OrderRow[]>([]);
+  const [rows, setRows] = useState<OrderRow[]>(orderCache);
   const [error, setError] = useState<string | null>(null);
 
   const filterRef = useRef<HTMLDivElement | null>(null);
@@ -37,6 +39,7 @@ export default function Order() {
           currency: "VND",
           state: toState(o.status),
         }));
+        orderCache = mapped;
         setRows(mapped);
       } catch (err) {
         if ((err as any)?.name === "AbortError") return;

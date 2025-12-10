@@ -3,8 +3,10 @@ import { UserService } from "../services/user.service";
 import type { CustomerRow } from "../components/Customer/CustomerTable/CustomerTable";
 import { displayOrDash } from "../utils/display";
 
+let customerCache: CustomerRow[] = [];
+
 export function useCustomers(skip = 0, take = 200) {
-  const [rows, setRows] = useState<CustomerRow[]>([]);
+  const [rows, setRows] = useState<CustomerRow[]>(customerCache);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -22,6 +24,7 @@ export function useCustomers(skip = 0, take = 200) {
           email: displayOrDash(u.email),
           birthday: displayOrDash(u.birthday),
         }));
+        customerCache = mapped;
         setRows(mapped);
       } catch (err) {
         if ((err as any)?.name === "AbortError") return;

@@ -3,8 +3,10 @@ import { ImportService, SupplierService } from "../services";
 import type { ImportRow } from "../components/Import/ImportTable/ImportTable";
 import { displayOrDash } from "../utils/display";
 
+let importCache: ImportRow[] = [];
+
 export function useImports(skip = 0, take = 100) {
-  const [rows, setRows] = useState<ImportRow[]>([]);
+  const [rows, setRows] = useState<ImportRow[]>(importCache);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -29,6 +31,7 @@ export function useImports(skip = 0, take = 100) {
           currency: "VND",
           creator: displayOrDash(imp.staffId ? `Staff #${imp.staffId}` : ""),
         }));
+        importCache = mapped;
         setRows(mapped);
       } catch (err) {
         if ((err as any)?.name === "AbortError") return;
