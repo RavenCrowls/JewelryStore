@@ -13,6 +13,8 @@ type ProductTableProps = {
   rows: ProductRow[];
 };
 
+import { displayOrDash } from "../../../utils/display";
+
 export default function ProductTable({ rows }: ProductTableProps) {
   return (
     <div>
@@ -46,9 +48,11 @@ export default function ProductTable({ rows }: ProductTableProps) {
 
                   {/* Name + subtitle */}
                   <td className="px-4 py-3 text-xs text-slate-700 text-left">
-                    <div className="font-semibold text-sm">{row.name}</div>
+                    <div className="font-semibold text-sm">{displayOrDash(row.name)}</div>
                     {row.subtitle && (
-                      <div className="text-[11px] text-slate-500">{row.subtitle}</div>
+                      <div className="text-[11px] text-slate-500">
+                        {displayOrDash(row.subtitle)}
+                      </div>
                     )}
                   </td>
 
@@ -64,7 +68,9 @@ export default function ProductTable({ rows }: ProductTableProps) {
                   </td>
 
                   {/* Category */}
-                  <td className="px-4 py-3 text-xs text-slate-600 text-center">{row.category}</td>
+                  <td className="px-4 py-3 text-xs text-slate-600 text-center">
+                    {displayOrDash(row.category)}
+                  </td>
 
                   {/* Price */}
                   <td className="px-4 py-3 text-xs text-slate-700 text-center">

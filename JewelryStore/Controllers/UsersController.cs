@@ -12,14 +12,17 @@ namespace JewelryStore.Controllers
     public class UsersController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly AppDbContext _db;
 
-        public UsersController(UserManager<ApplicationUser> userManager)
+        public UsersController(UserManager<ApplicationUser> userManager, AppDbContext db)
         {
             _userManager = userManager;
+            _db = db;
         }
 
         public record UserListItemDto(int Id, string FullName, string Email, string Phone, string? Address, DateTime? Birthday, bool Status);
-        public record UserDetailDto(int Id, string FullName, string Email, string Phone, string? Address, DateTime? Birthday, bool Status, IReadOnlyList<string> Roles);
+        public record UserDetailDto(int Id, string FullName, string Email, string Phone, string? Address, DateTime? Birthday, bool Status, string? Role);
+        public record UserSummaryDto(int Id, string FullName, string Email, string Phone, string? Address, string? Role, string? ImageUrl, string Account, int Bill);
         public record CreateUserDto(string FullName, string Email, string Password, string Phone, string? Address, DateTime? Birthday, bool Status = true);
         public record UpdateUserDto(string FullName, string Email, string Phone, string? Address, DateTime? Birthday, bool Status);
 
@@ -52,11 +55,58 @@ namespace JewelryStore.Controllers
                 var user = await _userManager.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
                 if (user == null) return NotFound(new { error = "User not found" });
                 var roles = await _userManager.GetRolesAsync(user);
-                return Ok(new UserDetailDto(user.Id, user.FullName, user.Email ?? string.Empty, user.PhoneNumber ?? string.Empty, user.Address, user.Birthday, user.Status, roles.ToList()));
+                return Ok(new UserDetailDto(user.Id, user.FullName, user.Email ?? string.Empty, user.PhoneNumber ?? string.Empty, user.Address, user.Birthday, user.Status, roles.FirstOrDefault()));
             }
             catch (Exception)
             {
                 return StatusCode(500, new { error = "Error fetching user" });
+            }
+        }
+
+        [HttpGet("summary")]
+        public async Task<ActionResult<IEnumerable<UserSummaryDto>>> GetSummary([FromQuery] int skip = 0, [FromQuery] int take = 100)
+        {
+            try
+            {
+                if (take <= 0 || take > 200) take = 100;
+                var users = await _userManager.Users
+                    .AsNoTracking()
+                    .OrderBy(u => u.Id)
+                    .Skip(skip)
+                    .Take(take)
+                    .ToListAsync();
+
+                var userIds = users.Select(u => u.Id).ToList();
+                var images = await _db.UserImages
+                    .AsNoTracking()
+                    .Where(i => userIds.Contains(i.UserId))
+                    .ToDictionaryAsync(i => i.UserId, i => i.ImageUrl);
+
+                var summaries = new List<UserSummaryDto>(users.Count);
+                foreach (var user in users)
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+                    var role = roles.FirstOrDefault();
+                    images.TryGetValue(user.Id, out var imageUrl);
+
+                    summaries.Add(new UserSummaryDto(
+                        user.Id,
+                        user.FullName,
+                        user.Email ?? string.Empty,
+                        user.PhoneNumber ?? string.Empty,
+                        user.Address,
+                        role,
+                        imageUrl,
+                        user.Email ?? string.Empty,
+                        0
+                    ));
+                }
+
+                return Ok(summaries);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "Error fetching user summaries" });
             }
         }
 

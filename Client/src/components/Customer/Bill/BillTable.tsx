@@ -12,13 +12,12 @@ export type BillRow = {
 
 type BillTableProps = {
   rows: BillRow[];
-  discount?: number;      
+  discount?: number;
 };
 
-export default function BillTable({
-  rows,
-  discount = 100000,
-}: BillTableProps) {
+import { displayOrDash } from "../../../utils/display";
+
+export default function BillTable({ rows, discount = 100000 }: BillTableProps) {
   const grandTotal = rows.reduce((sum, r) => sum + r.totalPrice, 0);
   const totalPayment = grandTotal - discount;
 
@@ -33,17 +32,13 @@ export default function BillTable({
         <table className="min-w-full text-xs text-center">
           <thead>
             <tr className="bg-[#1279C3] text-white">
-              <th className="px-4 py-3 rounded-l-xl font-medium text-left">
-                NO.
-              </th>
+              <th className="px-4 py-3 rounded-l-xl font-medium text-left">NO.</th>
               <th className="px-4 py-3 font-medium">Product</th>
               <th className="px-4 py-3 font-medium">Image</th>
               <th className="px-4 py-3 font-medium">Category</th>
               <th className="px-4 py-3 font-medium">Price</th>
               <th className="px-4 py-3 font-medium">Quantity</th>
-              <th className="px-4 py-3 rounded-r-xl font-medium">
-                Total price
-              </th>
+              <th className="px-4 py-3 rounded-r-xl font-medium">Total price</th>
             </tr>
           </thead>
 
@@ -57,16 +52,14 @@ export default function BillTable({
               return (
                 <tr key={row.no} className={`${bg} text-center`}>
                   {/* NO */}
-                  <td className="px-4 py-3 text-xs text-slate-700 text-left">
-                    {row.no}
-                  </td>
+                  <td className="px-4 py-3 text-xs text-slate-700 text-left">{row.no}</td>
 
                   {/* Product */}
                   <td className="px-4 py-3 text-xs text-slate-700">
-                    <div className="font-semibold text-sm">{row.name}</div>
+                    <div className="font-semibold text-sm">{displayOrDash(row.name)}</div>
                     {row.subtitle && (
                       <div className="text-[11px] text-slate-500">
-                        {row.subtitle}
+                        {displayOrDash(row.subtitle)}
                       </div>
                     )}
                   </td>
@@ -84,7 +77,7 @@ export default function BillTable({
 
                   {/* Category */}
                   <td className="px-4 py-3 text-xs text-slate-600">
-                    {row.category}
+                    {displayOrDash(row.category)}
                   </td>
 
                   {/* Price */}
@@ -93,14 +86,11 @@ export default function BillTable({
                   </td>
 
                   {/* Quantity */}
-                  <td className="px-4 py-3 text-xs text-slate-700">
-                    {row.quantity}
-                  </td>
+                  <td className="px-4 py-3 text-xs text-slate-700">{row.quantity}</td>
 
                   {/* Total price */}
                   <td className="px-4 py-3 text-xs text-slate-700">
-                    {row.totalPrice.toLocaleString("vi-VN")}{" "}
-                    {row.currency ?? "VND"}
+                    {row.totalPrice.toLocaleString("vi-VN")} {row.currency ?? "VND"}
                   </td>
                 </tr>
               );
@@ -112,9 +102,7 @@ export default function BillTable({
       {/* Discount & Total payment */}
       <div className="mt-4 flex flex-col items-end gap-2 text-xs">
         <div className="flex items-center gap-2">
-          <span className="min-w-[100px] text-right text-slate-700">
-            Discount:
-          </span>
+          <span className="min-w-[100px] text-right text-slate-700">Discount:</span>
           <div className="min-w-[180px]">
             <div className="w-full rounded-md border border-slate-300 px-3 py-1 text-right text-slate-700 bg-white">
               {discount.toLocaleString("vi-VN")} VND
