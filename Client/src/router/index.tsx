@@ -4,6 +4,9 @@ import ManagerLayout from "../layouts/ManagerLayout";
 import Profile from "../pages/manager/(Profile)/Profile";
 import Dashboard from "../pages/manager/(Dashboard)/Dashboard";
 import Product from "../pages/manager/(Product)/Product";
+import ProductAddPage from "../pages/manager/(Product)/ProductAddPage/ProductAddPage";
+import ProductDetail from "../pages/manager/(Product)/ProductDetail/ProductDetail";
+import ProductEdit from "../pages/manager/(Product)/ProductEdit/ProductEdit";
 import Report from "../pages/manager/(Dashboard)/Report";
 import Revenue from "../pages/manager/(Dashboard)/Revenue/Revenue";
 import Cost from "../pages/manager/(Dashboard)/Cost/Cost";
@@ -65,7 +68,13 @@ const AppRouter = () => {
         <Route path="profile" element={<Profile />}/>
 
         {/* /manager/product */}
-        <Route path="product" element={<Product />} />
+        <Route path="product" element={<Product />} />        
+        {/* /manager/product/add */}
+        <Route path="product/add" element={<ProductAddPage />} />
+        {/* /manager/product/:id */}
+        <Route path="product/:id" element={<ProductDetail />} />
+        {/* /manager/product/:id/edit */}
+        <Route path="product/:id/edit" element={<ProductEdit />} />
 
         {/* /manager/employee */}
         <Route path="employee" element={<Employee />} />
