@@ -1,8 +1,52 @@
-import { LogoutOutlined, ShoppingCartOutlined } from "@ant-design/icons";
-import { Avatar, Badge, Input, Layout } from "antd";
+import {
+  LockOutlined,
+  LogoutOutlined,
+  ShoppingCartOutlined,
+  UserOutlined
+} from "@ant-design/icons";
+import { Avatar, Badge, Dropdown, Input, Layout, type MenuProps } from "antd";
 import { Link, Outlet } from "react-router-dom";
+import "./CustomerLayout.css";
 
 const { Search } = Input;
+
+const items: MenuProps["items"] = [
+  {
+    key: "1",
+    label: (
+      <Link className="block py-1 after:p-1 text-[16px]" rel="noopener noreferrer" to="profile">
+        Thông tin cá nhân
+      </Link>
+    ),
+    icon: <UserOutlined />
+  },
+  {
+    key: "2",
+    label: (
+      <Link
+        className="block py-1 after:p-1 text-[16px]"
+        rel="noopener noreferrer"
+        to="https://www.aliyun.com"
+      >
+        Đổi mật khẩu
+      </Link>
+    ),
+    icon: <LockOutlined />
+  },
+  {
+    key: "3",
+    label: (
+      <a
+        className="block py-1 after:p-1 text-[16px]"
+        rel="noopener noreferrer"
+        to="https://www.luohanacademy.com"
+      >
+        Đăng xuất
+      </a>
+    ),
+    icon: <LogoutOutlined />
+  }
+];
 
 export default function CustomerLayout() {
   return (
@@ -38,9 +82,21 @@ export default function CustomerLayout() {
                 <ShoppingCartOutlined className="text-2xl text-white" />
               </Badge>
             </button>
-            <div className="flex items-center gap-2">
-              <Avatar className="border border-solid border-white" src="/src/assets/avatar.jpg" />
-              <span>em2@123</span>
+            <div className="h-full hover:cursor-pointer">
+              <Dropdown
+                className="relative top-[10px]"
+                menu={{ items }}
+                placement="bottomCenter"
+                arrow
+              >
+                <div className="h-full flex items-center px-4">
+                  <Avatar
+                    className="border border-solid border-white mr-2"
+                    src="/src/assets/avatar.jpg"
+                  />
+                  <span className="text-xl">em2@123</span>
+                </div>
+              </Dropdown>
             </div>
             <LogoutOutlined className="text-xl" />
           </div>

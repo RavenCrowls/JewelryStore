@@ -20,10 +20,10 @@ import GemstoneIcon from "../../../assets/benefit-icons/GemstoneIcon.svg";
 import ProtectedIcon from "../../../assets/benefit-icons/ProtectedIcon.svg";
 import formatNumberWithDots from "../../../helpers/formatNumberWithDots";
 import parseNumberFromDots from "../../../helpers/parseNumberFromDots";
+import Heading from "../components/Heading";
 import BenefitItem from "./components/BenefitItem";
 import CarouselItem from "./components/CarouselItem";
 import ProductCard from "./components/ProductCard";
-import Heading from "../components/Heading";
 
 const { Search } = Input;
 
