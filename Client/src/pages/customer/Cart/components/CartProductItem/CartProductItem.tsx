@@ -1,5 +1,5 @@
 import { Button, Image, InputNumber } from "antd";
-import formatNumberWithDots from "../../../../../helpers/formatNumberWithDots";
+import formatNumberWithDots from "../../../../../utils/formatNumberWithDots";
 import { CloseOutlined } from "@ant-design/icons";
 import { useRef } from "react";
 

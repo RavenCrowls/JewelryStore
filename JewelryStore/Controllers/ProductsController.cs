@@ -128,6 +128,14 @@ namespace JewelryStore.Controllers
             {
                 _db.Products.Add(model);
                 await _db.SaveChangesAsync();
+
+                var existingInventory = await _db.Inventory.FirstOrDefaultAsync(i => i.ProductId == model.Id);
+                if (existingInventory == null)
+                {
+                    _db.Inventory.Add(new Inventory { ProductId = model.Id, Quantity = 0 });
+                    await _db.SaveChangesAsync();
+                }
+
                 return CreatedAtAction(nameof(GetById), new { id = model.Id }, model);
             }
             catch (Exception)

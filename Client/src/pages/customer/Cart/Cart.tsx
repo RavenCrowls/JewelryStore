@@ -6,7 +6,7 @@ import {
 } from "@ant-design/icons";
 import { Button } from "antd";
 import { useRef } from "react";
-import formatNumberWithDots from "../../../helpers/formatNumberWithDots";
+import formatNumberWithDots from "../../../utils/formatNumberWithDots";
 import Heading from "../components/Heading";
 import CartProductItem from "./components/CartProductItem";
 import { Link } from "react-router-dom";

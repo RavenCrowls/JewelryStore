@@ -29,8 +29,7 @@ export default function ProductTable({ rows, onRowClick}: ProductTableProps) {
               <th className="px-4 py-3 font-medium text-center">Image</th>
               <th className="px-4 py-3 font-medium text-center">Category</th>
               <th className="px-4 py-3 font-medium text-center">Price</th>
-              <th className="px-4 py-3 font-medium text-center">Quantity</th>
-              <th className="px-4 py-3 rounded-r-xl font-medium text-center">Actions</th>
+              <th className="px-4 py-3 rounded-r-xl font-medium text-center">Quantity</th>
             </tr>
           </thead>
 
@@ -79,33 +78,12 @@ export default function ProductTable({ rows, onRowClick}: ProductTableProps) {
                   </td>
 
                   {/* Price */}
-                  <td className="px-4 py-3 text-xs text-slate-700 text-center">
+                  <td className="px-4 py-3 text-xs text-slate-700 text-right">
                     {row.price.toLocaleString("vi-VN", { maximumFractionDigits: 0 })} {row.currency ?? "VND"}
                   </td>
 
                   {/* Quantity */}
-                  <td className="px-4 py-3 text-xs text-slate-700 text-center">{row.quantity}</td>
-
-                  {/* Actions */}
-                  <td className="px-4 py-3 text-center">
-                    <div className="flex items-center justify-center gap-2">
-                      <button
-                        className="rounded-md border border-[#DDE4F0] px-4 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          onRowClick?.(row);
-                        }}
-                      >
-                        View
-                      </button>
-                      <button
-                        className="rounded-md border border-[#FACDC3] px-4 py-1 text-xs font-medium text-[#EB2F06] hover:bg-[#1279C3]/5"
-                        onClick={(event) => event.stopPropagation()}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
+                  <td className="px-4 py-3 text-xs text-slate-700 text-center rounded-r-xl">{row.quantity}</td>
                 </tr>
               );
             })}
