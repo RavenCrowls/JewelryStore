@@ -18,6 +18,7 @@ export default function ProductEdit() {
       try {
         const data = await ProductService.fetchProductPreview(0, 200, { signal: controller.signal });
         const mapped: ProductRow[] = data.map((p) => ({
+          productId: p.id,
           id: `PR${p.id.toString().padStart(4, "0")}`,
           name: p.name,
           subtitle: p.material,
@@ -27,7 +28,8 @@ export default function ProductEdit() {
           quantity: p.quantity,
           currency: "VND",
         }));
-        const found = mapped.find((p) => p.id === id);
+        const targetId = Number(id);
+        const found = mapped.find((p) => p.productId === targetId);
         setProduct(found ?? mapped[0] ?? null);
       } catch (err) {
         if ((err as any)?.name === "AbortError") return;

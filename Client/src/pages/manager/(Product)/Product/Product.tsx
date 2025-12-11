@@ -19,6 +19,7 @@ export default function Product() {
       try {
         const data = await ProductService.fetchProductPreview(0, 100, { signal: controller.signal });
         const mapped: ProductRow[] = data.map((p) => ({
+          productId: p.id,
           id: `PR${p.id.toString().padStart(4, "0")}`,
           name: p.name,
           subtitle: p.material,
@@ -51,7 +52,7 @@ export default function Product() {
 
   // CLICK 1 DÒNG PRODUCT → TRANG DETAIL
   const handleViewProduct = (row: ProductRow) => {
-    navigate(`/manager/product/${row.id}`);
+    navigate(`/manager/product/${row.productId}`);
   };
 
   // CLICK NÚT ADD NEW PRODUCT

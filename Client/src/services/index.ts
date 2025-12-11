@@ -1,5 +1,5 @@
 export { ProductService } from './product.service';
-export type { ProductPreview } from './product.service';
+export type { ProductPreview, ProductDetail, ProductGemstone, ProductImage } from './product.service';
 export { UserService } from './user.service';
 export type { UserProfile, UserSummary, UserImageResponse, CreateUserDto, UpdateUserDto } from './user.service';
 export { OrderService } from './order.service';

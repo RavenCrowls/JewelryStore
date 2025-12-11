@@ -20,10 +20,10 @@ export default function SupplierTable({ rows, onEdit, onDelete }: SupplierTableP
         <thead>
             <tr className="bg-[#1279C3] text-white">
               <th className="px-4 py-3 rounded-l-xl font-medium text-center align-middle">ID</th>
-            <th className="px-4 py-3 font-medium text-center align-middle">Name</th>
-            <th className="px-4 py-3 font-medium text-center align-middle">Address</th>
-            <th className="px-4 py-3 font-medium text-center align-middle">Phone</th>
-            <th className="px-4 py-3 rounded-r-xl font-medium text-center align-middle">Actions</th>
+              <th className="px-4 py-3 font-medium text-center align-middle">Name</th>
+              <th className="px-4 py-3 font-medium text-center align-middle">Address</th>
+              <th className="px-4 py-3 font-medium text-center align-middle">Phone</th>
+              <th className="px-4 py-3 rounded-r-xl font-medium text-center align-middle">Actions</th>
           </tr>
         </thead>
         <tbody>

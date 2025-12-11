@@ -1,4 +1,5 @@
 export type ProductRow = {
+  productId: number;
   id: string;
   name: string;
   subtitle?: string;
@@ -41,7 +42,11 @@ export default function ProductTable({ rows, onRowClick}: ProductTableProps) {
                   : "border-b border-slate-100";
 
               return (
-                <tr key={row.id} className={`${bg}`}>
+                <tr
+                  key={row.id}
+                  className={`${bg} cursor-pointer`}
+                  onClick={() => onRowClick?.(row)}
+                >
                   {/* ID */}
                   <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-center">
                     {row.id}
@@ -84,11 +89,19 @@ export default function ProductTable({ rows, onRowClick}: ProductTableProps) {
                   {/* Actions */}
                   <td className="px-4 py-3 text-center">
                     <div className="flex items-center justify-center gap-2">
-                      <button className="rounded-md border border-[#DDE4F0] px-4 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5"
-                      onClick={() => onRowClick?.(row)}>
-                        Edit
+                      <button
+                        className="rounded-md border border-[#DDE4F0] px-4 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          onRowClick?.(row);
+                        }}
+                      >
+                        View
                       </button>
-                      <button className="rounded-md border border-[#FACDC3] px-4 py-1 text-xs font-medium text-[#EB2F06] hover:bg-[#1279C3]/5">
+                      <button
+                        className="rounded-md border border-[#FACDC3] px-4 py-1 text-xs font-medium text-[#EB2F06] hover:bg-[#1279C3]/5"
+                        onClick={(event) => event.stopPropagation()}
+                      >
                         Delete
                       </button>
                     </div>

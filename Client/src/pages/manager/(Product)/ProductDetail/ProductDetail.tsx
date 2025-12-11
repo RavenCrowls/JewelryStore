@@ -1,44 +1,16 @@
+import { useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ProductInfo from "../../../../components/Product/ProductInfo/ProductInfo";
-import { useRef} from "react";
-import { useEffect, useState } from "react";
-import { ProductService } from "../../../../services";
-import type { ProductRow } from "../../../../components/Product/ProductTable/ProductTable";
+import useProductDetail from "../../../../hooks/useProductDetail";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const filterRef = useRef<HTMLDivElement | null>(null);
-  const [product, setProduct] = useState<ProductRow | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    (async () => {
-      try {
-        const data = await ProductService.fetchProductPreview(0, 200, { signal: controller.signal });
-        const mapped: ProductRow[] = data.map((p) => ({
-          id: `PR${p.id.toString().padStart(4, "0")}`,
-          name: p.name,
-          subtitle: p.material,
-          imageUrl: p.imageUrl || "/img/placeholder.png",
-          category: p.categoryName,
-          price: p.price,
-          quantity: p.quantity,
-          currency: "VND",
-        }));
-        const found = mapped.find((p) => p.id === id);
-        setProduct(found ?? mapped[0] ?? null);
-      } catch (err) {
-        if ((err as any)?.name === "AbortError") return;
-        setError(err instanceof Error ? err.message : "Failed to load product");
-      }
-    })();
-    return () => controller.abort();
-  }, [id]);
+  const { product, detail, imageUrls, error } = useProductDetail(id);
 
   const handleEdit = () => {
-    if (product) navigate(`/manager/product/${product.id}/edit`);
+    if (product) navigate(`/manager/product/${product.productId}/edit`);
   };
 
   const handleDelete = () => {
@@ -59,11 +31,61 @@ export default function ProductDetail() {
       </div>
       {error && <div className="text-sm text-red-600">{error}</div>}
       {product && (
-        <ProductInfo
-          product={product}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+        <section className="bg-white rounded-2xl p-6 shadow-sm space-y-6">
+          <ProductInfo
+            product={product}
+            detail={detail ?? undefined}
+            images={imageUrls}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+          {detail?.gemstones && detail.gemstones.length > 0 && (
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-[#1279C3]">Gemstone details</h3>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="min-w-full text-sm text-left">
+                  <thead>
+                    <tr className="bg-[#1279C3] text-white text-[12px] uppercase tracking-wide">
+                      <th className="px-4 py-3 rounded-l-xl font-medium text-center align-middle">Name</th>
+                      <th className="px-4 py-3 font-medium text-center align-middle">Weight (g)</th>
+                      <th className="px-4 py-3 font-medium text-center align-middle">Size</th>
+                      <th className="px-4 py-3 font-medium text-center align-middle">Color</th>
+                      <th className="px-4 py-3 rounded-r-xl font-medium text-center align-middle">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {detail.gemstones.map((gem) => (
+                      <tr key={gem.id} className="even:bg-slate-50">
+                      <td className="px-4 py-3 text-center align-middle text-slate-700">{gem.name}</td>
+                      <td className="px-4 py-3 text-center align-middle text-slate-700">{gem.weight.toFixed(2)}</td>
+                      <td className="px-4 py-3 text-center align-middle text-slate-700">{gem.size ?? "-"}</td>
+                      <td className="px-4 py-3 text-center align-middle text-slate-700">{gem.color ?? "-"}</td>
+                      <td className="px-4 py-3 text-center align-middle">
+                        <div className="flex justify-center gap-2">
+                          <button
+                            type="button"
+                            className="rounded-md border border-[#DDE4F0] px-3 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="rounded-md border border-[#FACDC3] px-3 py-1 text-xs font-medium text-[#EB2F06] hover:bg-[#FACDC3]/40"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </section>
       )}
     </div>
   );
