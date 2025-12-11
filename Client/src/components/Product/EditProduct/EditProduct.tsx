@@ -1,59 +1,70 @@
 // src/components/Product/EditProduct/EditProduct.tsx
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import useCategories from "../../../hooks/useCategories";
+import type { ProductDetail, CategoryDto } from "../../../services";
 import type { ProductRow } from "../ProductTable/ProductTable";
 import { Image } from "lucide-react";
 
 export type ProductForm = {
   name: string;
   category: string;
+  categoryId?: string;
   material: string;
-  weight: string;
-  gemstone: string;
-  size: string;
-  caratWeight: string;
-  color: string;
-  shape: string;
-  purity: string;
-  gemstoneSize: string;
-  certificate: string;
   description: string;
   price: string;
-  discount: string;
+  quantity: string;
   mainImage: string;
   images: string[];
 };
 
 type EditProductProps = {
   product: ProductRow;
+  detail?: ProductDetail | null;
+  images?: string[];
+  saving?: boolean;
   onCancel?: () => void;
   onSave?: (data: ProductForm) => void;
 };
 
 export default function EditProduct({
   product,
+  detail,
+  images,
+  saving = false,
   onCancel,
   onSave,
 }: EditProductProps) {
-  const [form, setForm] = useState<ProductForm>({
-    name: product.name,
-    category: product.category,
-    material: "18K Yellow Gold",
-    weight: "3.75g",
-    gemstone: "Moissanite",
-    size: "50cm",
-    caratWeight: "0.05",
-    color: "Colorless",
-    shape: "Circle",
-    purity: "IF",
-    gemstoneSize: "3mm x 3mm",
-    certificate: "link",
-    description:
-      "Mặt dây chuyền nữ Heart-shape Reverse MDA3103 nổi bật với vẻ đẹp lãng mạn độc đáo.",
-    price: "31,200,000 VND",
-    discount: "15%",
-    mainImage: product.imageUrl,
-    images: [product.imageUrl, product.imageUrl],
+  const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
+  const { categories, loading: categoryLoading, error: categoryError } = useCategories();
+  const [form, setForm] = useState<ProductForm>(() => {
+    const gallery = images && images.length > 0 ? images : [product.imageUrl];
+    return {
+      name: product.name,
+      category: detail?.categoryName ?? product.category,
+      categoryId: detail?.categoryId ? String(detail.categoryId) : undefined,
+      material: detail?.material ?? "18K Yellow Gold",
+      description: detail?.description ?? "No description available.",
+      price: detail?.price ? detail.price.toString() : product.price.toString(),
+      quantity: detail?.quantity?.toString() ?? product.quantity.toString(),
+      mainImage: gallery[0],
+      images: gallery,
+    };
   });
+
+  useEffect(() => {
+    const gallery = images && images.length > 0 ? images : [product.imageUrl];
+    setForm({
+      name: product.name,
+      category: detail?.categoryName ?? product.category,
+      categoryId: detail?.categoryId ? String(detail.categoryId) : undefined,
+      material: detail?.material ?? "18K Yellow Gold",
+      description: detail?.description ?? "No description available.",
+      price: detail?.price ? detail.price.toString() : product.price.toString(),
+      quantity: detail?.quantity?.toString() ?? product.quantity.toString(),
+      mainImage: gallery[0],
+      images: gallery,
+    });
+  }, [product, detail, images]);
 
   const inputClass =
     "w-full rounded border border-slate-300 px-3 py-1.5 text-xs outline-none " +
@@ -65,15 +76,21 @@ export default function EditProduct({
 
   const handleChange =
     (field: keyof ProductForm) =>
-    (
-      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setForm((prev) => ({ ...prev, [field]: e.target.value }));
     };
 
   const handleSaveClick = () => {
     onSave?.(form);
   };
+
+  // Auto-resize description field to fit content
+  useEffect(() => {
+    const el = descriptionRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, [form.description]);
 
   return (
     <section className="bg-white rounded-3xl p-6 shadow-sm">
@@ -138,103 +155,53 @@ export default function EditProduct({
               </InfoRow>
 
               <InfoRow label="Material">
-                <div className="flex gap-3">
-                  <input
-                    className={inputClass}
-                    value={form.material}
-                    onChange={handleChange("material")}
-                  />
-                  <span className="self-center text-[11px] text-slate-600">
-                    Weight
-                  </span>
-                  <input
-                    className={smallInputClass}
-                    value={form.weight}
-                    onChange={handleChange("weight")}
-                  />
-                </div>
-              </InfoRow>
-
-              <InfoRow label="Gemstone">
-                <div className="flex gap-3">
-                  <input
-                    className={inputClass}
-                    value={form.gemstone}
-                    onChange={handleChange("gemstone")}
-                  />
-                  <span className="self-center text-[11px] text-slate-600">
-                    Shape
-                  </span>
-                  <input
-                    className={smallInputClass}
-                    value={form.shape}
-                    onChange={handleChange("shape")}
-                  />
-                </div>
+                <input
+                  className={inputClass}
+                  value={form.material}
+                  onChange={handleChange("material")}
+                />
               </InfoRow>
 
               <InfoRow label="Category">
-                <input
-                  className={inputClass}
-                  value={form.category}
-                  onChange={handleChange("category")}
-                />
-              </InfoRow>
-
-              <InfoRow label="Size">
-                <input
-                  className={inputClass}
-                  value={form.size}
-                  onChange={handleChange("size")}
-                />
-              </InfoRow>
-
-              <InfoRow label="Carat weight">
-                <input
-                  className={inputClass}
-                  value={form.caratWeight}
-                  onChange={handleChange("caratWeight")}
-                />
-              </InfoRow>
-
-              <InfoRow label="Color">
-                <input
-                  className={inputClass}
-                  value={form.color}
-                  onChange={handleChange("color")}
-                />
-              </InfoRow>
-
-              <InfoRow label="Purity">
-                <input
-                  className={inputClass}
-                  value={form.purity}
-                  onChange={handleChange("purity")}
-                />
-              </InfoRow>
-
-              <InfoRow label="Gemstone size">
-                <input
-                  className={inputClass}
-                  value={form.gemstoneSize}
-                  onChange={handleChange("gemstoneSize")}
-                />
-              </InfoRow>
-
-              <InfoRow label="Certificate">
-                <input
-                  className={inputClass}
-                  value={form.certificate}
-                  onChange={handleChange("certificate")}
-                />
+                <div className="space-y-1">
+                  <div className="relative">
+                    <select
+                      className={`${inputClass} pr-8 appearance-none`}
+                      value={form.categoryId ?? ""}
+                      onChange={(e) => {
+                        const selected = categories.find((c) => String(c.id) === e.target.value);
+                        setForm((prev) => ({
+                          ...prev,
+                          categoryId: e.target.value || undefined,
+                          category: selected?.name ?? prev.category,
+                        }));
+                      }}
+                    >
+                      {categories.length === 0 && (
+                        <option value="">{form.category || "Select category"}</option>
+                      )}
+                      {categories.map((cat: CategoryDto) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-500">
+                      ▼
+                    </span>
+                  </div>
+                  {categoryLoading && <div className="text-[11px] text-slate-500">Loading categories...</div>}
+                  {categoryError && <div className="text-[11px] text-red-500">{categoryError}</div>}
+                </div>
               </InfoRow>
 
               <InfoRow label="Description">
                 <textarea
-                  rows={3}
+                  ref={descriptionRef}
+                  rows={2}
                   className={
                     "w-full rounded border border-slate-300 px-3 py-1.5 text-xs outline-none " +
-                    "focus:border-[#1279C3] focus:ring-1 focus:ring-[#1279C3]/30 resize-none"
+                    "focus:border-[#1279C3] focus:ring-1 focus:ring-[#1279C3]/30 resize-none overflow-hidden"
                   }
                   value={form.description}
                   onChange={handleChange("description")}
@@ -249,11 +216,11 @@ export default function EditProduct({
                 />
               </InfoRow>
 
-              <InfoRow label="Discount">
+              <InfoRow label="Quantity">
                 <input
-                  className={inputClass}
-                  value={form.discount}
-                  onChange={handleChange("discount")}
+                  className={smallInputClass}
+                  value={form.quantity}
+                  onChange={handleChange("quantity")}
                 />
               </InfoRow>
             </div>
@@ -263,6 +230,7 @@ export default function EditProduct({
               <button
                 type="button"
                 onClick={onCancel}
+                disabled={saving}
                 className="min-w-[120px] rounded-md border border-red-200 bg-red-50 px-6 py-2 text-sm font-medium text-red-500 hover:bg-red-100"
               >
                 Cancel
@@ -270,9 +238,10 @@ export default function EditProduct({
               <button
                 type="button"
                 onClick={handleSaveClick}
+                disabled={saving}
                 className="min-w-[120px] rounded-md border border-emerald-200 bg-emerald-50 px-6 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-100"
               >
-                Save
+                {saving ? "Saving..." : "Save"}
               </button>
             </div>
           </div>

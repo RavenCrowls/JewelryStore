@@ -37,6 +37,15 @@ export type ProductImage = {
     imageUrl: string;
 };
 
+export type UpdateProductDto = {
+    name: string;
+    material: string;
+    description?: string;
+    price: number;
+    quantity: number;
+    categoryId?: number;
+};
+
 async function fetchProductPreview(
     skip = 0,
     take = 50,
@@ -127,8 +136,49 @@ async function fetchProductImages(
     return (await response.json()) as ProductImage[];
 }
 
+async function updateProduct(
+    productId: number,
+    payload: UpdateProductDto,
+    options?: { signal?: AbortSignal },
+): Promise<void> {
+    let url: string;
+    if (API_BASE_URL) {
+        url = new URL(`/api/Products/${productId}`, API_BASE_URL).toString();
+    } else {
+        url = `/api/Products/${productId}`;
+    }
+
+    const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        signal: options?.signal,
+    });
+
+    if (!response.ok) {
+        const body = await response.text().catch(() => '');
+        throw new Error(
+            `Failed to update product: ${response.status} ${response.statusText}${body ? ` - ${body}` : ''}`,
+        );
+    }
+
+    // Some endpoints may return 204 No Content
+    const text = await response.text();
+    if (!text) return;
+    try {
+        JSON.parse(text);
+    } catch {
+        // If body is not valid JSON, just return
+        return;
+    }
+}
+
 export const ProductService = {
     fetchProductPreview,
     fetchProductById,
     fetchProductImages,
+    updateProduct,
 };

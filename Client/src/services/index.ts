@@ -1,5 +1,9 @@
 export { ProductService } from './product.service';
-export type { ProductPreview, ProductDetail, ProductGemstone, ProductImage } from './product.service';
+export type { ProductPreview, ProductDetail, ProductGemstone, ProductImage, UpdateProductDto } from './product.service';
+export { CategoryService } from './category.service';
+export type { CategoryDto } from './category.service';
+export { InventoryService } from './inventory.service';
+export type { InventoryItem } from './inventory.service';
 export { UserService } from './user.service';
 export type { UserProfile, UserSummary, UserImageResponse, CreateUserDto, UpdateUserDto } from './user.service';
 export { OrderService } from './order.service';
