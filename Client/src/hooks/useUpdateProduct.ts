@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { ProductService, InventoryService, type UpdateProductDto } from "../services";
+import { ProductService, InventoryService, ProductImageService, type UpdateProductDto } from "../services";
 
 export type SaveProductInput = {
   name: string;
@@ -8,6 +8,7 @@ export type SaveProductInput = {
   price: string;
   quantity: string;
   categoryId?: string;
+  images?: string[];
 };
 
 const parseNumber = (value: string): number => {
@@ -23,7 +24,11 @@ const parseNumber = (value: string): number => {
   return Number(normalized);
 };
 
-export default function useUpdateProduct(productId?: string | number, fallbackCategoryId?: number) {
+export default function useUpdateProduct(
+  productId?: string | number,
+  fallbackCategoryId?: number,
+  initialImages: string[] = [],
+) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -63,6 +68,26 @@ export default function useUpdateProduct(productId?: string | number, fallbackCa
           quantity: quantityNumber,
         });
 
+        if (data.images) {
+          const newImages = data.images;
+          const unchanged =
+            initialImages.length === newImages.length &&
+            initialImages.every((img, idx) => img === newImages[idx]);
+
+          if (!unchanged) {
+            // Delete all existing images (by order) then recreate with new order
+            for (let i = 0; i < initialImages.length; i += 1) {
+              await ProductImageService.deleteProductImage(targetId, i + 1);
+            }
+            for (let i = 0; i < newImages.length; i += 1) {
+              await ProductImageService.createProductImage(targetId, {
+                imageOrder: i + 1,
+                imageUrl: newImages[i],
+              });
+            }
+          }
+        }
+
         return true;
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to save product");
@@ -71,7 +96,7 @@ export default function useUpdateProduct(productId?: string | number, fallbackCa
         setSaving(false);
       }
     },
-    [productId, fallbackCategoryId],
+    [productId, fallbackCategoryId, initialImages],
   );
 
   return { save, saving, error };

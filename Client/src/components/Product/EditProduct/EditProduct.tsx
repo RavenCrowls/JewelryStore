@@ -1,6 +1,7 @@
 // src/components/Product/EditProduct/EditProduct.tsx
 import React, { useEffect, useRef, useState } from "react";
 import useCategories from "../../../hooks/useCategories";
+import useProductImagesManager from "../../../hooks/useProductImagesManager";
 import type { ProductDetail, CategoryDto } from "../../../services";
 import type { ProductRow } from "../ProductTable/ProductTable";
 import { Image } from "lucide-react";
@@ -66,6 +67,9 @@ export default function EditProduct({
     });
   }, [product, detail, images]);
 
+  const { uploading, uploadError, deleteError, handleAddImage, handleRemoveImage, setMainImage } =
+    useProductImagesManager(setForm);
+
   const inputClass =
     "w-full rounded border border-slate-300 px-3 py-1.5 text-xs outline-none " +
     "focus:border-[#1279C3] focus:ring-1 focus:ring-[#1279C3]/30";
@@ -108,27 +112,31 @@ export default function EditProduct({
                 src={img}
                 alt={`${form.name} ${idx}`}
                 className="h-full w-full object-cover"
+                onClick={() => setMainImage(img)}
               />
               <button
                 type="button"
                 className="absolute top-1 right-1 h-5 w-5 rounded-full bg-white text-xs text-red-500 border border-red-300 flex items-center justify-center"
-                onClick={() =>
-                  setForm((prev) => ({
-                    ...prev,
-                    images: prev.images.filter((_, i) => i !== idx),
-                  }))
-                }
+                onClick={() => handleRemoveImage(idx)}
               >
                 ✕
               </button>
             </div>
           ))}
 
-          <label className="h-32 w-32 rounded-md border border-dashed border-slate-300 flex flex-col items-center justify-center text-xs text-slate-500 cursor-pointer bg-white">
+          <label className={`h-32 w-32 rounded-md border border-dashed border-slate-300 flex flex-col items-center justify-center text-xs text-slate-500 cursor-pointer bg-white ${uploading ? "opacity-60 cursor-not-allowed" : ""}`}>
             <Image className="w-6 h-6"/>
-            <span>Add</span>
-            <input type="file" className="hidden" />
+            <span>{uploading ? "Uploading..." : "Add"}</span>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              disabled={uploading || saving}
+              onChange={(e) => handleAddImage(e.target.files?.[0])}
+            />
           </label>
+          {uploadError && <div className="text-[11px] text-red-500 max-w-[9rem]">{uploadError}</div>}
+          {deleteError && <div className="text-[11px] text-red-500 max-w-[9rem]">{deleteError}</div>}
         </div>
 
         {/* CENTER: main image */}
@@ -137,7 +145,7 @@ export default function EditProduct({
             <img
               src={form.mainImage}
               alt={form.name}
-              className="max-h-full max-w-full object-contain"
+              className="h-full w-full object-cover"
             />
           </div>
         </div>

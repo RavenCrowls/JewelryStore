@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ProductService } from "../services";
+import { ProductService, ProductImageService } from "../services";
 import type { ProductDetail } from "../services";
 import type { ProductRow } from "../components/Product/ProductTable/ProductTable";
 
@@ -32,7 +32,7 @@ export default function useProductDetail(id?: string) {
       try {
         const [detailPayload, imagePayload] = await Promise.all([
           ProductService.fetchProductById(targetId, { signal: controller.signal }),
-          ProductService.fetchProductImages(targetId, { signal: controller.signal }),
+          ProductImageService.fetchProductImages(targetId, { signal: controller.signal }),
         ]);
 
         console.log(

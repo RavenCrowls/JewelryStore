@@ -31,12 +31,6 @@ export type ProductDetail = {
     gemstones: ProductGemstone[];
 };
 
-export type ProductImage = {
-    productId: number;
-    imageOrder: number;
-    imageUrl: string;
-};
-
 export type UpdateProductDto = {
     name: string;
     material: string;
@@ -107,35 +101,6 @@ async function fetchProductById(productId: number, options?: { signal?: AbortSig
     return (await response.json()) as ProductDetail;
 }
 
-async function fetchProductImages(
-    productId: number,
-    options?: { signal?: AbortSignal },
-): Promise<ProductImage[]> {
-    let url: string;
-    if (API_BASE_URL) {
-        url = new URL(`/api/products/${productId}/images`, API_BASE_URL).toString();
-    } else {
-        url = `/api/products/${productId}/images`;
-    }
-
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            Accept: 'application/json',
-        },
-        signal: options?.signal,
-    });
-
-    if (!response.ok) {
-        const body = await response.text().catch(() => '');
-        throw new Error(
-            `Failed to fetch product images: ${response.status} ${response.statusText}${body ? ` - ${body}` : ''}`,
-        );
-    }
-
-    return (await response.json()) as ProductImage[];
-}
-
 async function updateProduct(
     productId: number,
     payload: UpdateProductDto,
@@ -179,6 +144,5 @@ async function updateProduct(
 export const ProductService = {
     fetchProductPreview,
     fetchProductById,
-    fetchProductImages,
     updateProduct,
 };

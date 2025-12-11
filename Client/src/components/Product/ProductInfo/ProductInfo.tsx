@@ -50,7 +50,7 @@ export default function ProductInfo({ product, detail, images, onEdit, onDelete 
             <img
               src={selectedImage}
               alt={product.name}
-              className="max-h-full max-w-full object-contain"
+              className="h-full w-full object-cover"
             />
           </div>
         </div>

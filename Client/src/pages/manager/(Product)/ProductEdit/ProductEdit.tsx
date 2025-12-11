@@ -7,7 +7,7 @@ export default function ProductEdit() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { product, detail, imageUrls: images, error, loading } = useProductDetail(id);
-  const { save, saving, error: saveError } = useUpdateProduct(id, detail?.categoryId);
+  const { save, saving, error: saveError } = useUpdateProduct(id, detail?.categoryId, images);
 
 
   const handleCancel = () => {
