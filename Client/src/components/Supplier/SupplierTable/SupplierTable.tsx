@@ -18,12 +18,12 @@ export default function SupplierTable({ rows, onEdit, onDelete }: SupplierTableP
     <div className="overflow-x-auto">
       <table className="min-w-full text-sm text-center">
         <thead>
-          <tr className="bg-[#1279C3] text-white">
-            <th className="px-4 py-3 rounded-l-xl font-medium text-left">ID</th>
-            <th className="px-4 py-3 font-medium">Name</th>
-            <th className="px-4 py-3 font-medium">Address</th>
-            <th className="px-4 py-3 font-medium">Phone</th>
-            <th className="px-4 py-3 rounded-r-xl font-medium">Actions</th>
+            <tr className="bg-[#1279C3] text-white">
+              <th className="px-4 py-3 rounded-l-xl font-medium text-center align-middle">ID</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Name</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Address</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Phone</th>
+            <th className="px-4 py-3 rounded-r-xl font-medium text-center align-middle">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -31,7 +31,7 @@ export default function SupplierTable({ rows, onEdit, onDelete }: SupplierTableP
             const bg = index % 2 === 0 ? "bg-slate-50/60 border-b border-slate-100" : "border-b border-slate-100";
             return (
               <tr key={row.id} className={`${bg} text-center`}>
-                <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-left">{row.id}</td>
+                <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-center align-middle">{row.id}</td>
                 <td className="px-4 py-3 text-xs text-slate-700">{displayOrDash(row.name)}</td>
                 <td className="px-4 py-3 text-xs text-slate-700">{displayOrDash(row.address)}</td>
                 <td className="px-4 py-3 text-xs text-slate-700">{displayOrDash(row.phone)}</td>

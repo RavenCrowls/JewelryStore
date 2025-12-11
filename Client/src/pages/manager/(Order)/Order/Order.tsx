@@ -59,6 +59,11 @@ export default function Order() {
         <div className="flex items-center gap-3 relative" ref={filterRef}>
           <h2 className="text-xl font-semibold tracking-tight text-[#1279C3]">Order</h2>
         </div>
+        <div className="justify-end">
+          <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition">
+            Export
+          </button>
+        </div>
       </div>
       <section className="bg-white rounded-2xl p-6 shadow-sm">
         {error ? <div className="text-sm text-red-600">{error}</div> : <OrderTable rows={rows} onView={handleView} />}

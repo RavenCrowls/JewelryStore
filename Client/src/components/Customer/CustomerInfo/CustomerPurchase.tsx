@@ -19,16 +19,16 @@ export default function CustomerPurchaseTable({ rows, onView }: CustomerPurchase
 
       <div className="overflow-x-auto">
         <table className="min-w-full text-center text-sm">
-          <thead>
-            <tr className="bg-[#1279C3] text-white">
-              <th className="px-4 py-3 rounded-l-xl font-medium text-left">ID</th>
-              <th className="px-4 py-3 font-medium">Content</th>
-              <th className="px-4 py-3 font-medium">Date</th>
-              <th className="px-4 py-3 font-medium">Total</th>
-              <th className="px-4 py-3 font-medium">Loyalty Point</th>
-              <th className="px-4 py-3 rounded-r-xl font-medium">Actions</th>
-            </tr>
-          </thead>
+        <thead>
+          <tr className="bg-[#1279C3] text-white">
+            <th className="px-4 py-3 rounded-l-xl font-medium text-center align-middle">ID</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Content</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Date</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Total</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Loyalty Point</th>
+            <th className="px-4 py-3 rounded-r-xl font-medium text-center align-middle">Actions</th>
+          </tr>
+        </thead>
 
           <tbody>
             {rows.map((row, index) => {

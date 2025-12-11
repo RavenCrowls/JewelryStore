@@ -31,16 +31,16 @@ export default function EmployeeTable({ rows, onView }: EmployeeTableProps) {
             <col className="w-[8%]" />
           </colgroup>
           <thead>
-            <tr className="bg-[#1279C3] text-white">
-              <th className="px-4 py-3 rounded-l-xl font-medium text-left">Name</th>
-              <th className="px-4 py-3 font-medium">Photo</th>
-              <th className="px-4 py-3 font-medium">Address</th>
-              <th className="px-4 py-3 font-medium">Phone</th>
-              <th className="px-4 py-3 font-medium">Email</th>
-              <th className="px-4 py-3 font-medium">Position</th>
-              <th className="px-4 py-3 font-medium">Bill</th>
-              <th className="px-4 py-3 rounded-r-xl font-medium">Actions</th>
-            </tr>
+          <tr className="bg-[#1279C3] text-white">
+            <th className="px-4 py-3 rounded-l-xl font-medium text-center align-middle">Name</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Photo</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Address</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Phone</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Email</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Position</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Bill</th>
+            <th className="px-4 py-3 rounded-r-xl font-medium text-center align-middle">Actions</th>
+          </tr>
           </thead>
 
           <tbody>

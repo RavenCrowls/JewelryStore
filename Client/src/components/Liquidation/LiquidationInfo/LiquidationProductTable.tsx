@@ -26,21 +26,21 @@ export default function LiquidationProductTable({ rows }: LiquidationProductTabl
 
       <div className="overflow-x-auto">
         <table className="min-w-full text-xs text-center">
-          <thead>
-            <tr className="bg-[#1279C3] text-white">
-              <th className="px-4 py-3 rounded-l-xl font-medium text-left">
-                NO.
-              </th>
-              <th className="px-4 py-3 font-medium">Product</th>
-              <th className="px-4 py-3 font-medium">Image</th>
-              <th className="px-4 py-3 font-medium">Category</th>
-              <th className="px-4 py-3 font-medium">Price</th>
-              <th className="px-4 py-3 font-medium">Quantity</th>
-              <th className="px-4 py-3 rounded-r-xl font-medium">
-                Total price
-              </th>
-            </tr>
-          </thead>
+        <thead>
+          <tr className="bg-[#1279C3] text-white">
+            <th className="px-4 py-3 rounded-l-xl font-medium text-center align-middle">
+              NO.
+            </th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Product</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Image</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Category</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Price</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Quantity</th>
+            <th className="px-4 py-3 rounded-r-xl font-medium text-center align-middle">
+              Total price
+            </th>
+          </tr>
+        </thead>
 
           <tbody>
             {rows.map((row, index) => {

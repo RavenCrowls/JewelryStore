@@ -22,12 +22,12 @@ export default function OrderTable({ rows, onView }: OrderTableProps) {
       <table className="min-w-full text-sm text-center">
         <thead>
           <tr className="bg-[#1279C3] text-white">
-            <th className="px-4 py-3 rounded-l-xl font-medium text-left">ID</th>
-            <th className="px-4 py-3 font-medium">Customer</th>
-            <th className="px-4 py-3 font-medium">Date</th>
-            <th className="px-4 py-3 font-medium">Total</th>
-            <th className="px-4 py-3 font-medium">State</th>
-            <th className="px-4 py-3 rounded-r-xl font-medium">Actions</th>
+            <th className="px-4 py-3 rounded-l-xl font-medium text-center align-middle">ID</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Customer</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Date</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Total</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">State</th>
+            <th className="px-4 py-3 rounded-r-xl font-medium text-center align-middle">Actions</th>
           </tr>
         </thead>
 
@@ -54,7 +54,7 @@ export default function OrderTable({ rows, onView }: OrderTableProps) {
 
             return (
               <tr key={row.order} className={`${bg} text-center`}>
-                <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-left">
+                <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-center align-middle">
                   {row.order}
                 </td>
                 <td className="px-4 py-3 text-xs text-slate-700">{displayOrDash(row.customer)}</td>
