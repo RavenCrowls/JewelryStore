@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {  useRef } from "react";
 import ImportInfo from "../../../../components/Import/ImportInfo/ImportInfo";
 import ImportProductTable, { type ImportProductRow } from "../../../../components/Import/ImportInfo/ImportProductTable";
@@ -18,7 +18,6 @@ const rows: ImportProductRow[] = [
 
 
 export default function ImportDetail() {
-  const navigate = useNavigate();
   const { lot } = useParams<{ lot: string }>();
  
   const filterRef = useRef<HTMLDivElement | null>(null);

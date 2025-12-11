@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {  useRef } from "react";
 import CustomerInfo from "../../../../components/Customer/CustomerInfo/CustomerInfo";
 import CustomerPurchaseTable, { type CustomerPurchaseRow } from "../../../../components/Customer/CustomerInfo/CustomerPurchase";

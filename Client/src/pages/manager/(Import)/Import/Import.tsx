@@ -1,40 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import ImportTable from "../../../../components/Import/ImportTable/ImportTable";
-import { type ImportRow } from "../../../../components/Import/ImportTable/ImportTable";
 import ImportFilterBar from "../../../../components/Import/ImportFilterBar/ImportFilterBar";
-
-const ImportRows: ImportRow[] = [
-  {
-    lot: "LOT1",
-    supplier: "TNHH Supplier1",
-    date: "07/09/2024",
-    total: 100000000,
-    currency: "VND",
-    state: "pending",
-  },
-  {
-    lot: "LOT1",
-    supplier: "TNHH Supplier1",
-    date: "07/09/2024",
-    total: 100000000,
-    currency: "VND",
-    state: "success",
-  },
-  {
-    lot: "LOT1",
-    supplier: "TNHH Supplier1",
-    date: "07/09/2024",
-    total: 100000000,
-    currency: "VND",
-    state: "failed",
-  },
-];
+import { useImports } from "../../../../hooks/useImports";
 export default function Import() {
   const navigate = useNavigate();
+  const { rows, error } = useImports(0, 100);
 
-  const handleView = (row: ImportRow) => {
+  const handleView = (row: { id: string }) => {
       // tuỳ route của bạn
-      navigate(`/manager/import/${row.lot}`);
+      navigate(`/manager/import/${row.id}`);
     };
 
   return (
@@ -44,7 +18,7 @@ export default function Import() {
                 <ImportFilterBar />
         </div>   
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-          <ImportTable rows={ImportRows} onView={handleView}/>
+        {error ? <div className="text-sm text-red-600">{error}</div> : <ImportTable rows={rows} onView={handleView} />}
       </section>
     </div>
   );

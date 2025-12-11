@@ -18,6 +18,7 @@ namespace JewelryStore.Controllers
         public record ProductPreviewDto(
             int Id,
             string Name,
+            string Material,
             string? ImageUrl,
             string CategoryName,
             decimal Price,
@@ -37,6 +38,7 @@ namespace JewelryStore.Controllers
                     .Select(p => new ProductPreviewDto(
                         p.Id,
                         p.Name,
+                        p.Material,
                         _db.ProductImages
                             .Where(i => i.ProductId == p.Id)
                             .OrderBy(i => i.ImageOrder)
@@ -70,12 +72,46 @@ namespace JewelryStore.Controllers
             }
         }
 
+        public record ProductGemstoneDto(int Id, string Name, float Weight, string? Size, string? Color);
+
+        public record ProductDetailDto(
+            int Id,
+            string Name,
+            string Material,
+            string? Description,
+            decimal Price,
+            bool Status,
+            int CategoryId,
+            string CategoryName,
+            int Quantity,
+            IEnumerable<ProductGemstoneDto> Gemstones
+        );
+
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Product>> GetById([FromRoute] int id)
+        public async Task<ActionResult<ProductDetailDto>> GetById([FromRoute] int id)
         {
             try
             {
-                var item = await _db.Products.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+                var item = await _db.Products
+                    .AsNoTracking()
+                    .Where(c => c.Id == id)
+                    .Select(p => new ProductDetailDto(
+                        p.Id,
+                        p.Name,
+                        p.Material,
+                        p.Description,
+                        p.Price,
+                        p.Status,
+                        p.CategoryId,
+                        _db.Categories.Where(c => c.Id == p.CategoryId).Select(c => c.Name).FirstOrDefault() ?? string.Empty,
+                        _db.Inventory.Where(i => i.ProductId == p.Id).Select(i => i.Quantity).FirstOrDefault(),
+                        _db.Gemstones
+                            .Where(g => g.ProductId == p.Id)
+                            .OrderBy(g => g.Id)
+                            .Select(g => new ProductGemstoneDto(g.Id, g.Name, g.Weight, g.Size, g.Color))
+                            .ToList()
+                    ))
+                    .FirstOrDefaultAsync();
                 if (item == null) return NotFound(new { error = "product not found" });
                 return Ok(item);
             }

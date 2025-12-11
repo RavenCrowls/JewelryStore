@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {  useRef } from "react";
 import BillInfo from "../../../../components/Customer/Bill/BillInfo";
 import BillTable, { type BillRow } from "../../../../components/Customer/Bill/BillTable";
@@ -25,8 +25,7 @@ const rows: BillRow[] = [
 
 
 export default function Bill() {
-  const navigate = useNavigate();
-  const { lot } = useParams<{ lot: string }>();
+  useParams<{ lot: string }>();
  
   const filterRef = useRef<HTMLDivElement | null>(null);
   return (

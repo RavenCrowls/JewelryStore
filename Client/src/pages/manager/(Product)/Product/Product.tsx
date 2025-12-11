@@ -1,64 +1,48 @@
-import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PriceFilterPopup from "../../../../components/common/PriceFilterPopup/PriceFilterPopup";
-import ProductTable from "../../../../components/Product/ProductTable/ProductTable";
-import { type ProductRow } from "../../../../components/Product/ProductTable/ProductTable";
+import ProductTable, { type ProductRow } from "../../../../components/Product/ProductTable/ProductTable";
+import { ProductService } from "../../../../services";
 
-export const ProductRows: ProductRow[] = [
-  {
-    id: "PRO001",
-    name: "Product 1",
-    subtitle: "Gold, Amethyst",
-    imageUrl: "/public/img/image1.png",
-    category: "Necklace",
-    price: 10000000,
-    quantity: 2,
-    currency: "VND",
-  },
-  {
-    id: "PRO002",
-    name: "Product 2",
-    subtitle: "Silver, Emerald",
-    imageUrl: "/public/img/image1.png",
-    category: "Necklace",
-    price: 8500000,
-    quantity: 5,
-    currency: "VND",
-  },
-  {
-    id: "PRO003",
-    name: "Product 3",
-    subtitle: "Rose Gold, Diamond",
-    imageUrl: "/public/img/image1.png",
-    category: "Ring",
-    price: 15000000,
-    quantity: 1,
-    currency: "VND",
-  },
-  {
-    id: "PRO004",
-    name: "Product 4",
-    subtitle: "Gold, Ruby",
-    imageUrl: "/public/img/image1.png",
-    category: "Bracelet",
-    price: 12000000,
-    quantity: 3,
-    currency: "VND",
-  },
-];
+let productCache: ProductRow[] = [];
 
 export default function Product() {
   const navigate = useNavigate();
-
   const [isDateOpen, setIsDateOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement | null>(null);
+  const [rows, setRows] = useState<ProductRow[]>(productCache);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const load = async () => {
+      try {
+        const data = await ProductService.fetchProductPreview(0, 100, { signal: controller.signal });
+        const mapped: ProductRow[] = data.map((p) => ({
+          productId: p.id,
+          id: `PR${p.id.toString().padStart(4, "0")}`,
+          name: p.name,
+          subtitle: p.material,
+          imageUrl: p.imageUrl || "/img/placeholder.png",
+          category: p.categoryName,
+          price: p.price,
+          quantity: p.quantity,
+          currency: "VND",
+        }));
+        productCache = mapped;
+        setRows(mapped);
+      } catch (err) {
+        if ((err as any)?.name === "AbortError") return;
+        setError(err instanceof Error ? err.message : "Failed to load products");
+      }
+    };
+    load();
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (
-        filterRef.current &&
-        !filterRef.current.contains(e.target as Node)
-      ) {
+      if (filterRef.current && !filterRef.current.contains(e.target as Node)) {
         setIsDateOpen(false);
       }
     }
@@ -68,7 +52,7 @@ export default function Product() {
 
   // CLICK 1 DÒNG PRODUCT → TRANG DETAIL
   const handleViewProduct = (row: ProductRow) => {
-    navigate(`/manager/product/${row.id}`);
+    navigate(`/manager/product/${row.productId}`);
   };
 
   // CLICK NÚT ADD NEW PRODUCT
@@ -78,14 +62,9 @@ export default function Product() {
 
   return (
     <div className="space-y-5 mt-3">
-      {/* Hàng tiêu đề + nút */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3 relative" ref={filterRef}>
-          <h2 className="text-xl font-semibold tracking-tight text-[#1279C3]">
-            Product
-          </h2>
-
-          {/* nút 3 gạch */}
+          <h2 className="text-xl font-semibold tracking-tight text-[#1279C3]">Product</h2>
           <button
             type="button"
             onClick={() => setIsDateOpen((prev) => !prev)}
@@ -115,12 +94,12 @@ export default function Product() {
           </button>
         </div>
       </div>
-
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-        <ProductTable
-          rows={ProductRows}
-          onRowClick={handleViewProduct} // ⬅ thêm prop này
-        />
+        {error ? (
+          <div className="text-red-600 text-sm">{error}</div>
+        ) : (
+          <ProductTable rows={rows} onRowClick={handleViewProduct} />
+        )}
       </section>
     </div>
   );

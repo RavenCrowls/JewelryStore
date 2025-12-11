@@ -22,6 +22,7 @@ namespace JewelryStore.Data
         public DbSet<ImportDetail> ImportDetails => Set<ImportDetail>();
         public DbSet<ProductImage> ProductImages => Set<ProductImage>();
         public DbSet<UserImage> UserImages => Set<UserImage>();
+        public DbSet<ProductSummaryView> ProductSummaries => Set<ProductSummaryView>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,6 +31,11 @@ namespace JewelryStore.Data
             // Apply per-entity configuration classes
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
             IdentityTablesConfiguration.ConfigureIdentityTables(modelBuilder);
+
+            modelBuilder
+                .Entity<ProductSummaryView>()
+                .ToView("product_summary_view")
+                .HasNoKey();
         }
     }
 }

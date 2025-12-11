@@ -6,8 +6,9 @@ const navItems = [
   { label: "Product", to: "/manager/product" },
   { label: "Employee", to: "/manager/employee" },
   { label: "Customer", to: "/manager/customer" },
+  { label: "Supplier", to: "/manager/supplier" },
+  { label: "Order", to: "/manager/order" },
   { label: "Import", to: "/manager/import" },
-  { label: "Liquidation", to: "/manager/liquidation" },
 ];
 
 export default function Sidebar() {
