@@ -1,5 +1,5 @@
 import React from "react";
-import formatNumberWithDots from "../../../../../helpers/formatNumberWithDots";
+import formatNumberWithDots from "../../../../../utils/formatNumberWithDots";
 import { HeartOutlined } from "@ant-design/icons";
 import "./ProductCard.css";
 

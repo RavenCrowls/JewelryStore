@@ -3,7 +3,7 @@ import { Splide, SplideSlide } from "@splidejs/react-splide";
 import { type Options } from "@splidejs/splide";
 import { Button, Col, Divider, Image, InputNumber, Row } from "antd";
 import React, { useEffect, useRef } from "react";
-import formatNumberWithDots from "../../../helpers/formatNumberWithDots";
+import formatNumberWithDots from "../../../utils/formatNumberWithDots";
 import Heading from "../components/Heading";
 import "./ProductDetail.css";
 import ProductCard from "../Home/components/ProductCard";
