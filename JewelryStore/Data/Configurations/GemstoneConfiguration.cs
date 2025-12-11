@@ -9,7 +9,7 @@ namespace JewelryStore.Data.Configurations
         {
             entity.ToTable("gemstones");
             entity.HasKey(g => g.Id).HasName("PK_gemstones");
-            entity.Property(g => g.Id).HasColumnName("id");
+            entity.Property(g => g.Id).HasColumnName("id").ValueGeneratedOnAdd();
             entity.Property(g => g.ProductId).HasColumnName("product_id").IsRequired();
             entity.Property(g => g.Name).HasColumnName("name").IsRequired();
             entity.Property(g => g.Weight).HasColumnName("weight");

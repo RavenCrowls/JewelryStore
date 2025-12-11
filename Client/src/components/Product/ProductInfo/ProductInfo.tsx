@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import type { ProductDetail } from "../../../services";
 import type { ProductRow } from "../ProductTable/ProductTable";
+import ProductGallery from "../ProductGallery/ProductGallery";
 
 type ProductInfoProps = {
   product: ProductRow;
   detail?: ProductDetail;
   images?: string[];
   onEdit?: () => void;
-  onDelete?: () => void;
 };
 
-export default function ProductInfo({ product, detail, images, onEdit, onDelete }: ProductInfoProps) {
+export default function ProductInfo({ product, detail, images, onEdit }: ProductInfoProps) {
   const gallery = images && images.length > 0 ? images : [product.imageUrl, product.imageUrl];
 
   const [selectedImage, setSelectedImage] = useState(gallery[0]);
@@ -22,38 +22,11 @@ export default function ProductInfo({ product, detail, images, onEdit, onDelete 
     <div className="space-y-6">
       {/* 3 cột: thumbnail - ảnh lớn - info */}
       <div className="flex items-start gap-10">
-        {/* LEFT: thumbnails */}
-        <div className="flex flex-col gap-4 pt-2">
-          {gallery.map((thumb, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => setSelectedImage(thumb)}
-              className={`h-32 w-32 rounded-md overflow-hidden border bg-white transition ${
-                selectedImage === thumb
-                  ? "border-[#1279C3]"
-                  : "border-slate-300 hover:border-slate-400"
-              }`}
-            >
-              <img
-                src={thumb}
-                alt={`${product.name} thumb ${idx + 1}`}
-                className="h-full w-full object-cover"
-              />
-            </button>
-          ))}
-        </div>
-
-        {/* CENTER: main image */}
-        <div className="flex-1 flex justify-center pt-2">
-          <div className="h-[420px] w-[420px] rounded-md overflow-hidden border border-slate-200 flex items-center justify-center bg-white">
-            <img
-              src={selectedImage}
-              alt={product.name}
-              className="h-full w-full object-cover"
-            />
-          </div>
-        </div>
+        <ProductGallery
+          images={gallery}
+          selectedImage={selectedImage}
+          onSelect={setSelectedImage}
+        />
 
         {/* RIGHT: info – căn giữa cột, max-width giống trang edit */}
         <div className="flex-1 flex justify-center pt-2">
@@ -93,13 +66,6 @@ export default function ProductInfo({ product, detail, images, onEdit, onDelete 
                 className="min-w-[120px] rounded-md border border-[#1279C3] bg-[#E6F3FC] px-6 py-2 text-sm font-medium text-[#1279C3] hover:bg-[#d4e8f9]"
               >
                 Edit
-              </button>
-              <button
-                type="button"
-                onClick={onDelete}
-                className="min-w-[120px] rounded-md border border-red-200 bg-red-50 px-6 py-2 text-sm font-medium text-red-500 hover:bg-red-100"
-              >
-                Delete
               </button>
             </div>
           </div>

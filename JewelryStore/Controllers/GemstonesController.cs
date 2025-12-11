@@ -13,7 +13,13 @@ namespace JewelryStore.Controllers
     public class GemstonesController : ControllerBase
     {
         private readonly AppDbContext _db;
-        public GemstonesController(AppDbContext db) => _db = db;
+        private readonly ILogger<GemstonesController> _logger;
+
+        public GemstonesController(AppDbContext db, ILogger<GemstonesController> logger)
+        {
+            _db = db;
+            _logger = logger;
+        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Gemstone>>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 50)
@@ -46,40 +52,90 @@ namespace JewelryStore.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Gemstone model)
+        public async Task<IActionResult> Create([FromBody] CreateGemstoneDto dto)
         {
             try
             {
-                _db.Gemstones.Add(model);
+                if (string.IsNullOrWhiteSpace(dto.Name))
+                {
+                    return BadRequest(new { error = "Gemstone name is required" });
+                }
+
+                if (dto.Weight <= 0)
+                {
+                    return BadRequest(new { error = "Gemstone weight must be greater than 0" });
+                }
+
+                // Verify product exists
+                var productExists = await _db.Products.AnyAsync(p => p.Id == dto.ProductId);
+                if (!productExists)
+                {
+                    return BadRequest(new { error = $"Product with ID {dto.ProductId} does not exist" });
+                }
+
+                var gemstone = new Gemstone
+                {
+                    ProductId = dto.ProductId,
+                    Name = dto.Name.Trim(),
+                    Weight = dto.Weight,
+                    Size = dto.Size?.Trim(),
+                    Color = dto.Color?.Trim()
+                };
+
+                _db.Gemstones.Add(gemstone);
                 await _db.SaveChangesAsync();
-                return CreatedAtAction(nameof(GetById), new { id = model.Id }, model);
+                return CreatedAtAction(nameof(GetById), new { id = gemstone.Id }, gemstone);
             }
-            catch (Exception)
+            catch (DbUpdateException dbEx)
             {
-                return StatusCode(500, new { error = "error creating gemstone" });
+                _logger.LogError(dbEx, "Database update error creating gemstone");
+                var innerMessage = dbEx.InnerException?.Message ?? dbEx.Message;
+                return StatusCode(500, new { error = "Database error creating gemstone", details = innerMessage });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating gemstone");
+                return StatusCode(500, new { error = "error creating gemstone", details = ex.InnerException?.Message ?? ex.Message });
             }
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] Gemstone model)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CreateGemstoneDto dto)
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(dto.Name))
+                {
+                    return BadRequest(new { error = "Gemstone name is required" });
+                }
+
+                if (dto.Weight <= 0)
+                {
+                    return BadRequest(new { error = "Gemstone weight must be greater than 0" });
+                }
+
                 var exists = await _db.Gemstones.FirstOrDefaultAsync(c => c.Id == id);
                 if (exists == null) return NotFound(new { error = "gemstone not found" });
 
-                exists.Name = model.Name;
-                exists.Weight = model.Weight;
-                exists.Size = model.Size;
-                exists.Color = model.Color;
-                exists.ProductId = model.ProductId;
+                exists.Name = dto.Name.Trim();
+                exists.Weight = dto.Weight;
+                exists.Size = dto.Size?.Trim();
+                exists.Color = dto.Color?.Trim();
+                exists.ProductId = dto.ProductId;
 
                 await _db.SaveChangesAsync();
                 return NoContent();
             }
-            catch (Exception)
+            catch (DbUpdateException dbEx)
             {
-                return StatusCode(500, new { error = "error updating gemstone" });
+                _logger.LogError(dbEx, "Database update error updating gemstone");
+                var innerMessage = dbEx.InnerException?.Message ?? dbEx.Message;
+                return StatusCode(500, new { error = "Database error updating gemstone", details = innerMessage });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating gemstone");
+                return StatusCode(500, new { error = "error updating gemstone", details = ex.InnerException?.Message ?? ex.Message });
             }
         }
 
@@ -94,9 +150,16 @@ namespace JewelryStore.Controllers
                 await _db.SaveChangesAsync();
                 return NoContent();
             }
-            catch (Exception)
+            catch (DbUpdateException dbEx)
             {
-                return StatusCode(500, new { error = "error deleting gemstone" });
+                _logger.LogError(dbEx, "Database update error deleting gemstone");
+                var innerMessage = dbEx.InnerException?.Message ?? dbEx.Message;
+                return StatusCode(500, new { error = "Database error deleting gemstone", details = innerMessage });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting gemstone");
+                return StatusCode(500, new { error = "error deleting gemstone", details = ex.InnerException?.Message ?? ex.Message });
             }
         }
     }
