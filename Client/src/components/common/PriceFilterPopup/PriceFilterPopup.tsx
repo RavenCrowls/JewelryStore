@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 type PriceFilterPopupProps = {
   isOpen: boolean;
-  // cho phép truyền thêm class để chỉnh vị trí (top/left/right/bottom...)
   className?: string;
 };
 

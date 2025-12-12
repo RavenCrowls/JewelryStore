@@ -99,7 +99,7 @@ const AppRouter = () => {
         {/* /manager/liquidation*/}
         <Route path="liquidation" element={<Liquidation />} />
 
-        {/* <Route path="liquidation/:id" element={<LiquidationDetail />} /> */}
+        <Route path="liquidation/:id" element={<LiquidationDetail />} />
         {/* /manager/report/... */}
         <Route path="report">
           {/* /manager/report */}

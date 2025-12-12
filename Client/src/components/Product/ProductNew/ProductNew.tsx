@@ -1,5 +1,6 @@
-// src/components/Product/ProductNew/ProductNew.tsx
+import InfoRow from "../../common/InfoRow/InfoRow"
 import { useState } from "react";
+import {Image} from "lucide-react"
 
 export type NewProductForm = {
   name: string;
@@ -69,9 +70,9 @@ export default function ProductNew({ onCancel, onSave }: ProductNewProps) {
   return (
     <section className="bg-white rounded-2xl p-6 shadow-sm">
 
-      <div className="flex gap-10">
+      <div className="flex gap-10 ">
         {/* LEFT big form */}
-        <div className="flex-1 space-y-3 text-xs">
+        <div className="flex-1 space-y-3 text-xs ">
           <InfoRow label="Name">
             <input
               className="w-full rounded border border-slate-300 px-3 py-1.5 outline-none focus:border-sky-500"
@@ -167,7 +168,7 @@ export default function ProductNew({ onCancel, onSave }: ProductNewProps) {
         </div>
 
         {/* RIGHT: extra fields + image + buttons */}
-        <div className="w-[380px] flex flex-col justify-between">
+        <div className="flex-1 flex flex-col justify-between">
           <div className="space-y-3 text-xs">
             <InfoRow label="Certificate">
               <input
@@ -213,7 +214,7 @@ export default function ProductNew({ onCancel, onSave }: ProductNewProps) {
                 />
               ) : (
                 <>
-                  <span>🖼</span>
+                  <Image className="w-4 h-4" />
                   <span>Upload</span>
                 </>
               )}
@@ -248,17 +249,3 @@ export default function ProductNew({ onCancel, onSave }: ProductNewProps) {
   );
 }
 
-function InfoRow({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-center gap-3 mb-1">
-      <div className="w-28 text-right text-xs text-slate-700">{label}:</div>
-      <div className="flex-1">{children}</div>
-    </div>
-  );
-}

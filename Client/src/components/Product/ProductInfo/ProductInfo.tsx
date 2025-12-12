@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import type { ProductRow } from "../ProductTable/ProductTable";
 import { ArrowDown } from "lucide-react";
+import InfoRow from "../../common/InfoRow/InfoRow";
 
 type ProductInfoProps = {
   product: ProductRow;
@@ -168,18 +169,3 @@ export default function ProductInfo({
   );
 }
 
-/** Hàng label/value cho phần info bên phải */
-function InfoRow({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-start gap-2 text-[13px]">
-      <div className="w-32 font-semibold text-slate-700">{label}:</div>
-      <div className="flex-1 text-slate-700">{children}</div>
-    </div>
-  );
-}
