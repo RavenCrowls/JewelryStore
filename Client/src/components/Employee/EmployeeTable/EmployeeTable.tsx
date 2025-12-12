@@ -1,4 +1,5 @@
 export type EmployeeRow = {
+  id: number;
   name: string;
   imageUrl: string;
   address: string;
@@ -28,35 +29,34 @@ export default function EmployeeTable({ rows, onView }: EmployeeTableProps) {
             <col className="w-[18%]" />
             <col className="w-[10%]" />
             <col className="w-[6%]" />
-            <col className="w-[8%]" />
           </colgroup>
           <thead>
-          <tr className="bg-[#1279C3] text-white">
-            <th className="px-4 py-3 rounded-l-xl font-medium text-center align-middle">Name</th>
-            <th className="px-4 py-3 font-medium text-center align-middle">Photo</th>
-            <th className="px-4 py-3 font-medium text-center align-middle">Address</th>
-            <th className="px-4 py-3 font-medium text-center align-middle">Phone</th>
-            <th className="px-4 py-3 font-medium text-center align-middle">Email</th>
-            <th className="px-4 py-3 font-medium text-center align-middle">Position</th>
-            <th className="px-4 py-3 font-medium text-center align-middle">Bill</th>
-            <th className="px-4 py-3 rounded-r-xl font-medium text-center align-middle">Actions</th>
-          </tr>
+            <tr className="bg-[#1279C3] text-white">
+              <th className="px-4 py-3 rounded-l-xl font-medium text-center align-middle">Name</th>
+              <th className="px-4 py-3 font-medium text-center align-middle">Photo</th>
+              <th className="px-4 py-3 font-medium text-center align-middle">Address</th>
+              <th className="px-4 py-3 font-medium text-center align-middle">Phone</th>
+              <th className="px-4 py-3 font-medium text-center align-middle">Email</th>
+              <th className="px-4 py-3 font-medium text-center align-middle">Position</th>
+              <th className="px-4 py-3 font-medium text-center align-middle">Bill</th>
+            </tr>
           </thead>
-
           <tbody>
             {rows.map((row, index) => {
               const bg =
                 index % 2 === 0
                   ? "bg-slate-50/60 border-b border-slate-100"
                   : "border-b border-slate-100";
-
               return (
-                <tr key={row.name} className={`${bg} text-center`}>
+                <tr
+                  key={row.name}
+                  className={`${bg} text-center cursor-pointer hover:bg-blue-50 transition`}
+                  onClick={() => onView?.(row)}
+                >
                   {/* Name */}
                   <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-left">
                     {row.name}
                   </td>
-
                   {/* Photo */}
                   <td className="px-4 py-3">
                     <div className="flex justify-center">
@@ -67,38 +67,18 @@ export default function EmployeeTable({ rows, onView }: EmployeeTableProps) {
                       />
                     </div>
                   </td>
-
                   {/* Address */}
                   <td className="px-4 py-3 text-xs text-slate-700">{displayOrDash(row.address)}</td>
-
                   {/* Phone */}
                   <td className="px-4 py-3 text-xs text-slate-700">{displayOrDash(row.phone)}</td>
-
                   {/* Email */}
                   <td className="px-4 py-3 text-xs text-slate-700">{displayOrDash(row.email)}</td>
-
                   {/* Position*/}
                   <td className="px-4 py-3 text-xs text-slate-700">
                     {displayOrDash(row.position)}
                   </td>
-
                   {/* Bill */}
                   <td className="px-4 py-3 text-xs text-slate-700">{row.bill}</td>
-
-                  {/* Actions */}
-                  <td className="px-4 py-3">
-                    <div className="flex items-center justify-center gap-2">
-                      <button
-                        className="rounded-md border border-[#DDE4F0] px-4 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5"
-                        onClick={() => onView?.(row)}
-                      >
-                        Edit
-                      </button>
-                      <button className="rounded-md border border-[#FACDC3] px-4 py-1 text-xs font-medium text-[#EB2F06] hover:bg-[#1279C3]/5">
-                        Delete
-                      </button>
-                    </div>
-                  </td>
                 </tr>
               );
             })}

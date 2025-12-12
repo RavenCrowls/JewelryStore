@@ -37,7 +37,13 @@ export default function Customer() {
             className="w-full rounded-xl border border-slate-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
           />
         </div>
-        <div className="justify-end">
+        <div className="justify-end flex gap-2">
+          <button
+            className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition"
+            onClick={() => navigate("/manager/user/add")}
+          >
+            Add new customer
+          </button>
           <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition ml-3">
             Export
           </button>

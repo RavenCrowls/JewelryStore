@@ -11,10 +11,10 @@ export default function Employee() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleEmployeeInfo = (row: EmployeeRow) => {
-    navigate(`/manager/employee/${row.name}`);
+    navigate(`/manager/employee/${row.id}`);
   };
   const handleEmployeeNew = () => {
-    navigate(`/manager/employee/add`);
+    navigate(`/manager/user/add`);
   };
 
   const filterRef = useRef<HTMLDivElement | null>(null);
@@ -48,7 +48,7 @@ export default function Employee() {
         <div className="justify-end">
           <button
             className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition"
-            onClick={() => handleEmployeeNew()}
+            onClick={handleEmployeeNew}
           >
             Add new employee
           </button>

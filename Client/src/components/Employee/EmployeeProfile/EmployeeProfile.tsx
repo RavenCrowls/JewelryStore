@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 export type Employee = {
   avatarUrl: string;
@@ -22,18 +22,37 @@ export default function EmployeeProfile({
   employee,
   onEdit,
   onDelete,
-  onResetPassword,
+  onResetPassword
 }: EmployeeProfileProps) {
-  const {
-    avatarUrl,
-    name,
-    address,
-    phone,
-    email,
-    birthday,
-    position,
-    account,
-  } = employee;
+  const { avatarUrl, name, address, phone, email, birthday, position, account } = employee;
+  const [resetStatus, setResetStatus] = useState<string>("");
+  const [resetting, setResetting] = useState(false);
+
+  // Format birthday as DD/MM/YYYY
+  function formatBirthday(dateStr: string) {
+    if (!dateStr) return "";
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleDateString("en-GB");
+  }
+
+  async function handleResetPassword() {
+    if (!onResetPassword) return;
+    const confirmed = window.confirm(
+      "Are you sure you want to reset this account's password to '12345678'?"
+    );
+    if (!confirmed) return;
+    setResetting(true);
+    setResetStatus("");
+    try {
+      await onResetPassword();
+      setResetStatus("Password reset to 12345678");
+    } catch (e: any) {
+      setResetStatus(e?.message || "Failed to reset password");
+    } finally {
+      setResetting(false);
+    }
+  }
 
   return (
     <div className="w-full flex justify-center mt-2">
@@ -51,10 +70,12 @@ export default function EmployeeProfile({
             </InfoRow>
 
             <InfoRow label="Address:">
-              <input
-                className="w-full rounded border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-sky-500"
+              <textarea
+                className="w-full rounded border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-sky-500 resize-y min-h-[40px] max-h-40"
                 value={address}
                 readOnly
+                rows={2}
+                style={{ overflowWrap: "break-word" }}
               />
             </InfoRow>
 
@@ -77,7 +98,7 @@ export default function EmployeeProfile({
             <InfoRow label="Birthday:">
               <input
                 className="w-full rounded border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-sky-500"
-                value={birthday}
+                value={formatBirthday(birthday)}
                 readOnly
               />
             </InfoRow>
@@ -100,42 +121,24 @@ export default function EmployeeProfile({
                 />
                 <button
                   type="button"
-                  onClick={onResetPassword}
-                  className="whitespace-nowrap rounded border border-sky-500 px-3 py-1 text-xs text-sky-600 hover:bg-sky-50"
+                  onClick={handleResetPassword}
+                  className="whitespace-nowrap rounded border border-sky-500 px-3 py-1 text-xs text-sky-600 hover:bg-sky-50 disabled:opacity-60"
+                  disabled={resetting}
                 >
-                  Reset password
+                  {resetting ? "Resetting..." : "Reset password"}
                 </button>
               </div>
             </InfoRow>
+            {resetStatus && <div className="text-xs text-green-600 pl-36 pt-1">{resetStatus}</div>}
           </div>
 
-          {/* Buttons */}
-          <div className="mt-6 flex gap-4 justify-end">
-            <button
-              type="button"
-              onClick={onDelete}
-              className="min-w-[120px] rounded border border-red-400 bg-red-50 px-6 py-2 text-sm font-medium text-red-500 hover:bg-red-100"
-            >
-              Delete
-            </button>
-            <button
-              type="button"
-              onClick={onEdit}
-              className="min-w-[120px] rounded border border-sky-400 bg-sky-50 px-6 py-2 text-sm font-medium text-sky-600 hover:bg-sky-100"
-            >
-              Edit
-            </button>
-          </div>
+          {/* Buttons removed for view-only mode */}
         </div>
 
         {/* Right: avatar */}
         <div className="flex items-start justify-center flex-1">
           <div className="h-64 w-64 rounded-full overflow-hidden border border-slate-200">
-            <img
-              src={avatarUrl}
-              alt={name}
-              className="h-full w-full object-cover"
-            />
+            <img src={avatarUrl} alt={name} className="h-full w-full object-cover" />
           </div>
         </div>
       </div>
@@ -144,18 +147,10 @@ export default function EmployeeProfile({
 }
 
 /** Row helper component cho phần label + input */
-function InfoRow({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function InfoRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-4">
-      <div className="w-32 text-right text-sm text-slate-700 pr-2">
-        {label}
-      </div>
+      <div className="w-32 text-right text-sm text-slate-700 pr-2">{label}</div>
       <div className="flex-1">{children}</div>
     </div>
   );

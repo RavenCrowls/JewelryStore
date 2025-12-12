@@ -1,10 +1,16 @@
 // src/components/Employee/EmployeeAdd/EmployeeAdd.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import type { Employee } from "../EmployeeProfile/EmployeeProfile";
 
 type AddEmployeeProps = {
-  onSave?: (employee: Employee) => void;
+  onSave?: (employee: Employee, avatarFile: File | null) => void;
   onCancel?: () => void;
+  saving?: boolean;
+};
+
+type Role = {
+  id: number;
+  name: string;
 };
 
 const emptyEmployee: Employee = {
@@ -15,17 +21,34 @@ const emptyEmployee: Employee = {
   email: "",
   birthday: "",
   position: "",
-  account: "",
+  account: ""
 };
 
-export default function EmployeeAdd({ onSave, onCancel }: AddEmployeeProps) {
+export default function EmployeeAdd({ onSave, onCancel, saving }: AddEmployeeProps) {
   const [form, setForm] = useState<Employee>(emptyEmployee);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [loadingRoles, setLoadingRoles] = useState(true);
+
+  useEffect(() => {
+    const API_BASE_URL = (import.meta as any)?.env?.VITE_API_BASE_URL || "";
+    const url = API_BASE_URL ? new URL("/api/roles", API_BASE_URL).toString() : "/api/roles";
+
+    fetch(url, {
+      credentials: "include"
+    })
+      .then((res) => res.json())
+      .then((data: Role[]) => {
+        setRoles(data);
+        setLoadingRoles(false);
+      })
+      .catch(() => {
+        setLoadingRoles(false);
+      });
+  }, []);
 
   const handleFieldChange =
-    (field: keyof Employee) =>
-    (
-      e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-    ) => {
+    (field: keyof Employee) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       setForm((prev) => ({ ...prev, [field]: e.target.value }));
     };
 
@@ -33,14 +56,14 @@ export default function EmployeeAdd({ onSave, onCancel }: AddEmployeeProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setAvatarFile(file);
     const url = URL.createObjectURL(file);
     setForm((prev) => ({ ...prev, avatarUrl: url }));
-    // thực tế: upload lên server rồi set url thật
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave?.(form);
+    onSave?.(form, avatarFile);
   };
 
   return (
@@ -95,20 +118,15 @@ export default function EmployeeAdd({ onSave, onCancel }: AddEmployeeProps) {
                 className="w-full rounded border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-sky-500"
                 value={form.position}
                 onChange={handleFieldChange("position")}
+                disabled={loadingRoles}
               >
                 <option value="">Choose position</option>
-                <option value="Manager">Manager</option>
-                <option value="Staff">Staff</option>
-                <option value="Intern">Intern</option>
+                {roles.map((role) => (
+                  <option key={role.id} value={role.name}>
+                    {role.name}
+                  </option>
+                ))}
               </select>
-            </InfoRow>
-
-            <InfoRow label="Account:">
-              <input
-                className="w-full rounded border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-sky-500"
-                value={form.account}
-                onChange={handleFieldChange("account")}
-              />
             </InfoRow>
           </div>
 
@@ -117,15 +135,17 @@ export default function EmployeeAdd({ onSave, onCancel }: AddEmployeeProps) {
             <button
               type="button"
               onClick={onCancel}
-              className="min-w-[120px] rounded border border-red-200 bg-red-50 px-6 py-2 text-sm font-medium text-red-500 hover:bg-red-100"
+              disabled={saving}
+              className="min-w-[120px] rounded border border-red-200 bg-red-50 px-6 py-2 text-sm font-medium text-red-500 hover:bg-red-100 disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="min-w-[120px] rounded border border-emerald-200 bg-emerald-50 px-6 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-100"
+              disabled={saving}
+              className="min-w-[120px] rounded border border-emerald-200 bg-emerald-50 px-6 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-100 disabled:opacity-50"
             >
-              Save
+              {saving ? "Saving..." : "Save"}
             </button>
           </div>
         </div>
@@ -163,18 +183,10 @@ export default function EmployeeAdd({ onSave, onCancel }: AddEmployeeProps) {
   );
 }
 
-function InfoRow({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function InfoRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-4">
-      <div className="w-32 text-right text-sm text-slate-700 pr-2">
-        {label}
-      </div>
+      <div className="w-32 text-right text-sm text-slate-700 pr-2">{label}</div>
       <div className="flex-1">{children}</div>
     </div>
   );
