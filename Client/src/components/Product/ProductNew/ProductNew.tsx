@@ -2,8 +2,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Image } from "lucide-react";
 import useCategories from "../../../hooks/useCategories";
-import InfoRow from "../../common/InfoRow/InfoRow"
-import {Image} from "lucide-react"
 
 export type NewProductForm = {
   name: string;
