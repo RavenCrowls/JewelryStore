@@ -28,7 +28,6 @@ export default function EmployeeTable({ rows, onView }: EmployeeTableProps) {
             <col className="w-[10%]" />
             <col className="w-[18%]" />
             <col className="w-[10%]" />
-            <col className="w-[6%]" />
           </colgroup>
           <thead>
             <tr className="bg-[#1279C3] text-white">
@@ -37,8 +36,9 @@ export default function EmployeeTable({ rows, onView }: EmployeeTableProps) {
               <th className="px-4 py-3 font-medium text-center align-middle">Address</th>
               <th className="px-4 py-3 font-medium text-center align-middle">Phone</th>
               <th className="px-4 py-3 font-medium text-center align-middle">Email</th>
-              <th className="px-4 py-3 font-medium text-center align-middle">Position</th>
-              <th className="px-4 py-3 font-medium text-center align-middle rounded-r-xl">Bill</th>
+              <th className="px-4 py-3 font-medium text-center align-middle rounded-r-xl">
+                Position
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -61,10 +61,9 @@ export default function EmployeeTable({ rows, onView }: EmployeeTableProps) {
                   <td className="px-4 py-3">
                     <div className="flex justify-center">
                       <img
-                        src={row.imageUrl ? row.imageUrl : '/img/user-placeholder.png'}
+                        src={row.imageUrl}
                         alt={row.name}
-                        className="h-12 w-12 rounded-md object-cover bg-white"
-                        onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = '/img/user-placeholder.png'; }}
+                        className="h-12 w-12 rounded-md object-cover"
                       />
                     </div>
                   </td>
@@ -78,8 +77,6 @@ export default function EmployeeTable({ rows, onView }: EmployeeTableProps) {
                   <td className="px-4 py-3 text-xs text-slate-700">
                     {displayOrDash(row.position)}
                   </td>
-                  {/* Bill */}
-                  <td className="px-4 py-3 text-xs text-slate-700">{row.bill}</td>
                 </tr>
               );
             })}

@@ -100,10 +100,10 @@ const AppRouter = () => {
 
         {/* /manager/customer*/}
         <Route path="customer" element={<Customer />} />
-        {/* /manager/detail*/}
-        <Route path="customer/:name" element={<CustomerDetail />} />
-        {/* /manager/detail/bill*/}
-        <Route path="customer/:name/:id" element={<Bill />} />
+        {/* /manager/customer/:id */}
+        <Route path="customer/:id" element={<CustomerDetail />} />
+        {/* /manager/customer/:id/bill/:billId */}
+        <Route path="customer/:id/:billId" element={<Bill />} />
 
         {/* /manager/supplier*/}
         <Route path="supplier" element={<Supplier />} />

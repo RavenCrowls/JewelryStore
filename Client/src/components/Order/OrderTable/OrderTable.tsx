@@ -13,10 +13,9 @@ export type OrderRow = {
 
 type OrderTableProps = {
   rows: OrderRow[];
-  onView?: (row: OrderRow) => void;
 };
 
-export default function OrderTable({ rows, onView }: OrderTableProps) {
+export default function OrderTable({ rows }: OrderTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full text-sm text-center">
@@ -26,8 +25,7 @@ export default function OrderTable({ rows, onView }: OrderTableProps) {
             <th className="px-4 py-3 font-medium text-center align-middle">Customer</th>
             <th className="px-4 py-3 font-medium text-center align-middle">Date</th>
             <th className="px-4 py-3 font-medium text-center align-middle">Total</th>
-            <th className="px-4 py-3 font-medium text-center align-middle">State</th>
-            <th className="px-4 py-3 rounded-r-xl font-medium text-center align-middle">Actions</th>
+            <th className="px-4 py-3 rounded-r-xl font-medium text-center align-middle">State</th>
           </tr>
         </thead>
 
@@ -53,7 +51,10 @@ export default function OrderTable({ rows, onView }: OrderTableProps) {
             }
 
             return (
-              <tr key={row.order} className={`${bg} text-center`}>
+              <tr
+                key={row.order}
+                className={`${bg} text-center cursor-pointer hover:bg-blue-50 transition`}
+              >
                 <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-center align-middle">
                   {row.order}
                 </td>
@@ -69,14 +70,6 @@ export default function OrderTable({ rows, onView }: OrderTableProps) {
                   >
                     <img src={stateIcon} alt={row.state} className="h-5 w-5 object-contain" />
                   </div>
-                </td>
-                <td className="px-4 py-3">
-                  <button
-                    className="rounded-md border border-[#DDE4F0] px-5 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5"
-                    onClick={() => onView?.(row)}
-                  >
-                    View
-                  </button>
                 </td>
               </tr>
             );

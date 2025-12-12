@@ -1,106 +1,98 @@
 export type CustomerInfoProps = {
+  avatarUrl: string;
   name: string;
   address: string;
   phone: string;
   email: string;
   birthday: string;
-  loyalty: number;
-  accumulated: number;
 };
 
 type CustomerInfoComponentProps = {
   customer: CustomerInfoProps;
-  onDelete?: () => void;
 };
 
 export default function CustomerInfo({
   customer,
-  onDelete,
 }: CustomerInfoComponentProps) {
-  const { name, address, phone, email, birthday, loyalty, accumulated } =
+  const { avatarUrl, name, address, phone, email, birthday } =
     customer;
 
+  // Format birthday as DD/MM/YYYY
+  function formatBirthday(dateStr: string) {
+    if (!dateStr) return "";
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleDateString("en-GB");
+  }
+
   return (
-    <div className="mb-4 grid grid-cols-2 gap-4 text-sm">
-      {/* Cột trái */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <span className="w-24 text-xs text-slate-500">Name:</span>
-          <input
-            className="h-8 flex-1 rounded border border-slate-300 px-2 text-xs"
-            value={name}
-            readOnly
-          />
+    <div className="w-full flex justify-center mt-2">
+      <div className="max-w-5xl w-full flex gap-16">
+        {/* Left: form */}
+        <div className="flex-1">
+          <div className="space-y-3 text-sm">
+            {/* Row */}
+            <InfoRow label="Name:">
+              <input
+                className="w-full rounded border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-sky-500"
+                value={name}
+                readOnly
+              />
+            </InfoRow>
+
+            <InfoRow label="Address:">
+              <textarea
+                className="w-full rounded border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-sky-500 resize-y min-h-[40px] max-h-40"
+                value={address}
+                readOnly
+                rows={2}
+                style={{ overflowWrap: "break-word" }}
+              />
+            </InfoRow>
+
+            <InfoRow label="Phone number:">
+              <input
+                className="w-full rounded border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-sky-500"
+                value={phone}
+                readOnly
+              />
+            </InfoRow>
+
+            <InfoRow label="Email:">
+              <input
+                className="w-full rounded border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-sky-500"
+                value={email}
+                readOnly
+              />
+            </InfoRow>
+
+            <InfoRow label="Birthday:">
+              <input
+                className="w-full rounded border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-sky-500"
+                value={formatBirthday(birthday)}
+                readOnly
+              />
+            </InfoRow>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="w-24 text-xs text-slate-500">Address:</span>
-          <input
-            className="h-8 flex-1 rounded border border-slate-300 px-2 text-xs"
-            value={address}
-            readOnly
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="w-24 text-xs text-slate-500">Phone number:</span>
-          <input
-            className="h-8 flex-1 rounded border border-slate-300 px-2 text-xs"
-            value={phone}
-            readOnly
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="w-24 text-xs text-slate-500">Email:</span>
-          <input
-            className="h-8 flex-1 rounded border border-slate-300 px-2 text-xs"
-            value={email}
-            readOnly
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="w-24 text-xs text-slate-500">Birthday:</span>
-          <input
-            className="h-8 flex-1 rounded border border-slate-300 px-2 text-xs"
-            value={birthday}
-            readOnly
-          />
+        {/* Right: avatar */}
+        <div className="flex items-start justify-center flex-1">
+          <div className="h-64 w-64 rounded-full overflow-hidden border border-slate-200">
+            <img src={avatarUrl} alt={name} className="h-full w-full object-cover" />
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* Cột phải */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <span className="w-28 text-xs text-slate-500">Loyalty point:</span>
-          <input
-            className="h-8 flex-1 rounded border border-slate-300 px-2 text-xs"
-            value={loyalty}
-            readOnly
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="w-28 text-xs text-slate-500">
-            Accumulated point:
-          </span>
-          <input
-            className="h-8 flex-1 rounded border border-slate-300 px-2 text-xs"
-            value={accumulated}
-            readOnly
-          />
-        </div>
-
-        <div className="mt-6 flex justify-end gap-4">
-          <button
-            onClick={onDelete}
-            className="rounded-md border border-[#FACDC3] bg-white px-8 py-2 text-sm font-medium text-[#EB2F06] hover:bg-[#FFF4F1]"
-          >
-            Delete
-          </button>
-        </div>
-      </div>
+/** Row helper component cho phần label + input */
+function InfoRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-4">
+      <div className="w-32 text-right text-sm text-slate-700 pr-2 whitespace-nowrap">{label}</div>
+      <div className="flex-1">{children}</div>
     </div>
   );
 }

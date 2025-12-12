@@ -9,7 +9,9 @@ export default function Customer() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleViewCustomer = (row: any) => {
-    navigate(`/manager/customer/${row.name}`);
+    if (row.id) {
+      navigate(`/manager/customer/${row.id}`);
+    }
   };
 
   const filteredRows = useMemo(() => {

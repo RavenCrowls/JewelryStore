@@ -1,4 +1,5 @@
 export type CustomerRow = {
+  id: number;
   name: string;
   imageUrl?: string;
   address: string;
@@ -34,7 +35,7 @@ export default function CustomerTable({ rows, onView }: CustomerTableProps) {
                   : "border-b border-slate-100";
               return (
                 <tr
-                  key={row.name}
+                  key={row.id}
                   className={`${bg} text-center cursor-pointer hover:bg-blue-50 transition`}
                   onClick={() => onView?.(row)}
                 >

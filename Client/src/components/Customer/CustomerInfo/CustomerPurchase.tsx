@@ -1,18 +1,17 @@
 export type CustomerPurchaseRow = {
-  id: string;
-  content: string;
+  order: string;
+  customer: string;
   date: string;
   total: number;
   currency?: string;
-  loyalty: number;
+  state: "pending" | "success" | "failed";
 };
 
 type CustomerPurchaseProps = {
   rows: CustomerPurchaseRow[];
-  onView?: (row: CustomerPurchaseRow) => void;
 };
 
-export default function CustomerPurchaseTable({ rows, onView }: CustomerPurchaseProps) {
+export default function CustomerPurchaseTable({ rows }: CustomerPurchaseProps) {
   return (
     <div>
       <h3 className="mb-4 text-lg font-semibold text-[#1279C3]">Purchase History</h3>
@@ -22,11 +21,10 @@ export default function CustomerPurchaseTable({ rows, onView }: CustomerPurchase
         <thead>
           <tr className="bg-[#1279C3] text-white">
             <th className="px-4 py-3 rounded-l-xl font-medium text-center align-middle">ID</th>
-            <th className="px-4 py-3 font-medium text-center align-middle">Content</th>
+            <th className="px-4 py-3 font-medium text-center align-middle">Customer</th>
             <th className="px-4 py-3 font-medium text-center align-middle">Date</th>
             <th className="px-4 py-3 font-medium text-center align-middle">Total</th>
-            <th className="px-4 py-3 font-medium text-center align-middle">Loyalty Point</th>
-            <th className="px-4 py-3 rounded-r-xl font-medium text-center align-middle">Actions</th>
+            <th className="px-4 py-3 rounded-r-xl font-medium text-center align-middle">State</th>
           </tr>
         </thead>
 
@@ -37,25 +35,39 @@ export default function CustomerPurchaseTable({ rows, onView }: CustomerPurchase
                   ? "bg-slate-50/60 border-b border-slate-100"
                   : "border-b border-slate-100";
 
+              let stateIcon = "";
+              let stateBorder = "";
+
+              if (row.state === "pending") {
+                stateIcon = "/img/loading.png";
+                stateBorder = "border-[#1279C3]";
+              } else if (row.state === "success") {
+                stateIcon = "/img/success.png";
+                stateBorder = "border-[#2ECC71]";
+              } else {
+                stateIcon = "/img/failed.png";
+                stateBorder = "border-[#E74C3C]";
+              }
+
               return (
-                <tr key={row.id} className={`${bg} text-center`}>
+                <tr
+                  key={row.order}
+                  className={`${bg} text-center cursor-pointer hover:bg-blue-50 transition`}
+                >
                   <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-left">
-                    {row.id}
+                    {row.order}
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-600">{row.content}</td>
+                  <td className="px-4 py-3 text-xs text-slate-600">{row.customer}</td>
                   <td className="px-4 py-3 text-xs text-slate-500">{row.date}</td>
-                  <td className={`px-4 py-3 text-xs text-center text-black`}>
+                  <td className="px-4 py-3 text-xs text-center text-black">
                     {row.total.toLocaleString("vi-VN")} {row.currency ?? "VND"}
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-600">{row.loyalty}</td>
-
-                  <td className="px-4 py-3">
-                    <button
-                      className="rounded-md border border-[#DDE4F0] px-5 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5"
-                      onClick={() => onView?.(row)}
+                  <td className="px-4 py-3 text-xs">
+                    <div
+                      className={`inline-flex h-8 w-10 items-center justify-center rounded-md border ${stateBorder}`}
                     >
-                      View
-                    </button>
+                      <img src={stateIcon} alt={row.state} className="h-5 w-5 object-contain" />
+                    </div>
                   </td>
                 </tr>
               );
