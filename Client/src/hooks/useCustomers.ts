@@ -19,10 +19,10 @@ export function useCustomers(skip = 0, take = 200) {
         const filtered = data.filter((u) => (u.role ?? "").toLowerCase() === "customer");
         const mapped: CustomerRow[] = filtered.map((u) => ({
           name: displayOrDash(u.fullName),
+          imageUrl: u.imageUrl || "/img/avt.png",
           address: displayOrDash(u.address),
           phone: displayOrDash(u.phone),
-          email: displayOrDash(u.email),
-          birthday: displayOrDash(u.birthday),
+          email: displayOrDash(u.email)
         }));
         customerCache = mapped;
         setRows(mapped);

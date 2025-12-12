@@ -38,7 +38,7 @@ export default function EmployeeTable({ rows, onView }: EmployeeTableProps) {
               <th className="px-4 py-3 font-medium text-center align-middle">Phone</th>
               <th className="px-4 py-3 font-medium text-center align-middle">Email</th>
               <th className="px-4 py-3 font-medium text-center align-middle">Position</th>
-              <th className="px-4 py-3 font-medium text-center align-middle">Bill</th>
+              <th className="px-4 py-3 font-medium text-center align-middle rounded-r-xl">Bill</th>
             </tr>
           </thead>
           <tbody>
@@ -61,9 +61,10 @@ export default function EmployeeTable({ rows, onView }: EmployeeTableProps) {
                   <td className="px-4 py-3">
                     <div className="flex justify-center">
                       <img
-                        src={row.imageUrl}
+                        src={row.imageUrl ? row.imageUrl : '/img/user-placeholder.png'}
                         alt={row.name}
-                        className="h-12 w-12 rounded-md object-cover"
+                        className="h-12 w-12 rounded-md object-cover bg-white"
+                        onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = '/img/user-placeholder.png'; }}
                       />
                     </div>
                   </td>
