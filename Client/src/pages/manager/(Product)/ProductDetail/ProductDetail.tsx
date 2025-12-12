@@ -57,27 +57,25 @@ export default function ProductDetail() {
             images={imageUrls}
             onEdit={handleEdit}
           />
-          {detail?.gemstones && detail.gemstones.length > 0 && (
-            <GemstoneTable
-              gemstones={detail.gemstones}
-              isAddingGemstone={isAddingGemstone}
-              newGemstone={newGemstone}
-              editingGemstone={editingGemstone}
-              editLoading={editLoading}
-              editError={editError}
-              loading={loading}
-              error={gemstoneError}
-              onAddClick={handleAddGemstone}
-              onFormChange={handleGemstoneChange}
-              onFormSave={handleSaveGemstone}
-              onFormCancel={handleCancelAddGemstone}
-              onEditClick={handleEditGemstone}
-              onEditChange={handleEditChange}
-              onEditSave={handleSaveEditWrapper}
-              onEditCancel={handleCancelEdit}
-              onDeleteClick={handleDeleteGemstone}
-            />
-          )}
+          <GemstoneTable
+            gemstones={detail?.gemstones ?? []}
+            isAddingGemstone={isAddingGemstone}
+            newGemstone={newGemstone}
+            editingGemstone={editingGemstone}
+            editLoading={editLoading}
+            editError={editError}
+            loading={loading}
+            error={gemstoneError}
+            onAddClick={handleAddGemstone}
+            onFormChange={handleGemstoneChange}
+            onFormSave={handleSaveGemstone}
+            onFormCancel={handleCancelAddGemstone}
+            onEditClick={handleEditGemstone}
+            onEditChange={handleEditChange}
+            onEditSave={handleSaveEditWrapper}
+            onEditCancel={handleCancelEdit}
+            onDeleteClick={handleDeleteGemstone}
+          />
         </section>
       )}
     </div>

@@ -1,5 +1,7 @@
 // src/components/Product/ProductNew/ProductNew.tsx
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Image } from "lucide-react";
+import useCategories from "../../../hooks/useCategories";
 
 export type NewProductForm = {
   name: string;
@@ -18,14 +20,18 @@ export type NewProductForm = {
   price: string;
   discount: string;
   imageUrl: string;
+  imageFiles: File[];
 };
 
 type ProductNewProps = {
   onCancel?: () => void;
   onSave?: (data: NewProductForm) => void;
+  saving?: boolean;
 };
 
-export default function ProductNew({ onCancel, onSave }: ProductNewProps) {
+export default function ProductNew({ onCancel, onSave, saving = false }: ProductNewProps) {
+  const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
+  const { categories, loading: categoryLoading, error: categoryError } = useCategories();
   const [form, setForm] = useState<NewProductForm>({
     name: "",
     category: "",
@@ -43,202 +49,192 @@ export default function ProductNew({ onCancel, onSave }: ProductNewProps) {
     price: "",
     discount: "",
     imageUrl: "",
+    imageFiles: []
   });
+  const [images, setImages] = useState<string[]>([]);
+  const [mainImage, setMainImage] = useState<string>("");
 
   const handleChange =
     (field: keyof NewProductForm) =>
-    (
-      e: React.ChangeEvent<
-        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-      >
-    ) => {
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       setForm((prev) => ({ ...prev, [field]: e.target.value }));
     };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleAddImage = (file: File | undefined) => {
     if (!file) return;
     const url = URL.createObjectURL(file);
-    setForm((prev) => ({ ...prev, imageUrl: url }));
+    setImages((prev) => [...prev, url]);
+    if (images.length === 0) {
+      setMainImage(url);
+    }
+    setForm((prev) => ({
+      ...prev,
+      imageUrl: url,
+      imageFiles: [...prev.imageFiles, file]
+    }));
   };
+
+  const handleRemoveImage = (idx: number) => {
+    setImages((prev) => {
+      const newImages = prev.filter((_, i) => i !== idx);
+      if (mainImage === prev[idx]) {
+        setMainImage(newImages[0] || "");
+      }
+      return newImages;
+    });
+    setForm((prev) => ({
+      ...prev,
+      imageFiles: prev.imageFiles.filter((_, i) => i !== idx)
+    }));
+  };
+
+  // Auto-resize description field to fit content
+  useEffect(() => {
+    const el = descriptionRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, [form.description]);
 
   const handleSaveClick = () => {
     onSave?.(form);
   };
 
+  const inputClass =
+    "w-full rounded border border-slate-300 px-3 py-1.5 text-xs outline-none " +
+    "focus:border-[#1279C3] focus:ring-1 focus:ring-[#1279C3]/30";
+
+  const smallInputClass =
+    "w-24 rounded border border-slate-300 px-3 py-1.5 text-xs outline-none " +
+    "focus:border-[#1279C3] focus:ring-1 focus:ring-[#1279C3]/30";
+
   return (
-    <section className="bg-white rounded-2xl p-6 shadow-sm">
-
-      <div className="flex gap-10">
-        {/* LEFT big form */}
-        <div className="flex-1 space-y-3 text-xs">
-          <InfoRow label="Name">
-            <input
-              className="w-full rounded border border-slate-300 px-3 py-1.5 outline-none focus:border-sky-500"
-              value={form.name}
-              onChange={handleChange("name")}
-            />
-          </InfoRow>
-
-          <InfoRow label="Category">
-            <select
-              className="w-full rounded border border-slate-300 px-3 py-1.5 outline-none focus:border-sky-500"
-              value={form.category}
-              onChange={handleChange("category")}
+    <section className="bg-white rounded-3xl p-6 shadow-sm">
+      {/* 3 columns: thumbnails - main image - form */}
+      <div className="flex items-start gap-10">
+        {/* LEFT: thumbnails + Add */}
+        <div className="flex flex-col gap-4 pt-2">
+          {images.map((img, idx) => (
+            <div
+              key={idx}
+              className="relative h-32 w-32 rounded-md overflow-hidden border border-slate-300 bg-white cursor-pointer"
             >
-              <option value="">Choose category</option>
-              <option value="Necklace">Necklace</option>
-              <option value="Ring">Ring</option>
-              <option value="Bracelet">Bracelet</option>
-            </select>
-          </InfoRow>
+              <img
+                src={img}
+                alt={`Preview ${idx}`}
+                className="h-full w-full object-cover"
+                onClick={() => setMainImage(img)}
+              />
+              <button
+                type="button"
+                className="absolute top-1 right-1 h-5 w-5 rounded-full bg-white text-xs text-red-500 border border-red-300 flex items-center justify-center"
+                onClick={() => handleRemoveImage(idx)}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
 
-          <InfoRow label="Material">
+          <label className="h-32 w-32 rounded-md border border-dashed border-slate-300 flex flex-col items-center justify-center text-xs text-slate-500 cursor-pointer bg-white">
+            <Image className="w-6 h-6" />
+            <span>Add</span>
             <input
-              className="w-full rounded border border-slate-300 px-3 py-1.5 outline-none focus:border-sky-500"
-              value={form.material}
-              onChange={handleChange("material")}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => handleAddImage(e.target.files?.[0])}
             />
-          </InfoRow>
-
-          <InfoRow label="Weight">
-            <input
-              className="w-full rounded border border-slate-300 px-3 py-1.5 outline-none focus:border-sky-500"
-              value={form.weight}
-              onChange={handleChange("weight")}
-            />
-          </InfoRow>
-
-          <InfoRow label="Gemstone">
-            <input
-              className="w-full rounded border border-slate-300 px-3 py-1.5 outline-none focus:border-sky-500"
-              value={form.gemstone}
-              onChange={handleChange("gemstone")}
-            />
-          </InfoRow>
-
-          <InfoRow label="Size">
-            <input
-              className="w-full rounded border border-slate-300 px-3 py-1.5 outline-none focus:border-sky-500"
-              value={form.size}
-              onChange={handleChange("size")}
-            />
-          </InfoRow>
-
-          <InfoRow label="Carat weight">
-            <input
-              className="w-full rounded border border-slate-300 px-3 py-1.5 outline-none focus:border-sky-500"
-              value={form.caratWeight}
-              onChange={handleChange("caratWeight")}
-            />
-          </InfoRow>
-
-          <InfoRow label="Color">
-            <input
-              className="w-full rounded border border-slate-300 px-3 py-1.5 outline-none focus:border-sky-500"
-              value={form.color}
-              onChange={handleChange("color")}
-            />
-          </InfoRow>
-
-          <InfoRow label="Shape">
-            <input
-              className="w-full rounded border border-slate-300 px-3 py-1.5 outline-none focus:border-sky-500"
-              value={form.shape}
-              onChange={handleChange("shape")}
-            />
-          </InfoRow>
-
-          <InfoRow label="Purity">
-            <input
-              className="w-full rounded border border-slate-300 px-3 py-1.5 outline-none focus:border-sky-500"
-              value={form.purity}
-              onChange={handleChange("purity")}
-            />
-          </InfoRow>
-
-          <InfoRow label="Gemstone size">
-            <input
-              className="w-full rounded border border-slate-300 px-3 py-1.5 outline-none focus:border-sky-500"
-              value={form.gemstoneSize}
-              onChange={handleChange("gemstoneSize")}
-            />
-          </InfoRow>
+          </label>
         </div>
 
-        {/* RIGHT: extra fields + image + buttons */}
-        <div className="w-[380px] flex flex-col justify-between">
-          <div className="space-y-3 text-xs">
-            <InfoRow label="Certificate">
-              <input
-                className="w-full rounded border border-slate-300 px-3 py-1.5 outline-none focus:border-sky-500"
-                value={form.certificate}
-                onChange={handleChange("certificate")}
-              />
-            </InfoRow>
-
-            <InfoRow label="Description">
-              <input
-                className="w-full rounded border border-slate-300 px-3 py-1.5 outline-none focus:border-sky-500"
-                value={form.description}
-                onChange={handleChange("description")}
-              />
-            </InfoRow>
-
-            <InfoRow label="Price">
-              <input
-                className="w-full rounded border border-slate-300 px-3 py-1.5 outline-none focus:border-sky-500"
-                value={form.price}
-                onChange={handleChange("price")}
-              />
-            </InfoRow>
-
-            <InfoRow label="Discount">
-              <input
-                className="w-full rounded border border-slate-300 px-3 py-1.5 outline-none focus:border-sky-500"
-                value={form.discount}
-                onChange={handleChange("discount")}
-              />
-            </InfoRow>
+        {/* CENTER: main image */}
+        <div className="flex-1 flex justify-center pt-2">
+          <div className="h-[420px] w-[420px] rounded-md overflow-hidden border border-slate-200 flex items-center justify-center bg-slate-50">
+            {mainImage ? (
+              <img src={mainImage} alt="Main preview" className="h-full w-full object-cover" />
+            ) : (
+              <div className="text-slate-400 text-sm">No image selected</div>
+            )}
           </div>
+        </div>
 
-          <div className="mt-6 flex justify-between items-end gap-6">
-            {/* Upload ảnh */}
-            <label className="h-40 w-40 border rounded-md flex flex-col items-center justify-center text-xs text-slate-500 cursor-pointer">
-              {form.imageUrl ? (
-                <img
-                  src={form.imageUrl}
-                  alt="preview"
-                  className="h-full w-full object-cover rounded-md"
+        {/* RIGHT: form */}
+        <div className="flex-1 flex justify-center pt-2">
+          <div className="w-full max-w-[520px] text-xs">
+            <div className="space-y-3">
+              <InfoRow label="Product name">
+                <input className={inputClass} value={form.name} onChange={handleChange("name")} />
+              </InfoRow>
+
+              <InfoRow label="Material">
+                <input
+                  className={inputClass}
+                  value={form.material}
+                  onChange={handleChange("material")}
                 />
-              ) : (
-                <>
-                  <span>🖼</span>
-                  <span>Upload</span>
-                </>
-              )}
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageChange}
-              />
-            </label>
+              </InfoRow>
 
-            <div className="flex gap-4">
+              <InfoRow label="Category">
+                <div className="space-y-1">
+                  <div className="relative">
+                    <select
+                      className={`${inputClass} pr-8 appearance-none`}
+                      value={form.category}
+                      onChange={handleChange("category")}
+                    >
+                      <option value="">Choose category</option>
+                      {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-500">
+                      ▼
+                    </span>
+                  </div>
+                  {categoryLoading && (
+                    <div className="text-[11px] text-slate-500">Loading categories...</div>
+                  )}
+                  {categoryError && <div className="text-[11px] text-red-500">{categoryError}</div>}
+                </div>
+              </InfoRow>
+
+              <InfoRow label="Description">
+                <textarea
+                  ref={descriptionRef}
+                  rows={2}
+                  className={
+                    "w-full rounded border border-slate-300 px-3 py-1.5 text-xs outline-none " +
+                    "focus:border-[#1279C3] focus:ring-1 focus:ring-[#1279C3]/30 resize-none overflow-hidden"
+                  }
+                  value={form.description}
+                  onChange={handleChange("description")}
+                />
+              </InfoRow>
+
+              <InfoRow label="Price">
+                <input className={inputClass} value={form.price} onChange={handleChange("price")} />
+              </InfoRow>
+            </div>
+
+            {/* Buttons */}
+            <div className="mt-6 flex justify-center gap-4">
               <button
                 type="button"
                 onClick={onCancel}
-                className="min-w-[120px] rounded border border-red-200 bg-red-50 px-6 py-2 text-sm font-medium text-red-500 hover:bg-red-100"
+                disabled={saving}
+                className="min-w-[120px] rounded-md border border-red-200 bg-red-50 px-6 py-2 text-sm font-medium text-red-500 hover:bg-red-100 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleSaveClick}
-                className="min-w-[120px] rounded border border-emerald-200 bg-emerald-50 px-6 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-100"
+                disabled={saving}
+                className="min-w-[120px] rounded-md border border-emerald-200 bg-emerald-50 px-6 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-100 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Save
+                {saving ? "Saving..." : "Save"}
               </button>
             </div>
           </div>
@@ -248,16 +244,10 @@ export default function ProductNew({ onCancel, onSave }: ProductNewProps) {
   );
 }
 
-function InfoRow({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function InfoRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3 mb-1">
-      <div className="w-28 text-right text-xs text-slate-700">{label}:</div>
+      <div className="w-28 text-left text-xs text-slate-700">{label}:</div>
       <div className="flex-1">{children}</div>
     </div>
   );
