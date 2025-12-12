@@ -21,13 +21,14 @@ export function useEmployees(skip = 0, take = 100) {
           return allowed.has(role);
         });
         const mapped: EmployeeRow[] = filtered.map((u) => ({
+          id: u.id,
           name: u.fullName,
           imageUrl: u.imageUrl || "/img/avt.png",
           address: u.address ?? "",
           phone: u.phone,
           email: u.email,
           position: u.role ?? "",
-          bill: u.bill ?? 0,
+          bill: u.bill ?? 0
         }));
         employeeCache = mapped;
         setRows(mapped);

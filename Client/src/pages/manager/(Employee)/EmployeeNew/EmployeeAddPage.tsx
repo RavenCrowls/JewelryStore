@@ -1,36 +1,78 @@
-// src/pages/manager/(Employee)/EmployeeAdd.tsx
 import { useNavigate } from "react-router-dom";
 import EmployeeAdd from "../../../../components/Employee/EmployeeAdd/EmployeeAdd";
 import type { Employee } from "../../../../components/Employee/EmployeeProfile/EmployeeProfile";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { UserService } from "../../../../services/user.service";
+import { UploadService } from "../../../../services/upload.service";
 
 export default function EmployeeAddPage() {
   const navigate = useNavigate();
   const filterRef = useRef<HTMLDivElement | null>(null);
+  const [error, setError] = useState<string>("");
+  const [saving, setSaving] = useState(false);
 
-  const handleSave = (employee: Employee) => {
-    // TODO: call API create employee ở đây
-    console.log("Create employee:", employee);
+  const handleSave = async (employee: Employee, avatarFile: File | null) => {
+    setError("");
+    setSaving(true);
+    try {
+      // Format birthday to ISO string
+      let birthdayISO: string | null = null;
+      if (employee.birthday) {
+        const d = new Date(employee.birthday);
+        if (!isNaN(d.getTime())) {
+          birthdayISO = d.toISOString();
+        }
+      }
 
-    // quay lại trang danh sách employee
-    navigate("/manager/employee");
+      // Create user with default password
+      await UserService.createUser({
+        fullName: employee.name,
+        email: employee.email,
+        password: "12345678", // default password
+        phone: employee.phone,
+        address: employee.address || null,
+        birthday: birthdayISO,
+        status: true,
+        role: employee.position || undefined
+      });
+
+      // Get the created user ID by email (fetch user summary and find by email)
+      const users = await UserService.fetchUserSummary(0, 100);
+      const createdUser = users.find((u) => u.email === employee.email);
+
+      if (createdUser && avatarFile) {
+        // Upload avatar
+        const uploadedUrl = await UploadService.uploadImage(avatarFile);
+        await UserService.updateUserImage(createdUser.id, uploadedUrl);
+      }
+
+      // Navigate to employee list
+      navigate("/manager/employee");
+    } catch (e: any) {
+      setError(e?.message || "Failed to create user");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleCancel = () => {
-    navigate(-1); // quay lại trang trước
+    navigate("/manager/employee");
   };
 
   return (
     <div className="space-y-5 mt-3">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3 relative" ref={filterRef}>
-          <h2 className="text-xl font-semibold tracking-tight text-[#1279C3]">
-            Add New Employee
-          </h2>
+          <h2 className="text-xl font-semibold tracking-tight text-[#1279C3]">Add New User</h2>
         </div>
       </div>
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+          {error}
+        </div>
+      )}
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-        <EmployeeAdd onSave={handleSave} onCancel={handleCancel} />
+        <EmployeeAdd onSave={handleSave} onCancel={handleCancel} saving={saving} />
       </section>
     </div>
   );

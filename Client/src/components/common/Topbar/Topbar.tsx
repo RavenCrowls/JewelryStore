@@ -44,14 +44,6 @@ export default function Topbar() {
         >
           <LogOut className="h-4 w-4" />
         </button>
-
-        {/* Notification bell */}
-        <button
-          className="flex h-8 w-8 items-center justify-center rounded-md border border-[#DDE4F0] text-[#1279C3] hover:bg-[#1279C3]/5"
-          title="Notifications"
-        >
-          <Bell className="h-4 w-4" />
-        </button>
       </div>
     </header>
   );

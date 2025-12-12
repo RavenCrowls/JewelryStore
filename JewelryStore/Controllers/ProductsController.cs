@@ -138,9 +138,9 @@ namespace JewelryStore.Controllers
 
                 return CreatedAtAction(nameof(GetById), new { id = model.Id }, model);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, new { error = "error creating product" });
+                return StatusCode(500, new { error = "error creating product", details = ex.Message });
             }
         }
 

@@ -49,10 +49,6 @@ export default function Order() {
     return () => controller.abort();
   }, []);
 
-  const handleView = (row: OrderRow) => {
-    navigate(`/manager/order/${row.order}`);
-  };
-
   return (
     <div className="space-y-5 mt-3">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -66,7 +62,7 @@ export default function Order() {
         </div>
       </div>
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-        {error ? <div className="text-sm text-red-600">{error}</div> : <OrderTable rows={rows} onView={handleView} />}
+        {error ? <div className="text-sm text-red-600">{error}</div> : <OrderTable rows={rows} />}
       </section>
     </div>
   );

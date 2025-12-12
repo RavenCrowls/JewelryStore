@@ -1,3 +1,27 @@
+async function resetPassword(id: number, newPassword: string): Promise<void> {
+  const url = buildUrl(`/api/users/${id}/reset-password`);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify({ password: newPassword })
+  });
+  if (!res.ok) {
+    let message = `Failed to reset password (${res.status})`;
+    try {
+      const data = await res.json();
+      if (typeof data?.error === "string" && data.error.trim().length > 0) {
+        message = data.error;
+      }
+    } catch {
+      // ignore parse errors
+    }
+    throw new Error(message);
+  }
+}
 const API_BASE_URL: string | undefined = (import.meta as any)?.env?.VITE_API_BASE_URL || undefined;
 
 function buildUrl(path: string): string {
@@ -15,6 +39,7 @@ export type CreateUserDto = {
   address?: string | null;
   birthday?: string | null; // ISO string
   status?: boolean;
+  role?: string;
 };
 
 export type UserImageResponse = {
@@ -42,10 +67,7 @@ export type UpdateUserDto = {
   status: boolean;
 };
 
-async function createUser(
-  dto: CreateUserDto,
-  options?: { signal?: AbortSignal }
-): Promise<void> {
+async function createUser(dto: CreateUserDto, options?: { signal?: AbortSignal }): Promise<void> {
   const url = buildUrl("/api/Users");
   const response = await fetch(url, {
     method: "POST",
@@ -61,7 +83,8 @@ async function createUser(
       phone: dto.phone ?? "",
       address: dto.address ?? null,
       birthday: dto.birthday ?? null,
-      status: dto.status ?? true
+      status: dto.status ?? true,
+      role: dto.role ?? undefined
     }),
     signal: options?.signal
   });
@@ -146,10 +169,7 @@ async function updateUserImage(
   }
 }
 
-async function getUserById(
-  id: number,
-  options?: { signal?: AbortSignal }
-): Promise<UserProfile> {
+async function getUserById(id: number, options?: { signal?: AbortSignal }): Promise<UserProfile> {
   const url = buildUrl(`/api/users/${id}`);
   const res = await fetch(url, {
     method: "GET",
@@ -236,7 +256,8 @@ export const UserService = {
   getUserById,
   updateUser,
   updateUserImage,
-  fetchUserSummary
+  fetchUserSummary,
+  resetPassword
 };
 
 export type UserSummary = {

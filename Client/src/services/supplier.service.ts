@@ -7,7 +7,11 @@ export type SupplierDto = {
   phone: string;
 };
 
-async function fetchSuppliers(skip = 0, take = 100, options?: { signal?: AbortSignal }): Promise<SupplierDto[]> {
+async function fetchSuppliers(
+  skip = 0,
+  take = 100,
+  options?: { signal?: AbortSignal }
+): Promise<SupplierDto[]> {
   let url: string;
   if (API_BASE_URL) {
     const u = new URL("/api/suppliers", API_BASE_URL);
@@ -22,17 +26,98 @@ async function fetchSuppliers(skip = 0, take = 100, options?: { signal?: AbortSi
     method: "GET",
     headers: { Accept: "application/json" },
     credentials: "include",
-    signal: options?.signal,
+    signal: options?.signal
   });
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(`Failed to fetch suppliers: ${res.status} ${res.statusText}${body ? ` - ${body}` : ""}`);
+    throw new Error(
+      `Failed to fetch suppliers: ${res.status} ${res.statusText}${body ? ` - ${body}` : ""}`
+    );
   }
 
   return (await res.json()) as SupplierDto[];
 }
 
+async function createSupplier(dto: {
+  name: string;
+  address: string;
+  phone: string;
+}): Promise<void> {
+  const url = API_BASE_URL ? new URL("/api/suppliers", API_BASE_URL).toString() : "/api/suppliers";
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify(dto)
+  });
+  if (!res.ok) {
+    let message = `Failed to create supplier (${res.status})`;
+    try {
+      const data = await res.json();
+      if (typeof data?.error === "string" && data.error.trim().length > 0) {
+        message = data.error;
+      }
+    } catch {}
+    throw new Error(message);
+  }
+}
+
+async function updateSupplier(
+  id: string,
+  dto: { name: string; address: string; phone: string }
+): Promise<void> {
+  const url = API_BASE_URL
+    ? new URL(`/api/suppliers/${id}`, API_BASE_URL).toString()
+    : `/api/suppliers/${id}`;
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify(dto)
+  });
+  if (!res.ok) {
+    let message = `Failed to update supplier (${res.status})`;
+    try {
+      const data = await res.json();
+      if (typeof data?.error === "string" && data.error.trim().length > 0) {
+        message = data.error;
+      }
+    } catch {}
+    throw new Error(message);
+  }
+}
+
+async function deleteSupplier(id: string): Promise<void> {
+  const url = API_BASE_URL
+    ? new URL(`/api/suppliers/${id}`, API_BASE_URL).toString()
+    : `/api/suppliers/${id}`;
+  const res = await fetch(url, {
+    method: "DELETE",
+    headers: { Accept: "application/json" },
+    credentials: "include"
+  });
+  if (!res.ok) {
+    let message = `Failed to delete supplier (${res.status})`;
+    try {
+      const data = await res.json();
+      if (typeof data?.error === "string" && data.error.trim().length > 0) {
+        message = data.error;
+      }
+    } catch {}
+    throw new Error(message);
+  }
+}
+
 export const SupplierService = {
   fetchSuppliers,
+  createSupplier,
+  updateSupplier,
+  deleteSupplier
 };

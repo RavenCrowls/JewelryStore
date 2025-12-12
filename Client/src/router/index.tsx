@@ -94,16 +94,16 @@ const AppRouter = () => {
         {/* /manager/employee */}
         <Route path="employee" element={<Employee />} />
         {/* /manager/employee/employeeinfo */}
-        <Route path="employee/:name" element={<EmployeeDetail />} />
-        {/* /manager/employee/employeeinfo */}
-        <Route path="employee/add" element={<EmployeeAddPage />} />
+        <Route path="employee/:id" element={<EmployeeDetail />} />
+        {/* /manager/user/add */}
+        <Route path="user/add" element={<EmployeeAddPage />} />
 
         {/* /manager/customer*/}
         <Route path="customer" element={<Customer />} />
-        {/* /manager/detail*/}
-        <Route path="customer/:name" element={<CustomerDetail />} />
-        {/* /manager/detail/bill*/}
-        <Route path="customer/:name/:id" element={<Bill />} />
+        {/* /manager/customer/:id */}
+        <Route path="customer/:id" element={<CustomerDetail />} />
+        {/* /manager/customer/:id/bill/:billId */}
+        <Route path="customer/:id/:billId" element={<Bill />} />
 
         {/* /manager/supplier*/}
         <Route path="supplier" element={<Supplier />} />

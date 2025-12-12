@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PriceFilterPopup from "../../../../components/common/PriceFilterPopup/PriceFilterPopup";
-import ProductTable, { type ProductRow } from "../../../../components/Product/ProductTable/ProductTable";
+import ProductTable, {
+  type ProductRow
+} from "../../../../components/Product/ProductTable/ProductTable";
 import { ProductService } from "../../../../services";
 
 let productCache: ProductRow[] = [];
@@ -12,12 +14,15 @@ export default function Product() {
   const filterRef = useRef<HTMLDivElement | null>(null);
   const [rows, setRows] = useState<ProductRow[]>(productCache);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
     const load = async () => {
       try {
-        const data = await ProductService.fetchProductPreview(0, 100, { signal: controller.signal });
+        const data = await ProductService.fetchProductPreview(0, 100, {
+          signal: controller.signal
+        });
         const mapped: ProductRow[] = data.map((p) => ({
           productId: p.id,
           id: `PR${p.id.toString().padStart(4, "0")}`,
@@ -27,7 +32,7 @@ export default function Product() {
           category: p.categoryName,
           price: p.price,
           quantity: p.quantity,
-          currency: "VND",
+          currency: "VND"
         }));
         productCache = mapped;
         setRows(mapped);
@@ -60,6 +65,16 @@ export default function Product() {
     navigate("/manager/product/add");
   };
 
+  const filteredRows = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return rows;
+    return rows.filter((row) =>
+      [row.name, row.category]
+        .filter(Boolean)
+        .some((value) => value!.toString().toLowerCase().includes(term))
+    );
+  }, [rows, searchTerm]);
+
   return (
     <div className="space-y-5 mt-3">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -74,9 +89,16 @@ export default function Product() {
           </button>
 
           {/* Popup price-range */}
-          <PriceFilterPopup
-            isOpen={isDateOpen}
-            className="top-1 left-20"
+          <PriceFilterPopup isOpen={isDateOpen} className="top-1 left-20" />
+        </div>
+
+        <div className="flex-1 min-w-[240px] max-w-xl">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by name or category"
+            className="w-full rounded-xl border border-slate-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
           />
         </div>
 
@@ -98,7 +120,7 @@ export default function Product() {
         {error ? (
           <div className="text-red-600 text-sm">{error}</div>
         ) : (
-          <ProductTable rows={rows} onRowClick={handleViewProduct} />
+          <ProductTable rows={filteredRows} onRowClick={handleViewProduct} />
         )}
       </section>
     </div>

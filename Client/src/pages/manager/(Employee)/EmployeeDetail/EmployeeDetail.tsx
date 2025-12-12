@@ -1,41 +1,23 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import { useParams } from "react-router-dom";
+import { useEmployeeDetail } from "../../../../hooks/useEmployeeDetail";
 import EmployeeProfile from "../../../../components/Employee/EmployeeProfile/EmployeeProfile";
 import EmployeeProfileEdit from "../../../../components/Employee/EmployeeProfileEdit/EmployeeProfileEdit";
 import { type Employee } from "../../../../components/Employee/EmployeeProfile/EmployeeProfile";
+import { UserService } from "../../../../services/user.service";
 
-const initialEmployee: Employee = {
-  avatarUrl: "/img/avt.png",
-  name: "Employee1",
-  address: "235 Tân Lập, Đông Hòa, Dĩ An, Bình Dương",
-  phone: "0123456789",
-  email: "em1@gmail.com",
-  birthday: "1999-01-01", // với input type="date" dùng format YYYY-MM-DD
-  position: "Manager",
-  account: "em1@123",
-};
+// initialEmployee removed, handled in hook
 
 export default function EmployeeDetail() {
   const filterRef = useRef<HTMLDivElement | null>(null);
+  const { id } = useParams();
 
-  const [employee, setEmployee] = useState<Employee>(initialEmployee);
-  const [draft, setDraft] = useState<Employee>(initialEmployee);
-  const [isEditing, setIsEditing] = useState(false);
+  const { employee, loading, error } = useEmployeeDetail(id);
 
-  // bấm nút Edit ở màn view
-  const handleEdit = () => {
-    setDraft(employee);      // copy dữ liệu hiện tại sang form
-    setIsEditing(true);
-  };
-
-  const handleCancel = () => {
-    setDraft(employee);      // reset về dữ liệu gốc
-    setIsEditing(false);
-  };
-
-  const handleSave = () => {
-    // TODO: call API update ở đây nếu cần
-    setEmployee(draft);      // cập nhật state chính
-    setIsEditing(false);
+  // Reset password handler
+  const handleResetPassword = async () => {
+    if (!id) throw new Error("No employee ID");
+    await UserService.resetPassword(Number(id), "12345678");
   };
 
   return (
@@ -49,19 +31,12 @@ export default function EmployeeDetail() {
       </div>
 
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-        {isEditing ? (
-          <EmployeeProfileEdit
-            value={draft}
-            onChange={setDraft}
-            onCancel={handleCancel}
-            onSave={handleSave}
-          />
+        {loading ? (
+          <div className="text-center py-10 text-slate-400">Loading...</div>
+        ) : error ? (
+          <div className="text-center py-10 text-red-500">{error}</div>
         ) : (
-          <EmployeeProfile
-            employee={employee}
-            onEdit={handleEdit}
-            // onDelete / onResetPassword xử lý tương tự
-          />
+          <EmployeeProfile employee={employee} onResetPassword={handleResetPassword} />
         )}
       </section>
     </div>

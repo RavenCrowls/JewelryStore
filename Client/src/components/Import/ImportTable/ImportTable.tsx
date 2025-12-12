@@ -35,7 +35,10 @@ export default function ImportTable({ rows, onView }: ImportTableProps) {
                 : "border-b border-slate-100";
 
             return (
-              <tr key={row.id} className={`${bg} text-center`}>
+              <tr
+                key={row.id}
+                className={`${bg} text-center cursor-pointer hover:bg-blue-50 transition`}
+              >
                 {/* ID */}
                 <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-center align-middle">
                   {row.id}
@@ -54,9 +57,7 @@ export default function ImportTable({ rows, onView }: ImportTableProps) {
                 </td>
 
                 {/* Creator */}
-                <td className="px-4 py-3 text-xs text-slate-700">
-                  {row.creator}
-                </td>
+                <td className="px-4 py-3 text-xs text-slate-700">{row.creator}</td>
 
                 {/* Actions */}
                 <td className="px-4 py-3">

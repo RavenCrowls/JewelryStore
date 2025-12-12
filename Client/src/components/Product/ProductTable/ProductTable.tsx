@@ -16,8 +16,7 @@ type ProductTableProps = {
 };
 
 import { displayOrDash } from "../../../utils/display";
-export default function ProductTable({ rows, onRowClick}: ProductTableProps) {
-
+export default function ProductTable({ rows, onRowClick }: ProductTableProps) {
   return (
     <div>
       <div className="overflow-x-auto">
@@ -43,7 +42,7 @@ export default function ProductTable({ rows, onRowClick}: ProductTableProps) {
               return (
                 <tr
                   key={row.id}
-                  className={`${bg} cursor-pointer`}
+                  className={`${bg} cursor-pointer hover:bg-blue-50 transition`}
                   onClick={() => onRowClick?.(row)}
                 >
                   {/* ID */}
@@ -79,11 +78,14 @@ export default function ProductTable({ rows, onRowClick}: ProductTableProps) {
 
                   {/* Price */}
                   <td className="px-4 py-3 text-xs text-slate-700 text-right">
-                    {row.price.toLocaleString("vi-VN", { maximumFractionDigits: 0 })} {row.currency ?? "VND"}
+                    {row.price.toLocaleString("vi-VN", { maximumFractionDigits: 0 })}{" "}
+                    {row.currency ?? "VND"}
                   </td>
 
                   {/* Quantity */}
-                  <td className="px-4 py-3 text-xs text-slate-700 text-center rounded-r-xl">{row.quantity}</td>
+                  <td className="px-4 py-3 text-xs text-slate-700 text-center rounded-r-xl">
+                    {row.quantity}
+                  </td>
                 </tr>
               );
             })}

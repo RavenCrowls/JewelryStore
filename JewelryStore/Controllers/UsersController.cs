@@ -23,7 +23,7 @@ namespace JewelryStore.Controllers
         public record UserListItemDto(int Id, string FullName, string Email, string Phone, string? Address, DateTime? Birthday, bool Status);
         public record UserDetailDto(int Id, string FullName, string Email, string Phone, string? Address, DateTime? Birthday, bool Status, string? Role);
         public record UserSummaryDto(int Id, string FullName, string Email, string Phone, string? Address, DateTime? Birthday, string? Role, string? ImageUrl, string Account, int Bill);
-        public record CreateUserDto(string FullName, string Email, string Password, string Phone, string? Address, DateTime? Birthday, bool Status = true);
+        public record CreateUserDto(string FullName, string Email, string Password, string Phone, string? Address, DateTime? Birthday, bool Status = true, string? Role = null);
         public record UpdateUserDto(string FullName, string Email, string Phone, string? Address, DateTime? Birthday, bool Status);
 
         [HttpGet]
@@ -137,7 +137,8 @@ namespace JewelryStore.Controllers
                     });
                 }
 
-                await _userManager.AddToRoleAsync(user, "customer");
+                var roleToAssign = string.IsNullOrWhiteSpace(dto.Role) ? "customer" : dto.Role;
+                await _userManager.AddToRoleAsync(user, roleToAssign);
 
                 return CreatedAtAction(nameof(GetById), new { id = user.Id }, new UserListItemDto(user.Id, user.FullName, user.Email ?? string.Empty, user.PhoneNumber ?? string.Empty, user.Address, user.Birthday, user.Status));
             }
@@ -204,5 +205,28 @@ namespace JewelryStore.Controllers
                 return StatusCode(500, new { error = "Error deleting user" });
             }
         }
+
+        [HttpPost("{id:int}/reset-password")]
+        public async Task<IActionResult> ResetPassword([FromRoute] int id, [FromBody] ResetPasswordDto dto)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id.ToString());
+                if (user == null) return NotFound(new { error = "User not found" });
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, token, dto.Password);
+                if (!result.Succeeded)
+                {
+                    return BadRequest(new { error = "Error resetting password", details = result.Errors.Select(e => new { e.Code, e.Description }) });
+                }
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "Error resetting password" });
+            }
+        }
+
+        public record ResetPasswordDto(string Password);
     }
 }
