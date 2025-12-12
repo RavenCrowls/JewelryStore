@@ -5,6 +5,7 @@ import useProductImagesManager from "../../../hooks/useProductImagesManager";
 import type { ProductDetail, CategoryDto } from "../../../services";
 import type { ProductRow } from "../ProductTable/ProductTable";
 import { Image } from "lucide-react";
+import InfoRow from "../../common/InfoRow/InfoRow";
 
 export type ProductForm = {
   name: string;
@@ -256,20 +257,5 @@ export default function EditProduct({
         </div>
       </div>
     </section>
-  );
-}
-
-function InfoRow({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-center gap-3 mb-1">
-      <div className="w-28 text-left text-xs text-slate-700">{label}:</div>
-      <div className="flex-1">{children}</div>
-    </div>
   );
 }
