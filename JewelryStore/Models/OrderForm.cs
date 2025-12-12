@@ -9,7 +9,7 @@ namespace JewelryStore.Data
         public int? StaffId { get; set; }
         public decimal TotalPrice { get; set; }
         public DateTime DateCreated { get; set; }
-        public string Status { get; set; } = string.Empty;
+        public string Status { get; set; } = "0";
         public string ShippingAddress { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
 

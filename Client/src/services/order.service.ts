@@ -19,7 +19,18 @@ export type OrderSummary = {
   status: string;
 };
 
-async function fetchOrders(skip = 0, take = 100, options?: { signal?: AbortSignal }): Promise<OrderDto[]> {
+export type OrderDetailDto = {
+  orderId: number;
+  productId: number;
+  quantity: number;
+  priceAtSale: number;
+};
+
+async function fetchOrders(
+  skip = 0,
+  take = 100,
+  options?: { signal?: AbortSignal }
+): Promise<OrderDto[]> {
   let url: string;
   if (API_BASE_URL) {
     const u = new URL("/api/orders", API_BASE_URL);
@@ -34,18 +45,24 @@ async function fetchOrders(skip = 0, take = 100, options?: { signal?: AbortSigna
     method: "GET",
     headers: { Accept: "application/json" },
     credentials: "include",
-    signal: options?.signal,
+    signal: options?.signal
   });
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(`Failed to fetch orders: ${res.status} ${res.statusText}${body ? ` - ${body}` : ""}`);
+    throw new Error(
+      `Failed to fetch orders: ${res.status} ${res.statusText}${body ? ` - ${body}` : ""}`
+    );
   }
 
   return (await res.json()) as OrderDto[];
 }
 
-async function fetchOrderSummary(skip = 0, take = 100, options?: { signal?: AbortSignal }): Promise<OrderSummary[]> {
+async function fetchOrderSummary(
+  skip = 0,
+  take = 100,
+  options?: { signal?: AbortSignal }
+): Promise<OrderSummary[]> {
   let url: string;
   if (API_BASE_URL) {
     const u = new URL("/api/orders/summary", API_BASE_URL);
@@ -60,18 +77,111 @@ async function fetchOrderSummary(skip = 0, take = 100, options?: { signal?: Abor
     method: "GET",
     headers: { Accept: "application/json" },
     credentials: "include",
-    signal: options?.signal,
+    signal: options?.signal
   });
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(`Failed to fetch order summary: ${res.status} ${res.statusText}${body ? ` - ${body}` : ""}`);
+    throw new Error(
+      `Failed to fetch order summary: ${res.status} ${res.statusText}${body ? ` - ${body}` : ""}`
+    );
   }
 
   return (await res.json()) as OrderSummary[];
 }
 
+async function fetchOrderById(id: number, options?: { signal?: AbortSignal }): Promise<OrderDto> {
+  const url = API_BASE_URL
+    ? new URL(`/api/orders/${id}`, API_BASE_URL).toString()
+    : `/api/orders/${id}`;
+
+  const res = await fetch(url, {
+    method: "GET",
+    headers: { Accept: "application/json" },
+    credentials: "include",
+    signal: options?.signal
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(
+      `Failed to fetch order: ${res.status} ${res.statusText}${body ? ` - ${body}` : ""}`
+    );
+  }
+
+  return (await res.json()) as OrderDto;
+}
+
+async function fetchOrderDetails(
+  orderId: number,
+  options?: { signal?: AbortSignal }
+): Promise<OrderDetailDto[]> {
+  const url = API_BASE_URL
+    ? new URL(`/api/orders/${orderId}/details`, API_BASE_URL).toString()
+    : `/api/orders/${orderId}/details`;
+
+  const res = await fetch(url, {
+    method: "GET",
+    headers: { Accept: "application/json" },
+    credentials: "include",
+    signal: options?.signal
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(
+      `Failed to fetch order details: ${res.status} ${res.statusText}${body ? ` - ${body}` : ""}`
+    );
+  }
+
+  return (await res.json()) as OrderDetailDto[];
+}
+
+async function completeOrder(orderId: number, payload?: { staffId: number }): Promise<void> {
+  const url = API_BASE_URL
+    ? new URL(`/api/orders/${orderId}/complete`, API_BASE_URL).toString()
+    : `/api/orders/${orderId}/complete`;
+
+  const res = await fetch(url, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: payload ? JSON.stringify(payload) : undefined
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(
+      `Failed to complete order: ${res.status} ${res.statusText}${body ? ` - ${body}` : ""}`
+    );
+  }
+}
+
+async function rejectOrder(orderId: number, payload?: { staffId: number }): Promise<void> {
+  const url = API_BASE_URL
+    ? new URL(`/api/orders/${orderId}/reject`, API_BASE_URL).toString()
+    : `/api/orders/${orderId}/reject`;
+
+  const res = await fetch(url, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: payload ? JSON.stringify(payload) : undefined
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(
+      `Failed to reject order: ${res.status} ${res.statusText}${body ? ` - ${body}` : ""}`
+    );
+  }
+}
+
 export const OrderService = {
   fetchOrders,
   fetchOrderSummary,
+  fetchOrderById,
+  fetchOrderDetails,
+  completeOrder,
+  rejectOrder
 };

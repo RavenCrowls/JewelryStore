@@ -10,11 +10,11 @@ const formatDate = (iso?: string) => {
   return d.toLocaleDateString("vi-VN");
 };
 
-const toState = (status?: string) => {
-  const s = (status ?? "").toLowerCase();
-  if (s.includes("hoàn") || s.includes("thành")) return "success" as const;
-  if (s.includes("chờ") || s.includes("pending")) return "pending" as const;
-  return "failed" as const;
+const toState = (status?: string): "0" | "1" | "2" => {
+  // Map status: "0" = pending, "1" = completed, "2" = rejected
+  if (status === "1") return "1";
+  if (status === "2") return "2";
+  return "0"; // default to pending
 };
 
 let orderCache: OrderRow[] = [];
@@ -37,7 +37,7 @@ export default function Order() {
           date: formatDate(o.dateCreated),
           total: o.totalPrice,
           currency: "VND",
-          state: toState(o.status),
+          state: toState(o.status)
         }));
         orderCache = mapped;
         setRows(mapped);
@@ -48,6 +48,12 @@ export default function Order() {
     })();
     return () => controller.abort();
   }, []);
+
+  // Handler to extract numeric order ID from formatted order string (e.g., "OR0001" -> "1")
+  const handleRowClick = (row: OrderRow) => {
+    const numericId = parseInt(row.order.replace(/\D/g, ""), 10);
+    navigate(`/manager/order/${numericId}`);
+  };
 
   return (
     <div className="space-y-5 mt-3">
@@ -62,9 +68,12 @@ export default function Order() {
         </div>
       </div>
       <section className="bg-white rounded-2xl p-6 shadow-sm">
-        {error ? <div className="text-sm text-red-600">{error}</div> : <OrderTable rows={rows} />}
+        {error ? (
+          <div className="text-sm text-red-600">{error}</div>
+        ) : (
+          <OrderTable rows={rows} onRowClick={handleRowClick} />
+        )}
       </section>
     </div>
   );
 }
-

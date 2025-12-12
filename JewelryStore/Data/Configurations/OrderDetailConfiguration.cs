@@ -14,6 +14,7 @@ namespace JewelryStore.Data.Configurations
             entity.Property(od => od.ProductId).HasColumnName("product_id");
             entity.Property(od => od.Quantity).HasColumnName("quantity").IsRequired();
             entity.Property(od => od.PriceAtSale).HasColumnName("price_at_sale").HasColumnType("numeric(18,2)").IsRequired();
+            entity.Property(od => od.TotalPrice).HasColumnName("total_price").HasColumnType("numeric(18,2)").IsRequired();
 
             entity.HasOne(od => od.Order)
                 .WithMany()
