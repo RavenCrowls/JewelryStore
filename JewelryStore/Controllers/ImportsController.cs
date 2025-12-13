@@ -119,8 +119,15 @@ namespace JewelryStore.Controllers
             try
             {
                 model.ImportId = importId;
+                var product = await _db.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == model.ProductId);
+                if (product == null) return BadRequest(new { error = "Product not found" });
+                model.ImportPrice = product.Price;
+                model.TotalPrice = model.ImportPrice * model.Quantity;
                 _db.ImportDetails.Add(model);
                 await _db.SaveChangesAsync();
+
+                await UpdateImportTotalPrice(importId);
+
                 return Created($"api/imports/{importId}/details", model);
             }
             catch (Exception)
@@ -138,12 +145,23 @@ namespace JewelryStore.Controllers
                 if (item == null) return NotFound(new { error = "import detail not found" });
                 _db.ImportDetails.Remove(item);
                 await _db.SaveChangesAsync();
+
+                await UpdateImportTotalPrice(importId);
+
                 return NoContent();
             }
             catch (Exception)
             {
                 return StatusCode(500, new { error = "error deleting import detail" });
             }
+        }
+        private async Task UpdateImportTotalPrice(int importId)
+        {
+            var import = await _db.ImportForms.FirstOrDefaultAsync(i => i.Id == importId);
+            if (import == null) return;
+            var total = await _db.ImportDetails.Where(d => d.ImportId == importId).SumAsync(d => d.TotalPrice);
+            import.TotalPrice = total;
+            await _db.SaveChangesAsync();
         }
     }
 }

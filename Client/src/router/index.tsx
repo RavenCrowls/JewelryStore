@@ -19,6 +19,7 @@ import Customer from "../pages/manager/(Customer)/Customer/Customer";
 import CustomerDetail from "../pages/manager/(Customer)/CustomerDetail/CustomerDetail";
 import Bill from "../pages/manager/(Customer)/Bill/Bill";
 import Import from "../pages/manager/(Import)/Import/Import";
+import AddImport from "../pages/manager/(Import)/AddImport/AddImport";
 import Order from "../pages/manager/(Order)/Order/Order";
 import OrderDetail from "../pages/manager/(Order)/OrderDetail/OrderDetail";
 import ImportDetail from "../pages/manager/(Import)/ImportDetail/ImportDetail";
@@ -111,7 +112,9 @@ const AppRouter = () => {
 
         {/* /manager/import*/}
         <Route path="import" element={<Import />} />
-        {/* /manager/detail*/}
+        {/* /manager/import/new */}
+        <Route path="import/new" element={<AddImport />} />
+        {/* /manager/import/:lot*/}
         <Route path="import/:lot" element={<ImportDetail />} />
 
         {/* /manager/order*/}

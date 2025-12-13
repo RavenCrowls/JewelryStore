@@ -9,10 +9,10 @@ export type ImportRow = {
 
 type ImportTableProps = {
   rows: ImportRow[];
-  onView?: (row: ImportRow) => void;
+  onRowClick?: (row: ImportRow) => void;
 };
 
-export default function ImportTable({ rows, onView }: ImportTableProps) {
+export default function ImportTable({ rows, onRowClick }: ImportTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full text-sm text-center">
@@ -22,8 +22,7 @@ export default function ImportTable({ rows, onView }: ImportTableProps) {
             <th className="px-4 py-3 font-medium text-center align-middle">Supplier</th>
             <th className="px-4 py-3 font-medium text-center align-middle">Date</th>
             <th className="px-4 py-3 font-medium text-center align-middle">Total</th>
-            <th className="px-4 py-3 font-medium text-center align-middle">Creator</th>
-            <th className="px-4 py-3 rounded-r-xl font-medium text-center align-middle">Actions</th>
+            <th className="px-4 py-3 rounded-r-xl font-medium text-center align-middle">Creator</th>
           </tr>
         </thead>
 
@@ -38,6 +37,7 @@ export default function ImportTable({ rows, onView }: ImportTableProps) {
               <tr
                 key={row.id}
                 className={`${bg} text-center cursor-pointer hover:bg-blue-50 transition`}
+                onClick={() => onRowClick?.(row)}
               >
                 {/* ID */}
                 <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-center align-middle">
@@ -58,16 +58,6 @@ export default function ImportTable({ rows, onView }: ImportTableProps) {
 
                 {/* Creator */}
                 <td className="px-4 py-3 text-xs text-slate-700">{row.creator}</td>
-
-                {/* Actions */}
-                <td className="px-4 py-3">
-                  <button
-                    className="rounded-md border border-[#DDE4F0] px-5 py-1 text-xs font-medium text-[#1279C3] hover:bg-[#1279C3]/5"
-                    onClick={() => onView?.(row)}
-                  >
-                    View
-                  </button>
-                </td>
               </tr>
             );
           })}
