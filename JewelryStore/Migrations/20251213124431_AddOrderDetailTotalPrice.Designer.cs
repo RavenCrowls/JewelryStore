@@ -3,6 +3,7 @@ using System;
 using JewelryStore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JewelryStore.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251213124431_AddOrderDetailTotalPrice")]
+    partial class AddOrderDetailTotalPrice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -214,9 +217,6 @@ namespace JewelryStore.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("quantity");
 
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("numeric");
-
                     b.HasKey("ImportId", "ProductId")
                         .HasName("PK_import_details");
 
@@ -299,10 +299,6 @@ namespace JewelryStore.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("integer")
                         .HasColumnName("quantity");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("numeric(18,2)")
-                        .HasColumnName("total_price");
 
                     b.HasKey("OrderId", "ProductId")
                         .HasName("PK_order_details");

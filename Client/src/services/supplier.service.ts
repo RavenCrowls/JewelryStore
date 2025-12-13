@@ -39,6 +39,31 @@ async function fetchSuppliers(
   return (await res.json()) as SupplierDto[];
 }
 
+async function getSupplierById(
+  id: number,
+  options?: { signal?: AbortSignal }
+): Promise<SupplierDto> {
+  const url = API_BASE_URL
+    ? new URL(`/api/suppliers/${id}`, API_BASE_URL).toString()
+    : `/api/suppliers/${id}`;
+
+  const res = await fetch(url, {
+    method: "GET",
+    headers: { Accept: "application/json" },
+    credentials: "include",
+    signal: options?.signal
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(
+      `Failed to fetch supplier: ${res.status} ${res.statusText}${body ? ` - ${body}` : ""}`
+    );
+  }
+
+  return (await res.json()) as SupplierDto;
+}
+
 async function createSupplier(dto: {
   name: string;
   address: string;
@@ -117,6 +142,7 @@ async function deleteSupplier(id: string): Promise<void> {
 
 export const SupplierService = {
   fetchSuppliers,
+  getSupplierById,
   createSupplier,
   updateSupplier,
   deleteSupplier

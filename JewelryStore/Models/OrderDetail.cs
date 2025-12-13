@@ -7,6 +7,8 @@ namespace JewelryStore.Data
         public int Quantity { get; set; }
         public decimal PriceAtSale { get; set; }
 
+        public decimal TotalPrice { get; set; }
+
         public OrderForm? Order { get; set; }
         public Product? Product { get; set; }
     }

@@ -1,6 +1,6 @@
 import { displayOrDash } from "../../../utils/display";
 
-export type OrderState = "pending" | "success" | "failed";
+export type OrderState = "0" | "1" | "2";
 
 export type OrderRow = {
   order: string;
@@ -13,9 +13,10 @@ export type OrderRow = {
 
 type OrderTableProps = {
   rows: OrderRow[];
+  onRowClick?: (row: OrderRow) => void;
 };
 
-export default function OrderTable({ rows }: OrderTableProps) {
+export default function OrderTable({ rows, onRowClick }: OrderTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full text-sm text-center">
@@ -39,14 +40,15 @@ export default function OrderTable({ rows }: OrderTableProps) {
             let stateIcon = "";
             let stateBorder = "";
 
-            if (row.state === "pending") {
-              stateIcon = "/img/loading.png";
+            // Map numeric state to icon and border
+            if (row.state == "0") {
+              stateIcon = "/img/loading.png"; // pending
               stateBorder = "border-[#1279C3]";
-            } else if (row.state === "success") {
-              stateIcon = "/img/success.png";
+            } else if (row.state == "1") {
+              stateIcon = "/img/success.png"; // completed
               stateBorder = "border-[#2ECC71]";
             } else {
-              stateIcon = "/img/failed.png";
+              stateIcon = "/img/failed.png"; // rejected
               stateBorder = "border-[#E74C3C]";
             }
 
@@ -54,6 +56,7 @@ export default function OrderTable({ rows }: OrderTableProps) {
               <tr
                 key={row.order}
                 className={`${bg} text-center cursor-pointer hover:bg-blue-50 transition`}
+                onClick={() => onRowClick?.(row)}
               >
                 <td className="px-4 py-3 text-xs font-semibold text-slate-700 text-center align-middle">
                   {row.order}

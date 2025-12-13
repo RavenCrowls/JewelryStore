@@ -16,6 +16,7 @@ namespace JewelryStore.Controllers
         public OrdersController(AppDbContext db) => _db = db;
 
         public record OrderSummaryDto(int Id, string CustomerName, decimal TotalPrice, DateTime DateCreated, string Status);
+        public record StaffActionDto(int StaffId);
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderForm>>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 50)
@@ -100,11 +101,14 @@ namespace JewelryStore.Controllers
 
                 exists.UserId = model.UserId;
                 exists.StaffId = model.StaffId;
-                exists.TotalPrice = model.TotalPrice;
                 exists.DateCreated = model.DateCreated;
                 exists.Status = model.Status;
                 exists.ShippingAddress = model.ShippingAddress;
                 exists.PhoneNumber = model.PhoneNumber;
+
+                // Recalculate total price from details
+                var details = await _db.Set<OrderDetail>().Where(d => d.OrderId == id).ToListAsync();
+                exists.TotalPrice = details.Sum(d => d.TotalPrice);
 
                 await _db.SaveChangesAsync();
                 return NoContent();
@@ -112,6 +116,48 @@ namespace JewelryStore.Controllers
             catch (Exception)
             {
                 return StatusCode(500, new { error = "error updating order" });
+            }
+        }
+
+        [HttpPatch("{id:int}/complete")]
+        public async Task<IActionResult> CompleteOrder([FromRoute] int id, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] StaffActionDto? dto)
+        {
+            try
+            {
+                var order = await _db.Orders.FirstOrDefaultAsync(c => c.Id == id);
+                if (order == null) return NotFound(new { error = "order not found" });
+                order.Status = "1";
+                if (dto?.StaffId != null && dto.StaffId > 0)
+                {
+                    order.StaffId = dto.StaffId;
+                }
+                await _db.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "error completing order", details = ex.Message });
+            }
+        }
+
+        [HttpPatch("{id:int}/reject")]
+        public async Task<IActionResult> RejectOrder([FromRoute] int id, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] StaffActionDto? dto)
+        {
+            try
+            {
+                var order = await _db.Orders.FirstOrDefaultAsync(c => c.Id == id);
+                if (order == null) return NotFound(new { error = "order not found" });
+                order.Status = "2";
+                if (dto?.StaffId != null && dto.StaffId > 0)
+                {
+                    order.StaffId = dto.StaffId;
+                }
+                await _db.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "error rejecting order", details = ex.Message });
             }
         }
 
@@ -138,7 +184,17 @@ namespace JewelryStore.Controllers
             try
             {
                 var items = await _db.Set<OrderDetail>().AsNoTracking().Where(d => d.OrderId == orderId).ToListAsync();
-                return Ok(items);
+                var result = items.Select(d => new
+                {
+                    d.OrderId,
+                    d.ProductId,
+                    d.Quantity,
+                    d.PriceAtSale,
+                    total_price = d.TotalPrice, // Use the real column
+                    d.Order,
+                    d.Product
+                });
+                return Ok(result);
             }
             catch (Exception)
             {
@@ -152,8 +208,22 @@ namespace JewelryStore.Controllers
             try
             {
                 model.OrderId = orderId;
+                var product = await _db.Products.FirstOrDefaultAsync(p => p.Id == model.ProductId);
+                if (product == null)
+                {
+                    return NotFound(new { error = "product not found" });
+                }
+                model.PriceAtSale = product.Price;
+                model.TotalPrice = model.PriceAtSale * model.Quantity;
                 _db.Set<OrderDetail>().Add(model);
                 await _db.SaveChangesAsync();
+                // Recalculate order total price
+                var order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+                if (order != null)
+                {
+                    order.TotalPrice = await _db.Set<OrderDetail>().Where(d => d.OrderId == orderId).SumAsync(d => d.TotalPrice);
+                    await _db.SaveChangesAsync();
+                }
                 return Created($"api/orders/{orderId}/details", model);
             }
             catch (Exception)
@@ -171,6 +241,13 @@ namespace JewelryStore.Controllers
                 if (item == null) return NotFound(new { error = "order detail not found" });
                 _db.Set<OrderDetail>().Remove(item);
                 await _db.SaveChangesAsync();
+                // Recalculate order total price
+                var order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+                if (order != null)
+                {
+                    order.TotalPrice = await _db.Set<OrderDetail>().Where(d => d.OrderId == orderId).SumAsync(d => d.TotalPrice);
+                    await _db.SaveChangesAsync();
+                }
                 return NoContent();
             }
             catch (Exception)
