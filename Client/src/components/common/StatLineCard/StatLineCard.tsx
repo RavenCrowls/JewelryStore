@@ -1,26 +1,16 @@
-import {
-  LineChart,
-  Line,
-  ResponsiveContainer,
-  XAxis,
-  Tooltip
-} from "recharts";
+import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip, Legend } from "recharts";
 
 type StatLineCardProps = {
   title: string;
-  total: number | string;
-  diffPercent: number;
-  diffLabel?: string;
-  isUp?: boolean;
   data: Array<{ [key: string]: any }>;
   currentKey: string;
   lastKey: string;
 };
 
-export function CompareLineChart({
+export function CompareBarChart({
   data,
   currentKey,
-  lastKey,
+  lastKey
 }: {
   data: Array<{ [key: string]: any }>;
   currentKey: string;
@@ -28,54 +18,30 @@ export function CompareLineChart({
 }) {
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <LineChart data={data}>
-        <XAxis dataKey="day" />
+      <BarChart
+        data={data}
+        barGap={6}
+        barCategoryGap="20%"
+        margin={{ top: 10, right: 20, left: 20, bottom: 10 }}
+      >
+        <XAxis dataKey="day" tick={{ fontSize: 12 }} />
         <Tooltip />
-        <Line
-          type="monotone"
-          dataKey={currentKey}
-          stroke="#3498db"
-          strokeWidth={3}
-        />
-        <Line
-          type="monotone"
-          dataKey={lastKey}
-          stroke="#bdc3c7"
-          strokeWidth={3}
-        />
-      </LineChart>
+        <Legend />
+        <Bar dataKey={currentKey} fill="#3498db" radius={[6, 6, 0, 0]} name="This Week" />
+        <Bar dataKey={lastKey} fill="#dcdcdc" radius={[6, 6, 0, 0]} name="Last Week" />
+      </BarChart>
     </ResponsiveContainer>
   );
 }
 
-const StatLineCard = ({
-  title,
-  total,
-  diffPercent,
-  diffLabel = "vs last week",
-  isUp = false,
-  data,
-  currentKey,
-  lastKey
-}: StatLineCardProps) => {
+const StatLineCard = ({ title, data, currentKey, lastKey }: StatLineCardProps) => {
   return (
-    <div className="bg-white p-6 rounded-xl shadow mr-6">
+    <div className="bg-white p-6 rounded-xl shadow">
       <h3 className="font-semibold text-lg">{title}</h3>
-      <p className="text-3xl font-bold mt-2">{total}</p>
-      <span
-        className={`text-sm ${
-          isUp ? "text-green-600" : "text-red-600"
-        }`}
-      >
-        {isUp ? "↑" : "↓"} {diffPercent}% {diffLabel}
-      </span>
+      <p className="text-xs text-gray-400 mb-4">Orders created per day</p>
 
       <div className="h-52 mt-4">
-        <CompareLineChart
-          data={data}
-          currentKey={currentKey}
-          lastKey={lastKey}
-        />
+        <CompareBarChart data={data} currentKey={currentKey} lastKey={lastKey} />
       </div>
     </div>
   );
