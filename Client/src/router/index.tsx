@@ -23,6 +23,9 @@ import CustomerLayout from "../layouts/CustomerLayout";
 import Home from "../pages/customer/Home";
 import ProductDetail from "../pages/customer/ProductDetail";
 import Cart from "../pages/customer/Cart";
+import { default as CustomerProfile } from "../pages/customer/Profile";
+import AccountInformation from "../pages/customer/Profile/components/AccountInformation";
+import ChangePassword from "../pages/customer/Profile/components/ChangePassword/ChangePassword";
 
 const AppRouter = () => {
   return (
@@ -57,6 +60,13 @@ const AppRouter = () => {
 
         {/* /cart */}
         <Route path="/cart" element={<Cart />} />
+
+        {/* /profile */}
+        <Route path="/profile" element={<CustomerProfile />}>
+          <Route index />
+          {/* /profile/change-password */}
+          <Route path="/profile/change-password" />
+        </Route>
       </Route>
 
       {/* Protected manager area */}

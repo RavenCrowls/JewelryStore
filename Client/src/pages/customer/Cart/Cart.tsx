@@ -1,15 +1,10 @@
-import {
-  CheckOutlined,
-  DoubleLeftOutlined,
-  ReloadOutlined,
-  RollbackOutlined
-} from "@ant-design/icons";
+import { CheckOutlined, DoubleLeftOutlined, ReloadOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 import formatNumberWithDots from "../../../helpers/formatNumberWithDots";
 import Heading from "../components/Heading";
 import CartProductItem from "./components/CartProductItem";
-import { Link } from "react-router-dom";
 
 const productList = [
   {
