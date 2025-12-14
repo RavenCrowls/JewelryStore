@@ -62,7 +62,9 @@ const AppRouter = () => {
         {/* / */}
         <Route index element={<Home />} />
 
-        {/* /product-detail */}
+        {/* /products/:id (customer product detail) */}
+        <Route path="products/:id" element={<CustomerProductDetail />} />
+        {/* /product-detail (legacy or static) */}
         <Route path="/product-detail" element={<CustomerProductDetail />} />
 
         {/* /cart */}

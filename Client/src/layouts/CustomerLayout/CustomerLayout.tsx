@@ -9,6 +9,7 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import { checkAuth } from "../../router/auth";
 import { AuthService } from "../../services/auth.service";
 import { useUserAvatar } from "../../hooks/useUserAvatar";
+import { CartService } from "../../services";
 import React from "react";
 
 const { Search } = Input;
@@ -55,7 +56,23 @@ export default function CustomerLayout() {
     authenticated: false
   });
   const [loading, setLoading] = React.useState(true);
+  const [cartCount, setCartCount] = React.useState(0);
   const avatarUrl = useUserAvatar();
+
+  const fetchCartCount = React.useCallback(async () => {
+    if (!auth.authenticated) {
+      setCartCount(0);
+      return;
+    }
+    try {
+      const cart = await CartService.getMyCart();
+      const totalQuantity = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+      setCartCount(totalQuantity);
+    } catch (err) {
+      console.error("Failed to fetch cart:", err);
+      setCartCount(0);
+    }
+  }, [auth.authenticated]);
 
   React.useEffect(() => {
     let mounted = true;
@@ -70,6 +87,10 @@ export default function CustomerLayout() {
     };
   }, []);
 
+  React.useEffect(() => {
+    fetchCartCount();
+  }, [fetchCartCount]);
+
   const handleLogout = async () => {
     await AuthService.logout();
     setAuth({ authenticated: false });
@@ -80,22 +101,13 @@ export default function CustomerLayout() {
     <Layout style={{ fontFamily: "Josefin Sans, sans-serif", minHeight: "auto" }}>
       <header className="bg-[#333333] text-white">
         <div className="flex relative my-4 mx-12 items-center">
-          <div className="absolute top-50% left-0">
-            <Search
-              placeholder="Search Product Here"
-              allowClear
-              style={{ width: 300 }}
-              size="large"
-            />
-          </div>
-
           <Link className="flex items-center m-auto" to={{ pathname: "/" }}>
             <img src="/src/assets/logo.svg" />
           </Link>
 
           <div className="flex items-center absolute top-0 right-0 h-full gap-6">
             <Link to="/cart" className="mr-2 relative top-0.5">
-              <Badge count={5} size="small">
+              <Badge count={cartCount} size="small">
                 <ShoppingCartOutlined className="text-2xl text-white" />
               </Badge>
             </Link>

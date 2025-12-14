@@ -24,6 +24,7 @@ import Heading from "../components/Heading";
 import BenefitItem from "./components/BenefitItem";
 import CarouselItem from "./components/CarouselItem";
 import ProductCard from "./components/ProductCard";
+import { useNavigate } from "react-router-dom";
 import { ProductService, DashboardService, type ProductPreview } from "../../../services";
 
 const { Search } = Input;
@@ -101,6 +102,7 @@ const formatter: NonNullable<SliderSingleProps["tooltip"]>["formatter"] = (value
   `${formatNumberWithDots(value!)}₫`;
 
 export default function Home() {
+  const navigate = useNavigate();
   const productsRef = useRef<HTMLDivElement>(null);
   const [priceFilterRange, setPriceFilterRange] = useState([0, 20000000]);
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
@@ -288,9 +290,12 @@ export default function Home() {
               {popularProducts.map((item, index) => (
                 <SplideSlide key={index}>
                   <ProductCard
+                    productId={item.id}
                     productImageUrl={item.imageUrl || "/img/placeholder.png"}
                     productName={item.name}
                     price={item.price}
+                    stock={item.quantity}
+                    onClick={() => navigate(`/products/${item.id}`)}
                   />
                 </SplideSlide>
               ))}
@@ -402,9 +407,12 @@ export default function Home() {
                     {paginatedProducts.map((item) => (
                       <Col span={6} key={item.id}>
                         <ProductCard
+                          productId={item.id}
                           productImageUrl={item.imageUrl || "/img/placeholder.png"}
                           productName={item.name}
                           price={item.price}
+                          stock={item.quantity}
+                          onClick={() => navigate(`/products/${item.id}`)}
                         />
                       </Col>
                     ))}
