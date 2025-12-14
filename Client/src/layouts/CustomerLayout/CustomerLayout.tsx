@@ -10,6 +10,7 @@ import { checkAuth } from "../../router/auth";
 import { AuthService } from "../../services/auth.service";
 import { useUserAvatar } from "../../hooks/useUserAvatar";
 import { CartService } from "../../services";
+import { ChatBot } from "../../components/ChatBot";
 import React from "react";
 
 const { Search } = Input;
@@ -425,6 +426,9 @@ export default function CustomerLayout() {
           </p>
         </div>
       </footer>
+
+      {/* AI ChatBot */}
+      <ChatBot />
     </Layout>
   );
 }

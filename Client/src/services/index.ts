@@ -13,6 +13,8 @@ export { InventoryService } from "./inventory.service";
 export type { InventoryItem } from "./inventory.service";
 export { ProductImageService } from "./productImage.service";
 export type { ProductImage, CreateProductImageDto } from "./productImage.service";
+export { ChatService } from "./chat.service";
+export type { ChatMessage, ChatRequest, ChatResponse } from "./chat.service";
 export { UserService } from "./user.service";
 export type {
   UserProfile,
