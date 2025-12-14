@@ -21,6 +21,7 @@ import Bill from "../pages/manager/(Customer)/Bill/Bill";
 import Import from "../pages/manager/(Import)/Import/Import";
 import AddImport from "../pages/manager/(Import)/AddImport/AddImport";
 import Order from "../pages/manager/(Order)/Order/Order";
+import AddOrder from "../pages/manager/(Order)/AddOrder/AddOrder";
 import OrderDetail from "../pages/manager/(Order)/OrderDetail/OrderDetail";
 import ImportDetail from "../pages/manager/(Import)/ImportDetail/ImportDetail";
 import Supplier from "../pages/manager/(Supplier)/Supplier/Supplier";
@@ -131,6 +132,8 @@ const AppRouter = () => {
 
         {/* /manager/order*/}
         <Route path="order" element={<Order />} />
+        {/* /manager/order/add */}
+        <Route path="order/add" element={<AddOrder />} />
         {/* /manager/order/:id */}
         <Route path="order/:id" element={<OrderDetail />} />
 

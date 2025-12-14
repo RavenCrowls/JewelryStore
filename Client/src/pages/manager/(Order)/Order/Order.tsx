@@ -171,7 +171,13 @@ export default function Order() {
             onApply={handleApplyFilter}
           />
         </div>
-        <div className="justify-end">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <button
+            onClick={() => navigate("/manager/order/add")}
+            className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition"
+          >
+            Add new order
+          </button>
           <button
             onClick={handleExport}
             className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition"

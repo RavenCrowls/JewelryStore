@@ -5,7 +5,13 @@ import { Link, useNavigate } from "react-router-dom";
 import formatNumberWithDots from "../../../utils/formatNumberWithDots";
 import Heading from "../components/Heading";
 import CartProductItem from "./components/CartProductItem";
-import { CartService, type CartDto, type CartItemDto } from "../../../services";
+import {
+  CartService,
+  AuthService,
+  UserService,
+  type CartDto,
+  type CartItemDto
+} from "../../../services";
 
 type LocalCartItem = CartItemDto & { _removed?: boolean };
 
@@ -81,7 +87,23 @@ export default function Cart() {
       setLoading(false);
     }
   };
+  const loadUserInfo = async () => {
+    try {
+      const meData = await AuthService.me();
+      if (meData.authenticated && meData.userId) {
+        const profile = await UserService.getUserById(meData.userId);
+        setShippingAddress(profile.address || "");
+        setPhoneNumber(profile.phone || "");
+      }
+    } catch (err) {
+      console.error("Failed to load user info:", err);
+    }
+  };
 
+  const handleOpenConfirmModal = () => {
+    loadUserInfo();
+    setIsConfirmModalOpen(true);
+  };
   const handleConfirmCart = async () => {
     if (!shippingAddress || !phoneNumber) {
       message.error("Vui lòng nhập đầy đủ thông tin giao hàng");
@@ -170,7 +192,7 @@ export default function Cart() {
                 className="p-6 ml-2 bg-blue rounded-none pt-8"
                 style={{ fontFamily: "Josefin Sans" }}
                 icon={<CheckOutlined />}
-                onClick={() => setIsConfirmModalOpen(true)}
+                onClick={handleOpenConfirmModal}
               >
                 THANH TOÁN
               </Button>

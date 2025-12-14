@@ -1,12 +1,53 @@
-import { Col, Divider, Row } from "antd";
+import { Col, Divider, Row, message } from "antd";
 import Heading from "../components/Heading";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Profile.css";
 import AccountInformation from "./components/AccountInformation";
 import ChangePassword from "./components/ChangePassword/ChangePassword";
 import { Link, Route, Routes } from "react-router-dom";
+import { AuthService, UserService, type UserProfile } from "../../../services";
 
 export default function Profile() {
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isGoogleUser, setIsGoogleUser] = useState(false);
+
+  const fetchUserProfile = async () => {
+    try {
+      setLoading(true);
+      const meData = await AuthService.me();
+      if (meData.authenticated && meData.userId) {
+        const profile = await UserService.getUserById(meData.userId);
+        setUserProfile(profile);
+
+        // Check if user registered with Google
+        const hasGoogleClaim = meData.claims?.some(
+          (c) =>
+            c.Type === "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier" &&
+            c.Value.includes("google")
+        );
+        setIsGoogleUser(hasGoogleClaim || false);
+      }
+    } catch (err) {
+      console.error("Failed to fetch user profile:", err);
+      message.error("Không thể tải thông tin người dùng");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="main-container">
+        <div className="text-center py-12">Đang tải...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="main-container">
       <Heading className="!mt-12 !mb-0" text="Tài khoản của bạn" />
@@ -26,24 +67,20 @@ export default function Profile() {
             <li className="list-item">
               <Link to="/profile/change-password">Đổi mật khẩu</Link>
             </li>
-            <li className="list-item">Đăng xuất</li>
           </ul>
         </Col>
         <Col span={18} className="text-[28px]">
           <h3>Thông tin tài khoản</h3>
           <Divider />
           <Routes>
-            {/* /profile/change-password */}
             <Route
               path="/"
-              element={
-                <AccountInformation
-                  name="Nguyễn Thành Đức"
-                  email="nguyenthanhduc242004@gmail.com"
-                />
-              }
+              element={<AccountInformation userProfile={userProfile} onUpdate={fetchUserProfile} />}
             />
-            <Route path="/change-password" element={<ChangePassword />} />
+            <Route
+              path="/change-password"
+              element={<ChangePassword isGoogleUser={isGoogleUser} />}
+            />
           </Routes>
         </Col>
       </Row>
