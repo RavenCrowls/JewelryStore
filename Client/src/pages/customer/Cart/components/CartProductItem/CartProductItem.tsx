@@ -1,24 +1,36 @@
 import { Button, Image, InputNumber } from "antd";
 import formatNumberWithDots from "../../../../../utils/formatNumberWithDots";
 import { CloseOutlined } from "@ant-design/icons";
-import { useRef } from "react";
+import { useState } from "react";
 
 type CartProductItemProps = {
+  productId: number;
   productImageUrl: string;
   productName: string;
   price: number;
   quantity: number;
-  stock: number;
+  onRemove: (productId: number) => void;
+  onQuantityChange: (productId: number, quantity: number) => void;
 };
 
 const CartProductItem: React.FC<CartProductItemProps> = ({
+  productId,
   productImageUrl,
   productName,
   price,
   quantity,
-  stock
+  onRemove,
+  onQuantityChange
 }) => {
-  const totalPrice = useRef(price);
+  const [currentQuantity, setCurrentQuantity] = useState(quantity);
+  const totalPrice = price * currentQuantity;
+
+  const handleQuantityChange = (value: number | null) => {
+    if (value && value > 0) {
+      setCurrentQuantity(value);
+      onQuantityChange(productId, value);
+    }
+  };
 
   return (
     <div className="flex  border border-solid border-black mb-2 relative rounded p-2">
@@ -39,12 +51,11 @@ const CartProductItem: React.FC<CartProductItemProps> = ({
           <InputNumber
             mode="spinner"
             min={1}
-            max={stock}
-            defaultValue={quantity}
-            formatter={(value) => `${value}/${stock}`}
-            parser={(value) => parseInt(value!.replace(`/${stock}`, ""))}
+            max={100}
+            value={currentQuantity}
+            onChange={handleQuantityChange}
             variant="filled"
-            placeholder="Filled"
+            placeholder="Số lượng"
           />
         </div>
       </div>
@@ -53,9 +64,10 @@ const CartProductItem: React.FC<CartProductItemProps> = ({
         icon={<CloseOutlined />}
         shape="circle"
         className="absolute top-1.5 right-1.5"
+        onClick={() => onRemove(productId)}
       />
       <span className="absolute bottom-2 right-4 text-2xl">
-        Tổng: {formatNumberWithDots(totalPrice.current)}₫
+        Tổng: {formatNumberWithDots(totalPrice)}₫
       </span>
     </div>
   );

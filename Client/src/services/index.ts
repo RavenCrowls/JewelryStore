@@ -34,3 +34,11 @@ export type { RoleDto } from "./role.service";
 export { UploadService } from "./upload.service";
 export { DashboardService } from "./dashboard.service";
 export type { RevenueData, TopProduct, TopCustomer, OrderStats } from "./dashboard.service";
+export { CartService } from "./cart.service";
+export type {
+  CartDto,
+  CartItemDto,
+  AddProductDto,
+  UpdateQuantityDto,
+  OrderInfoDto
+} from "./cart.service";
