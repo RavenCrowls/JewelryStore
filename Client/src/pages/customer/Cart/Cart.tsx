@@ -2,7 +2,7 @@ import { CheckOutlined, DoubleLeftOutlined, ReloadOutlined } from "@ant-design/i
 import { Button } from "antd";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
-import formatNumberWithDots from "../../../helpers/formatNumberWithDots";
+import formatNumberWithDots from "../../../utils/formatNumberWithDots";
 import Heading from "../components/Heading";
 import CartProductItem from "./components/CartProductItem";
 

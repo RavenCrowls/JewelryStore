@@ -1,31 +1,56 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { CategoryService, type CategoryDto } from "../../../services/category.service";
 
 type PriceFilterPopupProps = {
   isOpen: boolean;
   className?: string;
+  minPrice: number;
+  maxPrice: number;
+  maxLimit: number;
+  category: string;
+  onMinPriceChange: (value: number) => void;
+  onMaxPriceChange: (value: number) => void;
+  onCategoryChange: (value: string) => void;
+  onApply: () => void;
 };
 
-const MIN_PRICE = 0;
-const MAX_PRICE = 10_000_000;
-
-const formatPrice = (value: number) =>
-  value.toLocaleString("en-US", { maximumFractionDigits: 0 });
+const formatPrice = (value: number) => value.toLocaleString("en-US", { maximumFractionDigits: 0 });
 
 export default function PriceFilterPopup({
   isOpen,
   className,
+  minPrice,
+  maxPrice,
+  maxLimit,
+  category,
+  onMinPriceChange,
+  onMaxPriceChange,
+  onCategoryChange,
+  onApply
 }: PriceFilterPopupProps) {
-  const [category, setCategory] = useState<string>("all");
-  const [minPrice, setMinPrice] = useState<number>(4_800_000);
-  const [maxPrice, setMaxPrice] = useState<number>(6_000_000);
+  const [categories, setCategories] = useState<CategoryDto[]>([]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    (async () => {
+      try {
+        const data = await CategoryService.fetchCategories({ signal: controller.signal });
+        setCategories(data);
+      } catch (err) {
+        if ((err as any)?.name === "AbortError") return;
+        console.error("Failed to load categories:", err);
+      }
+    })();
+    return () => controller.abort();
+  }, []);
 
   if (!isOpen) return null;
 
+  const MIN_PRICE = 0;
+
   // tính vị trí bubble theo %
-  const minPosition =
-    ((minPrice - MIN_PRICE) / (MAX_PRICE - MIN_PRICE)) * 100 || 0;
-  const maxPosition =
-    ((maxPrice - MIN_PRICE) / (MAX_PRICE - MIN_PRICE)) * 100 || 0;
+  const minPosition = ((minPrice - MIN_PRICE) / (maxLimit - MIN_PRICE)) * 100 || 0;
+  const maxPosition = ((maxPrice - MIN_PRICE) / (maxLimit - MIN_PRICE)) * 100 || 0;
 
   return (
     <div
@@ -40,13 +65,15 @@ export default function PriceFilterPopup({
           <span className="text-[11px] text-slate-500">Category</span>
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => onCategoryChange(e.target.value)}
             className="w-32 rounded-full border border-slate-300 px-3 py-1 text-xs outline-none focus:border-blue-500"
           >
-            <option value="all">All</option>
-            <option value="bag">Bag</option>
-            <option value="racket">Racket</option>
-            <option value="shoes">Shoes</option>
+            <option value="">All</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.name}>
+                {cat.name}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -66,12 +93,12 @@ export default function PriceFilterPopup({
             <input
               type="range"
               min={MIN_PRICE}
-              max={MAX_PRICE}
+              max={maxLimit}
               step={100_000}
               value={minPrice}
               onChange={(e) => {
                 const value = Number(e.target.value);
-                setMinPrice(Math.min(value, maxPrice)); // không vượt quá max
+                onMinPriceChange(Math.min(value, maxPrice)); // không vượt quá max
               }}
               className="w-full accent-blue-500"
             />
@@ -79,7 +106,7 @@ export default function PriceFilterPopup({
 
           <div className="mt-1 flex justify-between text-[11px] text-slate-500">
             <span>{formatPrice(MIN_PRICE)}</span>
-            <span>{formatPrice(MAX_PRICE)}</span>
+            <span>{formatPrice(maxLimit)}</span>
           </div>
         </div>
 
@@ -99,12 +126,12 @@ export default function PriceFilterPopup({
             <input
               type="range"
               min={MIN_PRICE}
-              max={MAX_PRICE}
+              max={maxLimit}
               step={100_000}
               value={maxPrice}
               onChange={(e) => {
                 const value = Number(e.target.value);
-                setMaxPrice(Math.max(value, minPrice)); // không nhỏ hơn min
+                onMaxPriceChange(Math.max(value, minPrice)); // không nhỏ hơn min
               }}
               className="w-full accent-blue-500"
             />
@@ -112,9 +139,17 @@ export default function PriceFilterPopup({
 
           <div className="mt-1 flex justify-between text-[11px] text-slate-500">
             <span>{formatPrice(MIN_PRICE)}</span>
-            <span>{formatPrice(MAX_PRICE)}</span>
+            <span>{formatPrice(maxLimit)}</span>
           </div>
         </div>
+
+        {/* Apply button */}
+        <button
+          onClick={onApply}
+          className="mt-2 w-full rounded-lg bg-blue-500 py-2 text-xs font-medium text-white hover:bg-blue-600 transition"
+        >
+          Apply Filter
+        </button>
       </div>
     </div>
   );
