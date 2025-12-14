@@ -8,6 +8,7 @@ interface CarouselProps {
   rightImageUrl: string;
   message: string;
   btnText: string;
+  onButtonClick?: () => void;
 }
 
 const Carousel: React.FC<CarouselProps> = ({
@@ -16,7 +17,8 @@ const Carousel: React.FC<CarouselProps> = ({
   subheading,
   rightImageUrl,
   message,
-  btnText
+  btnText,
+  onButtonClick
 }) => {
   return (
     <div
@@ -65,7 +67,9 @@ const Carousel: React.FC<CarouselProps> = ({
             <img className="carousel-image" src={rightImageUrl} alt="Right" />
           </div>
           <p className="carousel-paragraph">{message}</p>
-          <button className="carousel-btn">{btnText}</button>
+          <button className="carousel-btn" onClick={onButtonClick}>
+            {btnText}
+          </button>
         </div>
       </div>
     </div>

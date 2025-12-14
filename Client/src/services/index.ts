@@ -32,3 +32,5 @@ export type { LoginDto, MeResponse } from "./auth.service";
 export { RoleService } from "./role.service";
 export type { RoleDto } from "./role.service";
 export { UploadService } from "./upload.service";
+export { DashboardService } from "./dashboard.service";
+export type { RevenueData, TopProduct, TopCustomer, OrderStats } from "./dashboard.service";

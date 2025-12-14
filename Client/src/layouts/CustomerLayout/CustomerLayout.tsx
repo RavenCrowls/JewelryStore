@@ -73,7 +73,7 @@ export default function CustomerLayout() {
   const handleLogout = async () => {
     await AuthService.logout();
     setAuth({ authenticated: false });
-    navigate("/login", { replace: true });
+    navigate("/", { replace: true });
   };
 
   return (
