@@ -1,5 +1,5 @@
 import React from "react";
-import { Mail, KeyRound } from 'lucide-react';
+import { Mail, KeyRound } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AuthService } from "../../services";
 const LoginPage: React.FC = () => {
@@ -24,30 +24,25 @@ const LoginPage: React.FC = () => {
     }
   };
   const startGoogleLogin = () => {
-    const API_BASE_URL: string | undefined = (import.meta as any)?.env?.VITE_API_BASE_URL || undefined;
+    const API_BASE_URL: string | undefined =
+      (import.meta as any)?.env?.VITE_API_BASE_URL || undefined;
     const base = API_BASE_URL ? new URL(API_BASE_URL) : new URL(window.location.origin);
-    const url = new URL('/api/auth/google', base);
+    const url = new URL("/api/auth/google", base);
     const returnUrl = `${window.location.origin}/manager`;
-    url.searchParams.set('returnUrl', returnUrl);
+    url.searchParams.set("returnUrl", returnUrl);
     window.location.href = url.toString();
   };
   return (
     <div className="min-h-screen w-full flex bg-slate-100">
       {/* Left: image */}
       <div className="hidden md:block md:flex-1 overflow-hidden">
-        <img
-          src="../../img/loginbg.jpg"
-          alt="Jewelry"
-          className="h-full w-full object-cover"
-        />
+        <img src="../../img/loginbg.jpg" alt="Jewelry" className="h-full w-full object-cover" />
       </div>
 
       {/* Right: form */}
       <div className="flex-1 flex items-center justify-center px-4 md:px-10 lg:px-16 bg-gradient-to-br from-slate-100 to-slate-200">
         <div className="w-full max-w-md rounded-[32px] border border-white/60 bg-white/70 shadow-2xl backdrop-blur-xl px-8 py-8 md:px-10 md:py-10 space-y-6">
-          <h2 className="text-3xl font-bold text-center text-slate-900">
-            Login
-          </h2>
+          <h2 className="text-3xl font-bold text-center text-slate-900">Login</h2>
 
           {/* Username */}
           <div className="space-y-1">
@@ -85,25 +80,7 @@ const LoginPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Remember + Forgot */}
-          <div className="flex items-center justify-between text-[13px] text-slate-600">
-            <label className="inline-flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={remember}
-                onChange={(e) => setRemember(e.target.checked)}
-                className="h-3.5 w-3.5 rounded border border-slate-400 text-sky-600 focus:ring-0"
-              />
-              <span>Remember me</span>
-            </label>
-
-            <button
-              type="button"
-              className="text-slate-700 hover:text-sky-700 hover:underline"
-            >
-              Forgot password?
-            </button>
-          </div>
+          {/* Remember + Forgot removed as requested */}
 
           {error && (
             <div className="text-sm text-red-600" role="alert">

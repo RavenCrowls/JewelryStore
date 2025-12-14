@@ -4,58 +4,80 @@ import {
   ShoppingCartOutlined,
   UserOutlined
 } from "@ant-design/icons";
-import { Avatar, Badge, Dropdown, Input, Layout, type MenuProps } from "antd";
-import { Link, Outlet } from "react-router-dom";
-import "./CustomerLayout.css";
+import { Avatar, Badge, Dropdown, Input, Layout, Button, type MenuProps } from "antd";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import { checkAuth } from "../../router/auth";
+import { AuthService } from "../../services/auth.service";
+import { useUserAvatar } from "../../hooks/useUserAvatar";
+import React from "react";
 
 const { Search } = Input;
 
-const items: MenuProps["items"] = [
-  {
-    key: "1",
-    label: (
-      <Link className="block py-1 after:p-1 text-[16px]" rel="noopener noreferrer" to="profile">
-        Thông tin cá nhân
-      </Link>
-    ),
-    icon: <UserOutlined />
-  },
-  {
-    key: "2",
-    label: (
-      <Link
-        className="block py-1 after:p-1 text-[16px]"
-        rel="noopener noreferrer"
-        to="https://www.aliyun.com"
-      >
-        Đổi mật khẩu
-      </Link>
-    ),
-    icon: <LockOutlined />
-  },
-  {
-    key: "3",
-    label: (
-      <a
-        className="block py-1 after:p-1 text-[16px]"
-        rel="noopener noreferrer"
-        to="https://www.luohanacademy.com"
-      >
-        Đăng xuất
-      </a>
-    ),
-    icon: <LogoutOutlined />
-  }
-];
+function getMenuItems(onLogout: () => void): MenuProps["items"] {
+  return [
+    {
+      key: "1",
+      label: (
+        <Link className="block py-1 after:p-1 text-[16px]" rel="noopener noreferrer" to="/profile">
+          Thông tin cá nhân
+        </Link>
+      ),
+      icon: <UserOutlined />
+    },
+    {
+      key: "2",
+      label: (
+        <Link
+          className="block py-1 after:p-1 text-[16px]"
+          rel="noopener noreferrer"
+          to="/profile/change-password"
+        >
+          Đổi mật khẩu
+        </Link>
+      ),
+      icon: <LockOutlined />
+    },
+    {
+      key: "3",
+      label: (
+        <span className="block py-1 after:p-1 text-[16px] cursor-pointer" onClick={onLogout}>
+          Đăng xuất
+        </span>
+      ),
+      icon: <LogoutOutlined />
+    }
+  ];
+}
 
 export default function CustomerLayout() {
+  const navigate = useNavigate();
+  const [auth, setAuth] = React.useState<{ authenticated: boolean; fullName?: string }>({
+    authenticated: false
+  });
+  const [loading, setLoading] = React.useState(true);
+  const avatarUrl = useUserAvatar();
+
+  React.useEffect(() => {
+    let mounted = true;
+    checkAuth().then((info) => {
+      if (mounted) {
+        setAuth({ authenticated: info.authenticated, fullName: info.fullName });
+        setLoading(false);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    await AuthService.logout();
+    setAuth({ authenticated: false });
+    navigate("/login", { replace: true });
+  };
+
   return (
-    <Layout
-      style={{
-        fontFamily: "Josefin Sans, sans-serif",
-        minHeight: "auto"
-      }}
-    >
+    <Layout style={{ fontFamily: "Josefin Sans, sans-serif", minHeight: "auto" }}>
       <header className="bg-[#333333] text-white">
         <div className="flex relative my-4 mx-12 items-center">
           <div className="absolute top-50% left-0">
@@ -67,12 +89,7 @@ export default function CustomerLayout() {
             />
           </div>
 
-          <Link
-            className="flex items-center m-auto"
-            to={{
-              pathname: "/"
-            }}
-          >
+          <Link className="flex items-center m-auto" to={{ pathname: "/" }}>
             <img src="/src/assets/logo.svg" />
           </Link>
 
@@ -82,23 +99,41 @@ export default function CustomerLayout() {
                 <ShoppingCartOutlined className="text-2xl text-white" />
               </Badge>
             </Link>
-            <div className="h-full hover:cursor-pointer">
-              <Dropdown
-                className="relative top-[10px]"
-                menu={{ items }}
-                placement="bottomCenter"
-                arrow
-              >
-                <div className="h-full flex items-center px-4">
-                  <Avatar
-                    className="border border-solid border-white mr-2"
-                    src="/src/assets/avatar.jpg"
-                  />
-                  <span className="text-xl">em2@123</span>
+            {loading ? null : auth.authenticated ? (
+              <>
+                <div className="h-full hover:cursor-pointer">
+                  <Dropdown
+                    className="relative top-[10px]"
+                    menu={{ items: getMenuItems(handleLogout) }}
+                    placement="bottomCenter"
+                    arrow
+                  >
+                    <div className="h-full flex items-center px-4">
+                      <Avatar className="border border-solid border-white mr-2" src={avatarUrl} />
+                      <span className="text-xl">{auth.fullName || "Tài khoản"}</span>
+                    </div>
+                  </Dropdown>
                 </div>
-              </Dropdown>
-            </div>
-            <LogoutOutlined className="text-xl" />
+                <LogoutOutlined
+                  className="text-xl cursor-pointer hover:text-gray-300"
+                  onClick={handleLogout}
+                  title="Đăng xuất"
+                />
+              </>
+            ) : (
+              <>
+                <Button
+                  type="text"
+                  className="text-white text-base"
+                  onClick={() => navigate("/login")}
+                >
+                  Đăng nhập
+                </Button>
+                <Button type="primary" className="text-base" onClick={() => navigate("/signup")}>
+                  Đăng ký
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </header>
