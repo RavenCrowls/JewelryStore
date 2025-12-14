@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ImportTable from "../../../../components/Import/ImportTable/ImportTable";
 import ImportFilterBar from "../../../../components/Import/ImportFilterBar/ImportFilterBar";
 import { useImports } from "../../../../hooks/useImports";
+import { exportToPDF } from "../../../../utils/pdfExport";
 
 export default function Import() {
   const navigate = useNavigate();
@@ -69,11 +70,31 @@ export default function Import() {
     navigate(`/manager/import/${numericId}`);
   };
 
+  const handleExport = async () => {
+    await exportToPDF({
+      title: "Import List",
+      columns: [
+        { header: "Import ID", dataKey: "id", width: 30 },
+        { header: "Supplier", dataKey: "supplier", width: 50 },
+        { header: "Date", dataKey: "date", width: 35 },
+        { header: "Total (VND)", dataKey: "total", width: 35 },
+        { header: "Creator", dataKey: "creator", width: 40 }
+      ],
+      data: filteredRows,
+      filename: `imports-${Date.now()}.pdf`,
+      orientation: "portrait"
+    });
+  };
+
   return (
     <div className="space-y-5 mt-3">
       {/* Hàng tiêu đề + nút */}
       <div className="space-y-4">
-        <ImportFilterBar onFilterChange={handleFilterChange} maxLimit={maxImportPrice} />
+        <ImportFilterBar
+          onFilterChange={handleFilterChange}
+          maxLimit={maxImportPrice}
+          onExport={handleExport}
+        />
       </div>
       <section className="bg-white rounded-2xl p-6 shadow-sm">
         {error ? (

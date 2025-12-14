@@ -10,9 +10,14 @@ type ImportFilterBarProps = {
     maxPrice: number;
   }) => void;
   maxLimit: number;
+  onExport: () => void;
 };
 
-export default function ImportFilterBar({ onFilterChange, maxLimit }: ImportFilterBarProps) {
+export default function ImportFilterBar({
+  onFilterChange,
+  maxLimit,
+  onExport
+}: ImportFilterBarProps) {
   const [isDateOpen, setIsDateOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement | null>(null);
 
@@ -93,7 +98,10 @@ export default function ImportFilterBar({ onFilterChange, maxLimit }: ImportFilt
           >
             Add new import
           </button>
-          <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition">
+          <button
+            onClick={onExport}
+            className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition"
+          >
             Export
           </button>
         </div>

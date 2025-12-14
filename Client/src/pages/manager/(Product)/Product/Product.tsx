@@ -5,6 +5,7 @@ import ProductTable, {
   type ProductRow
 } from "../../../../components/Product/ProductTable/ProductTable";
 import { ProductService } from "../../../../services";
+import { exportToPDF } from "../../../../utils/pdfExport";
 
 let productCache: ProductRow[] = [];
 
@@ -111,6 +112,22 @@ export default function Product() {
     setIsDateOpen(false);
   };
 
+  const handleExport = async () => {
+    await exportToPDF({
+      title: "Product List",
+      columns: [
+        { header: "ID", dataKey: "id", width: 25 },
+        { header: "Name", dataKey: "name", width: 60 },
+        { header: "Category", dataKey: "category", width: 35 },
+        { header: "Price (VND)", dataKey: "price", width: 35 },
+        { header: "Quantity", dataKey: "quantity", width: 25 }
+      ],
+      data: filteredRows,
+      filename: `products-${Date.now()}.pdf`,
+      orientation: "portrait"
+    });
+  };
+
   return (
     <div className="space-y-5 mt-3">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -158,7 +175,11 @@ export default function Product() {
             Add new product
           </button>
 
-          <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition ml-3">
+          <button
+            type="button"
+            onClick={handleExport}
+            className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition ml-3"
+          >
             Export
           </button>
         </div>

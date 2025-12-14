@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DatePriceFilterPopup from "../../../../components/common/DatePriceFilterPopup/DatePriceFilterPopup";
 import OrderTable, { type OrderRow } from "../../../../components/Order/OrderTable/OrderTable";
 import { OrderService } from "../../../../services/order.service";
+import { exportToPDF } from "../../../../utils/pdfExport";
 
 const formatDate = (iso?: string) => {
   if (!iso) return "";
@@ -122,6 +123,26 @@ export default function Order() {
     return filtered;
   }, [rows, appliedFromDate, appliedToDate, appliedMinPrice, appliedMaxPrice]);
 
+  const handleExport = async () => {
+    const stateMap = { "0": "Pending", "1": "Completed", "2": "Rejected" };
+    await exportToPDF({
+      title: "Order List",
+      columns: [
+        { header: "Order ID", dataKey: "order", width: 30 },
+        { header: "Customer", dataKey: "customer", width: 50 },
+        { header: "Date", dataKey: "date", width: 35 },
+        { header: "Total (VND)", dataKey: "total", width: 35 },
+        { header: "Status", dataKey: "stateText", width: 30 }
+      ],
+      data: filteredRows.map((row) => ({
+        ...row,
+        stateText: stateMap[row.state] || row.state
+      })),
+      filename: `orders-${Date.now()}.pdf`,
+      orientation: "portrait"
+    });
+  };
+
   return (
     <div className="space-y-5 mt-3">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -151,7 +172,10 @@ export default function Order() {
           />
         </div>
         <div className="justify-end">
-          <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition">
+          <button
+            onClick={handleExport}
+            className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition"
+          >
             Export
           </button>
         </div>
