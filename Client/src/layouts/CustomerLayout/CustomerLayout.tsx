@@ -77,11 +77,11 @@ export default function CustomerLayout() {
           </Link>
 
           <div className="flex items-center absolute top-0 right-0 h-full gap-6">
-            <button className="mr-2 relative top-0.5">
+            <Link to="/cart" className="mr-2 relative top-0.5">
               <Badge count={5} size="small">
                 <ShoppingCartOutlined className="text-2xl text-white" />
               </Badge>
-            </button>
+            </Link>
             <div className="h-full hover:cursor-pointer">
               <Dropdown
                 className="relative top-[10px]"
