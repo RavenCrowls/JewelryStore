@@ -4,6 +4,7 @@ import { ImportService } from "../../../../services/import.service";
 import { SupplierService } from "../../../../services/supplier.service";
 import { UserService } from "../../../../services/user.service";
 import type { ImportDto, ImportDetailDto } from "../../../../services/import.service";
+import { exportToPDF } from "../../../../utils/pdfExport";
 
 const formatDate = (iso?: string) => {
   if (!iso) return "";
@@ -119,6 +120,26 @@ export default function ImportDetail() {
 
   const subtotal = importDetails.reduce((sum, item) => sum + item.importPrice * item.quantity, 0);
 
+  const handleExport = async () => {
+    await exportToPDF({
+      title: `Import Details - IM${importData.id.toString().padStart(4, "0")}`,
+      columns: [
+        { header: "Product", dataKey: "productName", width: 60 },
+        { header: "Quantity", dataKey: "quantity", width: 25 },
+        { header: "Price (VND)", dataKey: "importPrice", width: 40 },
+        { header: "Total (VND)", dataKey: "total", width: 40 }
+      ],
+      data: importDetails.map((item) => ({
+        productName: item.productName || `Product #${item.productId}`,
+        quantity: item.quantity,
+        importPrice: item.importPrice,
+        total: item.importPrice * item.quantity
+      })),
+      filename: `import-detail-${importData.id}-${Date.now()}.pdf`,
+      orientation: "portrait"
+    });
+  };
+
   return (
     <div className="space-y-5 mt-3">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -126,7 +147,10 @@ export default function ImportDetail() {
           <h2 className="text-xl font-semibold tracking-tight text-[#1279C3]">Import details</h2>
         </div>
         <div className="justify-end">
-          <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition">
+          <button
+            onClick={handleExport}
+            className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition"
+          >
             Export
           </button>
         </div>

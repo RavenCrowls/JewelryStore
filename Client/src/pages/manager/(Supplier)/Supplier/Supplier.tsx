@@ -3,6 +3,7 @@ import SupplierTable from "../../../../components/Supplier/SupplierTable/Supplie
 import { useSuppliers } from "../../../../hooks/useSuppliers";
 import useSupplierForm from "../../../../hooks/useSupplierForm";
 import useSupplierEdit from "../../../../hooks/useSupplierEdit";
+import { exportToPDF } from "../../../../utils/pdfExport";
 
 export default function Supplier() {
   const filterRef = useRef<HTMLDivElement | null>(null);
@@ -62,6 +63,21 @@ export default function Supplier() {
     handleDeleteSupplier(numericId);
   };
 
+  const handleExport = async () => {
+    await exportToPDF({
+      title: "Supplier List",
+      columns: [
+        { header: "ID", dataKey: "id", width: 25 },
+        { header: "Name", dataKey: "name", width: 60 },
+        { header: "Address", dataKey: "address", width: 70 },
+        { header: "Phone", dataKey: "phone", width: 35 }
+      ],
+      data: filteredRows,
+      filename: `suppliers-${Date.now()}.pdf`,
+      orientation: "portrait"
+    });
+  };
+
   return (
     <div className="space-y-5 mt-3">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -86,7 +102,10 @@ export default function Supplier() {
           >
             Add new supplier
           </button>
-          <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition">
+          <button
+            onClick={handleExport}
+            className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition"
+          >
             Export
           </button>
         </div>

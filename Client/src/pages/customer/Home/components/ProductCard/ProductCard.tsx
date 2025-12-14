@@ -1,17 +1,44 @@
 import React from "react";
 import formatNumberWithDots from "../../../../../utils/formatNumberWithDots";
-import { HeartOutlined } from "@ant-design/icons";
+import { ShoppingCartOutlined } from "@ant-design/icons";
+import { message } from "antd";
 import "./ProductCard.css";
+import { CartService } from "../../../../../services";
 
 type ProductCardProps = {
+  productId: number;
   productImageUrl: string;
   productName: string;
   price: number;
+  stock?: number;
+  onClick?: () => void;
 };
 
-const ProductCard: React.FC<ProductCardProps> = ({ productImageUrl, productName, price }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  productId,
+  productImageUrl,
+  productName,
+  price,
+  stock = 1,
+  onClick
+}) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    try {
+      await CartService.addProduct({
+        productId,
+        quantity: 1
+      });
+      message.success("Đã thêm sản phẩm vào giỏ hàng!");
+    } catch (err) {
+      console.error("Failed to add to cart:", err);
+      message.error("Không thể thêm sản phẩm vào giỏ hàng");
+    }
+  };
+
   return (
-    <div className="wrapper">
+    <div className="wrapper" style={{ cursor: onClick ? "pointer" : undefined }} onClick={onClick}>
       <div
         style={{
           background: `url(${productImageUrl}) no-repeat center`,
@@ -21,19 +48,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ productImageUrl, productName,
           position: "relative"
         }}
       >
-        <button
-          style={{
-            position: "absolute",
-            top: "8px",
-            right: "8px",
-            borderRadius: "50%",
-            border: "none",
-            background: "transparent",
-            cursor: "pointer"
-          }}
-        >
-          <HeartOutlined />
-        </button>
+        {stock > 0 && (
+          <button
+            onClick={handleAddToCart}
+            style={{
+              position: "absolute",
+              top: "8px",
+              right: "8px",
+              borderRadius: "50%",
+              border: "none",
+              background: "transparent",
+              cursor: "pointer"
+            }}
+          >
+            <ShoppingCartOutlined />
+          </button>
+        )}
       </div>
 
       <div style={{ padding: "5px" }}>

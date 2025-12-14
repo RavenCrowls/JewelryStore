@@ -4,6 +4,7 @@ import EmployeeTable, {
   type EmployeeRow
 } from "../../../../components/Employee/EmployeeTable/EmployeeTable";
 import { useEmployees } from "../../../../hooks/useEmployees";
+import { exportToPDF } from "../../../../utils/pdfExport";
 
 export default function Employee() {
   const navigate = useNavigate();
@@ -29,6 +30,23 @@ export default function Employee() {
     );
   }, [rows, searchTerm]);
 
+  const handleExport = async () => {
+    await exportToPDF({
+      title: "Employee List",
+      columns: [
+        { header: "ID", dataKey: "id", width: 15 },
+        { header: "Name", dataKey: "name", width: 40 },
+        { header: "Email", dataKey: "email", width: 50 },
+        { header: "Phone", dataKey: "phone", width: 30 },
+        { header: "Role", dataKey: "position", width: 25 },
+        { header: "Address", dataKey: "address", width: 50 }
+      ],
+      data: filteredRows,
+      filename: `employees-${Date.now()}.pdf`,
+      orientation: "landscape"
+    });
+  };
+
   return (
     <div className="space-y-5 mt-3">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -52,7 +70,10 @@ export default function Employee() {
           >
             Add new employee
           </button>
-          <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition ml-3">
+          <button
+            onClick={handleExport}
+            className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition ml-3"
+          >
             Export
           </button>
         </div>

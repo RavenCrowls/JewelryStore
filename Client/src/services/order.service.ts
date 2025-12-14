@@ -177,11 +177,74 @@ async function rejectOrder(orderId: number, payload?: { staffId: number }): Prom
   }
 }
 
+export type CreateOrderDto = {
+  userId: number;
+  staffId: number;
+  dateCreated: string;
+  shippingAddress: string;
+  phoneNumber: string;
+  totalPrice: number;
+  status: string;
+};
+
+export type AddOrderDetailDto = {
+  productId: number;
+  quantity: number;
+};
+
+async function createOrder(dto: CreateOrderDto): Promise<OrderDto> {
+  const url = API_BASE_URL ? new URL("/api/orders", API_BASE_URL).toString() : "/api/orders";
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify(dto)
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(
+      `Failed to create order: ${res.status} ${res.statusText}${body ? ` - ${body}` : ""}`
+    );
+  }
+
+  return (await res.json()) as OrderDto;
+}
+
+async function addOrderDetail(orderId: number, dto: AddOrderDetailDto): Promise<void> {
+  const url = API_BASE_URL
+    ? new URL(`/api/orders/${orderId}/details`, API_BASE_URL).toString()
+    : `/api/orders/${orderId}/details`;
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify(dto)
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(
+      `Failed to add order detail: ${res.status} ${res.statusText}${body ? ` - ${body}` : ""}`
+    );
+  }
+}
+
 export const OrderService = {
   fetchOrders,
   fetchOrderSummary,
   fetchOrderById,
   fetchOrderDetails,
   completeOrder,
-  rejectOrder
+  rejectOrder,
+  createOrder,
+  addOrderDetail
 };

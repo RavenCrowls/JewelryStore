@@ -23,6 +23,8 @@ namespace JewelryStore.Data
         public DbSet<ProductImage> ProductImages => Set<ProductImage>();
         public DbSet<UserImage> UserImages => Set<UserImage>();
         public DbSet<ProductSummaryView> ProductSummaries => Set<ProductSummaryView>();
+        public DbSet<Cart> Carts => Set<Cart>();
+        public DbSet<CartItem> CartItems => Set<CartItem>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

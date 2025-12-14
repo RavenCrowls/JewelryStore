@@ -1,32 +1,41 @@
-import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip } from "recharts";
+import { LineChart, Line, ResponsiveContainer, XAxis, Tooltip, Legend } from "recharts";
 
-const data = [
-  { day: "01", thisWeek: 40, lastWeek: 25 },
-  { day: "02", thisWeek: 55, lastWeek: 38 },
-  { day: "03", thisWeek: 48, lastWeek: 32 },
-  { day: "04", thisWeek: 60, lastWeek: 40 },
-  { day: "05", thisWeek: 43, lastWeek: 28 },
-  { day: "06", thisWeek: 50, lastWeek: 35 },
-  { day: "07", thisWeek: 63, lastWeek: 45 },
-];
+type RevenueChartProps = {
+  thisWeekData: Array<{ day: string; revenue: number }>;
+  lastWeekData: Array<{ day: string; revenue: number }>;
+};
 
-export default function RevenueChart() {
+export default function RevenueChart({ thisWeekData, lastWeekData }: RevenueChartProps) {
+  // Combine data for line chart
+  const data = thisWeekData.map((item, index) => ({
+    day: item.day,
+    thisWeek: item.revenue,
+    lastWeek: lastWeekData[index]?.revenue || 0
+  }));
+
   return (
-    <div className="h-64 w-full px-6">  
+    <div className="h-64 w-full px-6">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          data={data}
-          barGap={6}
-          barCategoryGap="20%"
-          margin={{ top: 10, right: 20, left: 20, bottom: 10 }}
-        >
+        <LineChart data={data} margin={{ top: 10, right: 20, left: 20, bottom: 10 }}>
           <XAxis dataKey="day" tick={{ fontSize: 12 }} />
-          <Tooltip />
-          <Bar dataKey="thisWeek" fill="#3498db" radius={[6, 6, 0, 0]} />
-          <Bar dataKey="lastWeek" fill="#dcdcdc" radius={[6, 6, 0, 0]} />
-        </BarChart>
+          <Tooltip formatter={(value: number) => value.toLocaleString("vi-VN") + " VND"} />
+          <Legend />
+          <Line
+            type="monotone"
+            dataKey="thisWeek"
+            stroke="#3498db"
+            strokeWidth={2}
+            name="This Week"
+          />
+          <Line
+            type="monotone"
+            dataKey="lastWeek"
+            stroke="#dcdcdc"
+            strokeWidth={2}
+            name="Last Week"
+          />
+        </LineChart>
       </ResponsiveContainer>
     </div>
   );
 }
-

@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomerTable from "../../../../components/Customer/CustomerTable/CustomerTable";
 import { useCustomers } from "../../../../hooks/useCustomers";
+import { exportToPDF } from "../../../../utils/pdfExport";
 
 export default function Customer() {
   const navigate = useNavigate();
@@ -23,6 +24,23 @@ export default function Customer() {
         .some((value) => value!.toString().toLowerCase().includes(term))
     );
   }, [rows, searchTerm]);
+
+  const handleExport = async () => {
+    await exportToPDF({
+      title: "Customer List",
+      columns: [
+        { header: "ID", dataKey: "id", width: 20 },
+        { header: "Name", dataKey: "name", width: 50 },
+        { header: "Email", dataKey: "email", width: 55 },
+        { header: "Phone", dataKey: "phone", width: 35 },
+        { header: "Address", dataKey: "address", width: 30 }
+      ],
+      data: filteredRows,
+      filename: `customers-${Date.now()}.pdf`,
+      orientation: "landscape"
+    });
+  };
+
   const filterRef = useRef<HTMLDivElement | null>(null);
   return (
     <div className="space-y-5 mt-3">
@@ -46,7 +64,10 @@ export default function Customer() {
           >
             Add new customer
           </button>
-          <button className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition ml-3">
+          <button
+            onClick={handleExport}
+            className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition ml-3"
+          >
             Export
           </button>
         </div>
