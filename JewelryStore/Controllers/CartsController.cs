@@ -1,4 +1,5 @@
 using JewelryStore.Data;
+using JewelryStore.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +16,13 @@ namespace JewelryStore.Controllers
     {
         private readonly AppDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ICartService _cartService;
 
-        public CartsController(AppDbContext db, UserManager<ApplicationUser> userManager)
+        public CartsController(AppDbContext db, UserManager<ApplicationUser> userManager, ICartService cartService)
         {
             _db = db;
             _userManager = userManager;
+            _cartService = cartService;
         }
 
         public record CartItemDto(int ProductId, int Quantity, decimal PriceAtAdd, string ProductName, string? ProductImage);
@@ -105,62 +108,14 @@ namespace JewelryStore.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null) return Unauthorized(new { error = "User not found" });
 
-                // Validate product exists
-                var product = await _db.Products.FindAsync(dto.ProductId);
-                if (product == null) return NotFound(new { error = "Product not found" });
-
-                // Check inventory
-                var inventory = await _db.Inventory.FirstOrDefaultAsync(i => i.ProductId == dto.ProductId);
-                if (inventory == null || inventory.Quantity < dto.Quantity)
-                {
-                    return BadRequest(new { error = "Insufficient stock" });
-                }
-
-                // Find or create active cart
-                var cart = await _db.Carts
-                    .Where(c => c.UserId == user.Id && c.Status == "active")
-                    .OrderByDescending(c => c.DateModified)
-                    .FirstOrDefaultAsync();
-
-                if (cart == null)
-                {
-                    cart = new Cart
-                    {
-                        UserId = user.Id,
-                        DateCreated = DateTime.UtcNow,
-                        DateModified = DateTime.UtcNow,
-                        Status = "active"
-                    };
-                    _db.Carts.Add(cart);
-                    await _db.SaveChangesAsync();
-                }
-
-                // Check if product already in cart
-                var existingItem = await _db.CartItems
-                    .FirstOrDefaultAsync(ci => ci.CartId == cart.Id && ci.ProductId == dto.ProductId);
-
-                if (existingItem != null)
-                {
-                    // Update quantity
-                    existingItem.Quantity += dto.Quantity;
-                }
-                else
-                {
-                    // Add new item
-                    var cartItem = new CartItem
-                    {
-                        CartId = cart.Id,
-                        ProductId = dto.ProductId,
-                        Quantity = dto.Quantity,
-                        PriceAtAdd = product.Price
-                    };
-                    _db.CartItems.Add(cartItem);
-                }
-
-                cart.DateModified = DateTime.UtcNow;
-                await _db.SaveChangesAsync();
-
+                await _cartService.AddToCartAsync(user.Id, dto.ProductId, dto.Quantity);
                 return Ok(new { message = "Product added to cart" });
+            }
+            catch (ArgumentException ex)
+            {
+                if (ex.Message == "Product not found")
+                    return NotFound(new { error = ex.Message });
+                return BadRequest(new { error = ex.Message });
             }
             catch (Exception ex)
             {

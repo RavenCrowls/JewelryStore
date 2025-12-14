@@ -1,4 +1,5 @@
 using JewelryStore.Data;
+using JewelryStore.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,11 +15,13 @@ namespace JewelryStore.Controllers
     {
         private readonly AppDbContext _db;
         private readonly ILogger<GemstonesController> _logger;
+        private readonly IGemstoneService _gemstoneService;
 
-        public GemstonesController(AppDbContext db, ILogger<GemstonesController> logger)
+        public GemstonesController(AppDbContext db, ILogger<GemstonesController> logger, IGemstoneService gemstoneService)
         {
             _db = db;
             _logger = logger;
+            _gemstoneService = gemstoneService;
         }
 
         [HttpGet]
@@ -26,8 +29,7 @@ namespace JewelryStore.Controllers
         {
             try
             {
-                if (take <= 0 || take > 200) take = 50;
-                var items = await _db.Gemstones.AsNoTracking().OrderBy(c => c.Id).Skip(skip).Take(take).ToListAsync();
+                var items = await _gemstoneService.GetAllAsync(skip, take);
                 return Ok(items);
             }
             catch (Exception)
@@ -41,7 +43,7 @@ namespace JewelryStore.Controllers
         {
             try
             {
-                var item = await _db.Gemstones.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+                var item = await _gemstoneService.GetByIdAsync(id);
                 if (item == null) return NotFound(new { error = "gemstone not found" });
                 return Ok(item);
             }

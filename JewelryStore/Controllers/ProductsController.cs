@@ -1,4 +1,5 @@
 using JewelryStore.Data;
+using JewelryStore.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,8 +13,13 @@ namespace JewelryStore.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
+        private readonly IProductService _productService;
         private readonly AppDbContext _db;
-        public ProductsController(AppDbContext db) => _db = db;
+        public ProductsController(IProductService productService, AppDbContext db)
+        {
+            _productService = productService;
+            _db = db;
+        }
 
         public record ProductPreviewDto(
             int Id,
@@ -30,25 +36,7 @@ namespace JewelryStore.Controllers
         {
             try
             {
-                if (take <= 0 || take > 200) take = 50;
-                var items = await _db.Products.AsNoTracking()
-                    .OrderBy(p => p.Id)
-                    .Skip(skip)
-                    .Take(take)
-                    .Select(p => new ProductPreviewDto(
-                        p.Id,
-                        p.Name,
-                        p.Material,
-                        _db.ProductImages
-                            .Where(i => i.ProductId == p.Id)
-                            .OrderBy(i => i.ImageOrder)
-                            .Select(i => i.ImageUrl)
-                            .FirstOrDefault(),
-                        _db.Categories.Where(c => c.Id == p.CategoryId).Select(c => c.Name).FirstOrDefault() ?? string.Empty,
-                        p.Price,
-                        _db.Inventory.Where(i => i.ProductId == p.Id).Select(i => i.Quantity).FirstOrDefault()
-                    ))
-                    .ToListAsync();
+                var items = await _productService.GetProductPreviewsAsync(skip, take);
                 return Ok(items);
             }
             catch (Exception)
@@ -62,8 +50,7 @@ namespace JewelryStore.Controllers
         {
             try
             {
-                if (take <= 0 || take > 200) take = 50;
-                var items = await _db.Products.AsNoTracking().OrderBy(c => c.Id).Skip(skip).Take(take).ToListAsync();
+                var items = await _productService.GetAllProductsAsync(skip, take);
                 return Ok(items);
             }
             catch (Exception)
@@ -92,26 +79,7 @@ namespace JewelryStore.Controllers
         {
             try
             {
-                var item = await _db.Products
-                    .AsNoTracking()
-                    .Where(c => c.Id == id)
-                    .Select(p => new ProductDetailDto(
-                        p.Id,
-                        p.Name,
-                        p.Material,
-                        p.Description,
-                        p.Price,
-                        p.Status,
-                        p.CategoryId,
-                        _db.Categories.Where(c => c.Id == p.CategoryId).Select(c => c.Name).FirstOrDefault() ?? string.Empty,
-                        _db.Inventory.Where(i => i.ProductId == p.Id).Select(i => i.Quantity).FirstOrDefault(),
-                        _db.Gemstones
-                            .Where(g => g.ProductId == p.Id)
-                            .OrderBy(g => g.Id)
-                            .Select(g => new ProductGemstoneDto(g.Id, g.Name, g.Weight, g.Size, g.Color))
-                            .ToList()
-                    ))
-                    .FirstOrDefaultAsync();
+                var item = await _productService.GetProductDetailByIdAsync(id);
                 if (item == null) return NotFound(new { error = "product not found" });
                 return Ok(item);
             }

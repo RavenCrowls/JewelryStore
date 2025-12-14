@@ -1,5 +1,6 @@
 using JewelryStore.Data;
 using JewelryStore.Data.Seed;
+using JewelryStore.Plugins;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Http;
 using JewelryStore.Options;
 using JewelryStore.Services;
+using Microsoft.SemanticKernel;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -33,6 +35,26 @@ builder.Services
 
 builder.Services.Configure<CloudinaryOptions>(builder.Configuration.GetSection(CloudinaryOptions.SectionName));
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+
+// Register services
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IGemstoneService, GemstoneService>();
+builder.Services.AddScoped<IProductImageService, ProductImageService>();
+
+// Register JewelryShopPlugin as Transient
+builder.Services.AddTransient<JewelryShopPlugin>();
+
+// Register Semantic Kernel with Google Gemini
+var geminiApiKey = builder.Configuration["Gemini:ApiKey"];
+if (string.IsNullOrEmpty(geminiApiKey))
+{
+    throw new InvalidOperationException("Gemini:ApiKey is not configured in secrets or appsettings");
+}
+builder.Services.AddKernel();
+builder.Services.AddGoogleAIGeminiChatCompletion("gemini-flash-latest", geminiApiKey);
 
 builder.Services.ConfigureApplicationCookie(options =>
 {

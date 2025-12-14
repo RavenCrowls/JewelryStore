@@ -1,4 +1,5 @@
 using JewelryStore.Data;
+using JewelryStore.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,18 +14,20 @@ namespace JewelryStore.Controllers
     public class ProductImagesController : ControllerBase
     {
         private readonly AppDbContext _db;
-        public ProductImagesController(AppDbContext db) => _db = db;
+        private readonly IProductImageService _productImageService;
+
+        public ProductImagesController(AppDbContext db, IProductImageService productImageService)
+        {
+            _db = db;
+            _productImageService = productImageService;
+        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductImage>>> GetAll([FromRoute] int productId)
         {
             try
             {
-                var items = await _db.ProductImages
-                    .AsNoTracking()
-                    .Where(i => i.ProductId == productId)
-                    .OrderBy(i => i.ImageOrder)
-                    .ToListAsync();
+                var items = await _productImageService.GetAllByProductIdAsync(productId);
                 return Ok(items);
             }
             catch (Exception)
@@ -38,9 +41,7 @@ namespace JewelryStore.Controllers
         {
             try
             {
-                var item = await _db.ProductImages
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(i => i.ProductId == productId && i.ImageOrder == imageOrder);
+                var item = await _productImageService.GetByProductAndOrderAsync(productId, imageOrder);
                 if (item == null) return NotFound(new { error = "Product image not found" });
                 return Ok(item);
             }
