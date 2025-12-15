@@ -1,7 +1,9 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import CustomerInfo from "../../../../components/Customer/CustomerInfo/CustomerInfo";
-import CustomerPurchaseTable, { type CustomerPurchaseRow } from "../../../../components/Customer/CustomerInfo/CustomerPurchase";
+import CustomerPurchaseTable, {
+  type CustomerPurchaseRow
+} from "../../../../components/Customer/CustomerInfo/CustomerPurchase";
 import { useCustomerDetail } from "../../../../hooks/useCustomerDetail";
 import { OrderService } from "../../../../services/order.service";
 
@@ -13,9 +15,15 @@ const formatDate = (iso?: string) => {
 };
 
 const toState = (status?: string) => {
-  const s = (status ?? "").toLowerCase();
-  if (s.includes("hoàn") || s.includes("thành")) return "success" as const;
-  if (s.includes("chờ") || s.includes("pending")) return "pending" as const;
+  const s = (status ?? "").trim();
+  if (s === "1") return "success" as const;
+  if (s === "0") return "pending" as const;
+  if (s === "2") return "failed" as const;
+  // Legacy string-based status
+  const lower = s.toLowerCase();
+  if (lower.includes("hoàn") || lower.includes("thành") || lower.includes("complete"))
+    return "success" as const;
+  if (lower.includes("chờ") || lower.includes("pending")) return "pending" as const;
   return "failed" as const;
 };
 
@@ -36,11 +44,12 @@ export default function CustomerDetail() {
         const filtered = data.filter((o) => o.userId === Number(id));
         const mapped: CustomerPurchaseRow[] = filtered.map((o) => ({
           order: `OR${o.id.toString().padStart(4, "0")}`,
+          orderId: o.id,
           customer: customer?.name ?? "",
           date: formatDate(o.dateCreated),
           total: o.totalPrice,
           currency: "VND",
-          state: toState(o.status),
+          state: toState(o.status)
         }));
         setOrders(mapped);
       } catch (err) {
