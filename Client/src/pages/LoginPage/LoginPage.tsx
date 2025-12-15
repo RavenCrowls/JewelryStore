@@ -16,7 +16,21 @@ const LoginPage: React.FC = () => {
     setSubmitting(true);
     try {
       await AuthService.login({ email, password, rememberMe: remember });
-      navigate("/manager", { replace: true });
+
+      // Check user role and redirect accordingly
+      const userInfo = await AuthService.me();
+      if (userInfo.roles && userInfo.roles.length > 0) {
+        const role = userInfo.roles[0].toLowerCase();
+        if (role === "manager" || role === "employee") {
+          navigate("/manager", { replace: true });
+        } else if (role === "customer") {
+          navigate("/", { replace: true });
+        } else {
+          navigate("/", { replace: true });
+        }
+      } else {
+        navigate("/", { replace: true });
+      }
     } catch (err: any) {
       setError(err?.message ?? "Login failed");
     } finally {
