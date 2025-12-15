@@ -24,7 +24,12 @@ export default function RequireAuth({ children }: RequireAuthProps) {
       if (!isMounted) return;
       if (!info.authenticated) {
         setAuthState("unauth");
-      } else if (!info.roles || !info.roles.includes("manager")) {
+      } else if (
+        !info.roles ||
+        !info.roles.some(
+          (role) => role.toLowerCase() === "manager" || role.toLowerCase() === "employee"
+        )
+      ) {
         setAuthState("forbidden");
       } else {
         setAuthState("authed");

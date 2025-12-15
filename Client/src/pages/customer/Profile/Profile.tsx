@@ -10,23 +10,22 @@ import { AuthService, UserService, type UserProfile } from "../../../services";
 export default function Profile() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isGoogleUser, setIsGoogleUser] = useState(false);
 
   const fetchUserProfile = async () => {
     try {
       setLoading(true);
       const meData = await AuthService.me();
       if (meData.authenticated && meData.userId) {
-        const profile = await UserService.getUserById(meData.userId);
-        setUserProfile(profile);
+        const [profile, imageData] = await Promise.all([
+          UserService.getUserById(meData.userId),
+          UserService.getUserImage(meData.userId)
+        ]);
 
-        // Check if user registered with Google
-        const hasGoogleClaim = meData.claims?.some(
-          (c) =>
-            c.Type === "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier" &&
-            c.Value.includes("google")
-        );
-        setIsGoogleUser(hasGoogleClaim || false);
+        // Add avatar URL to profile
+        setUserProfile({
+          ...profile,
+          avatarUrl: imageData?.imageUrl
+        });
       }
     } catch (err) {
       console.error("Failed to fetch user profile:", err);
@@ -77,10 +76,7 @@ export default function Profile() {
               path="/"
               element={<AccountInformation userProfile={userProfile} onUpdate={fetchUserProfile} />}
             />
-            <Route
-              path="/change-password"
-              element={<ChangePassword isGoogleUser={isGoogleUser} />}
-            />
+            <Route path="/change-password" element={<ChangePassword />} />
           </Routes>
         </Col>
       </Row>

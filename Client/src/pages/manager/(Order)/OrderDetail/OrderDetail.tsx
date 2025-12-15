@@ -255,7 +255,11 @@ export default function OrderDetail() {
                       ? "bg-slate-50/60 border-b border-slate-100"
                       : "border-b border-slate-100";
                   return (
-                    <tr key={`${item.orderId}-${item.productId}`} className={`${bg} text-center`}>
+                    <tr
+                      key={`${item.orderId}-${item.productId}`}
+                      className={`${bg} text-center cursor-pointer hover:bg-blue-50 transition`}
+                      onClick={() => navigate(`/manager/product/${item.productId}`)}
+                    >
                       <td className="px-4 py-3 text-xs font-semibold text-slate-700">
                         PRD{item.productId.toString().padStart(3, "0")}
                       </td>

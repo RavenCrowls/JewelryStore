@@ -125,6 +125,21 @@ export default function Home() {
         const products = await ProductService.fetchProductPreview(0, 200, {
           signal: controller.signal
         });
+        console.log("Loaded products:", products);
+
+        // Debug: show earrings product specifically
+        const earringsProduct = products.find(
+          (p) => p.id === 10 || p.name.toLowerCase().includes("earring")
+        );
+        if (earringsProduct) {
+          console.log("Earrings product found:", earringsProduct);
+          console.log("categoryName length:", earringsProduct.categoryName.length);
+          console.log(
+            "categoryName charCodes:",
+            Array.from(earringsProduct.categoryName).map((c) => c.charCodeAt(0))
+          );
+        }
+
         setAllProducts(products);
 
         // Calculate max price
@@ -206,10 +221,12 @@ export default function Home() {
         const keyStr = key.toString();
         if (keyStr.includes("category-")) {
           const category = keyStr.replace("category-", "");
-          return (
-            product.categoryName.toLowerCase().includes(category.toLowerCase()) ||
-            category.toLowerCase().includes(product.categoryName.toLowerCase())
+          const cleanCategoryName = product.categoryName.trim().toLowerCase().replace(/^"|"$/g, ""); // Remove leading/trailing quotes
+          const matches = cleanCategoryName === category.toLowerCase();
+          console.log(
+            `Comparing product category "${product.categoryName}" (cleaned: "${cleanCategoryName}") with filter "${category}": ${matches}`
           );
+          return matches;
         }
         return false;
       });

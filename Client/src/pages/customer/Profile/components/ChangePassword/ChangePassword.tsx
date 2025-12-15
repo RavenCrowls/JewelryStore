@@ -1,22 +1,12 @@
 import { Button, Form, Input, message, Alert } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { PasswordService } from "../../../../../services/auth.service";
 
-type ChangePasswordProps = {
-  isGoogleUser: boolean;
-};
-
-export default function ChangePassword({ isGoogleUser }: ChangePasswordProps) {
+export default function ChangePassword() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
-  const [hasPassword, setHasPassword] = useState(true);
-
-  useEffect(() => {
-    // If userProfile.password is null or empty, user registered with Google
-    setHasPassword(!isGoogleUser);
-  }, [isGoogleUser]);
 
   const handleSubmit = async (values: any) => {
     try {
@@ -24,7 +14,7 @@ export default function ChangePassword({ isGoogleUser }: ChangePasswordProps) {
       setError("");
       setSuccess("");
       await PasswordService.changePassword({
-        currentPassword: hasPassword ? values.oldPassword : "",
+        currentPassword: values.oldPassword || "",
         newPassword: values.newPassword
       });
       setSuccess("Đổi mật khẩu thành công");
@@ -39,40 +29,29 @@ export default function ChangePassword({ isGoogleUser }: ChangePasswordProps) {
   return (
     <div>
       <h2>Đổi mật khẩu</h2>
-      {!hasPassword && (
-        <Alert
-          message="Tài khoản Google không cần nhập mật khẩu cũ."
-          type="info"
-          showIcon
-          style={{ marginBottom: 16 }}
-        />
-      )}
       <Form layout="vertical" form={form} style={{ maxWidth: 600 }} onFinish={handleSubmit}>
-        {hasPassword && (
-          <Form.Item
-            name="oldPassword"
-            rules={[{ required: true, message: "Vui lòng nhập mật khẩu cũ" }]}
-          >
-            <label htmlFor="oldPass" className="text-[20px] block mb-2">
-              Mật khẩu cũ
-            </label>
-            <Input.Password size="large" id="oldPass" placeholder="Mật khẩu cũ" />
-          </Form.Item>
-        )}
+        <Form.Item
+          name="oldPassword"
+          label={
+            <span className="text-[20px]">Mật khẩu cũ (bỏ qua nếu đăng nhập bằng Google)</span>
+          }
+          rules={[{ required: false }]}
+        >
+          <Input.Password size="large" placeholder="Mật khẩu cũ" />
+        </Form.Item>
         <Form.Item
           name="newPassword"
+          label={<span className="text-[20px]">Mật khẩu mới</span>}
           rules={[
             { required: true, message: "Vui lòng nhập mật khẩu mới" },
             { min: 6, message: "Mật khẩu phải có ít nhất 6 ký tự" }
           ]}
         >
-          <label htmlFor="newPass" className="text-[20px] block mb-2">
-            Mật khẩu mới
-          </label>
-          <Input.Password size="large" id="newPass" placeholder="Mật khẩu mới" />
+          <Input.Password size="large" placeholder="Mật khẩu mới" />
         </Form.Item>
         <Form.Item
           name="confirmPassword"
+          label={<span className="text-[20px]">Xác nhận mật khẩu mới</span>}
           dependencies={["newPassword"]}
           rules={[
             { required: true, message: "Vui lòng xác nhận mật khẩu mới" },
@@ -86,10 +65,7 @@ export default function ChangePassword({ isGoogleUser }: ChangePasswordProps) {
             })
           ]}
         >
-          <label htmlFor="confirmPass" className="text-[20px] block mb-2">
-            Xác nhận mật khẩu mới
-          </label>
-          <Input.Password size="large" id="confirmPass" placeholder="Xác nhận mật khẩu mới" />
+          <Input.Password size="large" placeholder="Xác nhận mật khẩu mới" />
         </Form.Item>
         {error && <Alert message={error} type="error" showIcon style={{ marginBottom: 16 }} />}
         {success && (

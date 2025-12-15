@@ -56,6 +56,7 @@ export type UserProfile = {
   address: string | null;
   birthday: string | null;
   status: boolean;
+  avatarUrl?: string;
 };
 
 export type UpdateUserDto = {

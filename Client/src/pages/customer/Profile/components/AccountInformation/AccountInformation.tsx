@@ -1,7 +1,18 @@
-import { EditOutlined, EnvironmentOutlined, SaveOutlined, CloseOutlined } from "@ant-design/icons";
-import { Button, Input, DatePicker, Modal, message } from "antd";
-import React, { useState } from "react";
-import { UserService, type UserProfile, type UpdateUserDto } from "../../../../../services";
+import {
+  EditOutlined,
+  EnvironmentOutlined,
+  SaveOutlined,
+  CloseOutlined,
+  CameraOutlined
+} from "@ant-design/icons";
+import { Button, Input, DatePicker, Modal, message, Avatar, Upload } from "antd";
+import React, { useState, useRef } from "react";
+import {
+  UserService,
+  UploadService,
+  type UserProfile,
+  type UpdateUserDto
+} from "../../../../../services";
 import dayjs from "dayjs";
 
 type AccountInformationProps = {
@@ -22,6 +33,9 @@ const AccountInformation: React.FC<AccountInformationProps> = ({ userProfile, on
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   const [mapAddress, setMapAddress] = useState("");
   const [saving, setSaving] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState(userProfile?.avatarUrl || "");
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleEdit = () => {
     setEditData({
@@ -42,6 +56,16 @@ const AccountInformation: React.FC<AccountInformationProps> = ({ userProfile, on
       setSaving(true);
       await UserService.updateUser(userProfile.id, editData);
       message.success("Cập nhật thông tin thành công");
+
+      // Dispatch event to update navbar if fullName changed
+      if (editData.fullName !== userProfile.fullName) {
+        window.dispatchEvent(
+          new CustomEvent("profile-updated", {
+            detail: { fullName: editData.fullName }
+          })
+        );
+      }
+
       setIsEditing(false);
       onUpdate();
     } catch (err) {
@@ -74,6 +98,36 @@ const AccountInformation: React.FC<AccountInformationProps> = ({ userProfile, on
     setIsMapModalOpen(false);
   };
 
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !userProfile) return;
+
+    setUploadingAvatar(true);
+    try {
+      const url = await UploadService.uploadImage(file);
+      await UserService.updateUserImage(userProfile.id, url);
+      setAvatarUrl(url);
+      message.success("Cập nhật ảnh đại diện thành công");
+
+      // Dispatch event to update navbar avatar
+      window.dispatchEvent(
+        new CustomEvent("profile-updated", {
+          detail: { avatarUrl: url }
+        })
+      );
+
+      onUpdate();
+    } catch (err) {
+      console.error("Failed to upload avatar:", err);
+      message.error("Không thể cập nhật ảnh đại diện");
+    } finally {
+      setUploadingAvatar(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
   if (!userProfile) {
     return <div className="text-[20px]">Không tìm thấy thông tin người dùng</div>;
   }
@@ -82,13 +136,38 @@ const AccountInformation: React.FC<AccountInformationProps> = ({ userProfile, on
     <div className="text-[20px]">
       {!isEditing ? (
         <>
-          <div className="py-[7px]">
-            <span>Tên người dùng: </span>
-            <span className="font-bold">{userProfile.fullName}</span>
-          </div>
-          <div className="py-[7px]">
-            <span>Email: </span>
-            <span>{userProfile.email}</span>
+          <div className="flex items-center gap-6 mb-6">
+            <div className="relative">
+              <Avatar
+                size={120}
+                src={avatarUrl || userProfile.avatarUrl || "/img/avt.png"}
+                icon={<CameraOutlined />}
+              />
+              <Button
+                shape="circle"
+                icon={<CameraOutlined />}
+                className="absolute bottom-0 right-0"
+                onClick={() => fileInputRef.current?.click()}
+                loading={uploadingAvatar}
+              />
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept="image/*"
+                onChange={handleAvatarChange}
+                style={{ display: "none" }}
+              />
+            </div>
+            <div>
+              <div className="py-[7px]">
+                <span>Tên người dùng: </span>
+                <span className="font-bold">{userProfile.fullName}</span>
+              </div>
+              <div className="py-[7px]">
+                <span>Email: </span>
+                <span>{userProfile.email}</span>
+              </div>
+            </div>
           </div>
           <div className="py-[7px]">
             <span>Số điện thoại: </span>

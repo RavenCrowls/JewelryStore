@@ -1,4 +1,5 @@
 using JewelryStore.Data;
+using JewelryStore.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,15 +14,20 @@ namespace JewelryStore.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly AppDbContext _db;
-        public CategoriesController(AppDbContext db) => _db = db;
+        private readonly ICategoryService _categoryService;
+
+        public CategoriesController(AppDbContext db, ICategoryService categoryService)
+        {
+            _db = db;
+            _categoryService = categoryService;
+        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 50)
         {
             try
             {
-                if (take <= 0 || take > 200) take = 50;
-                var items = await _db.Categories.AsNoTracking().OrderBy(c => c.Id).Skip(skip).Take(take).ToListAsync();
+                var items = await _categoryService.GetAllAsync(skip, take);
                 return Ok(items);
             }
             catch (Exception)
@@ -35,7 +41,7 @@ namespace JewelryStore.Controllers
         {
             try
             {
-                var item = await _db.Categories.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+                var item = await _categoryService.GetByIdAsync(id);
                 if (item == null) return NotFound(new { error = "category not found" });
                 return Ok(item);
             }

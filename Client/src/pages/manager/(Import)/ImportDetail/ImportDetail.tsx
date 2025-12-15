@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ImportService } from "../../../../services/import.service";
 import { SupplierService } from "../../../../services/supplier.service";
@@ -14,6 +14,7 @@ const formatDate = (iso?: string) => {
 };
 
 export default function ImportDetail() {
+  const navigate = useNavigate();
   const { lot } = useParams<{ lot: string }>();
   const id = lot;
   console.log("ImportDetail id param:", id);
@@ -229,7 +230,11 @@ export default function ImportDetail() {
                       ? "bg-slate-50/60 border-b border-slate-100"
                       : "border-b border-slate-100";
                   return (
-                    <tr key={`${item.importId}-${item.productId}`} className={`${bg} text-center`}>
+                    <tr
+                      key={`${item.importId}-${item.productId}`}
+                      className={`${bg} text-center cursor-pointer hover:bg-blue-50 transition`}
+                      onClick={() => navigate(`/manager/product/${item.productId}`)}
+                    >
                       <td className="px-4 py-3 text-xs font-semibold text-slate-700">
                         PRD{item.productId.toString().padStart(3, "0")}
                       </td>

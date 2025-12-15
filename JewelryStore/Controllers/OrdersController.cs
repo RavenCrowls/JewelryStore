@@ -147,6 +147,22 @@ namespace JewelryStore.Controllers
             {
                 var order = await _db.Orders.FirstOrDefaultAsync(c => c.Id == id);
                 if (order == null) return NotFound(new { error = "order not found" });
+
+                // Only increase inventory if order was in pending status (0)
+                if (order.Status == "0")
+                {
+                    // Get all order details and restore inventory
+                    var orderDetails = await _db.Set<OrderDetail>().Where(d => d.OrderId == id).ToListAsync();
+                    foreach (var detail in orderDetails)
+                    {
+                        var inventory = await _db.Inventory.FirstOrDefaultAsync(i => i.ProductId == detail.ProductId);
+                        if (inventory != null)
+                        {
+                            inventory.Quantity += detail.Quantity;
+                        }
+                    }
+                }
+
                 order.Status = "2";
                 if (dto?.StaffId != null && dto.StaffId > 0)
                 {
@@ -213,10 +229,23 @@ namespace JewelryStore.Controllers
                 {
                     return NotFound(new { error = "product not found" });
                 }
+
+                // Check if inventory has sufficient stock
+                var inventory = await _db.Inventory.FirstOrDefaultAsync(i => i.ProductId == model.ProductId);
+                if (inventory == null || inventory.Quantity < model.Quantity)
+                {
+                    return BadRequest(new { error = "Insufficient inventory" });
+                }
+
                 model.PriceAtSale = product.Price;
                 model.TotalPrice = model.PriceAtSale * model.Quantity;
                 _db.Set<OrderDetail>().Add(model);
                 await _db.SaveChangesAsync();
+
+                // Decrease inventory stock when order is created
+                inventory.Quantity -= model.Quantity;
+                await _db.SaveChangesAsync();
+
                 // Recalculate order total price
                 var order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
                 if (order != null)
@@ -239,6 +268,14 @@ namespace JewelryStore.Controllers
             {
                 var item = await _db.Set<OrderDetail>().FirstOrDefaultAsync(d => d.OrderId == orderId && d.ProductId == productId);
                 if (item == null) return NotFound(new { error = "order detail not found" });
+
+                // Restore inventory when deleting order detail
+                var inventory = await _db.Inventory.FirstOrDefaultAsync(i => i.ProductId == productId);
+                if (inventory != null)
+                {
+                    inventory.Quantity += item.Quantity;
+                }
+
                 _db.Set<OrderDetail>().Remove(item);
                 await _db.SaveChangesAsync();
                 // Recalculate order total price

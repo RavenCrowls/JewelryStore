@@ -79,12 +79,6 @@ export default function Dashboard() {
       {/* Hàng tiêu đề + nút */}
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold tracking-tight text-[#1279C3]">Dashboard</h2>
-        <button
-          onClick={handleGoToReport}
-          className="inline-flex items-center gap-2 rounded-xl border border-blue-500 bg-white px-4 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition"
-        >
-          View Report
-        </button>
       </div>
 
       {/* Revenue Card */}

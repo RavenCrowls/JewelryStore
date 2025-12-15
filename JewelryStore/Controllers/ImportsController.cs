@@ -126,6 +126,19 @@ namespace JewelryStore.Controllers
                 _db.ImportDetails.Add(model);
                 await _db.SaveChangesAsync();
 
+                // Increase inventory stock when import is created
+                var inventory = await _db.Inventory.FirstOrDefaultAsync(i => i.ProductId == model.ProductId);
+                if (inventory != null)
+                {
+                    inventory.Quantity += model.Quantity;
+                }
+                else
+                {
+                    inventory = new Inventory { ProductId = model.ProductId, Quantity = model.Quantity };
+                    _db.Inventory.Add(inventory);
+                }
+                await _db.SaveChangesAsync();
+
                 await UpdateImportTotalPrice(importId);
 
                 return Created($"api/imports/{importId}/details", model);
