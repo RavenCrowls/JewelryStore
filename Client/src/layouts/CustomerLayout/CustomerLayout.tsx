@@ -92,6 +92,25 @@ export default function CustomerLayout() {
     fetchCartCount();
   }, [fetchCartCount]);
 
+  React.useEffect(() => {
+    const handleProfileUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const { fullName, avatarUrl } = customEvent.detail || {};
+
+      if (fullName) {
+        setAuth((prev) => ({ ...prev, fullName }));
+      }
+
+      if (avatarUrl) {
+        localStorage.setItem("avatarUrl", avatarUrl);
+        window.dispatchEvent(new Event("avatar-updated"));
+      }
+    };
+
+    window.addEventListener("profile-updated", handleProfileUpdate);
+    return () => window.removeEventListener("profile-updated", handleProfileUpdate);
+  }, []);
+
   const handleLogout = async () => {
     await AuthService.logout();
     setAuth({ authenticated: false });
@@ -107,11 +126,13 @@ export default function CustomerLayout() {
           </Link>
 
           <div className="flex items-center absolute top-0 right-0 h-full gap-6">
-            <Link to="/cart" className="mr-2 relative top-0.5">
-              <Badge count={cartCount} size="small">
-                <ShoppingCartOutlined className="text-2xl text-white" />
-              </Badge>
-            </Link>
+            {auth.authenticated && (
+              <Link to="/cart" className="mr-2 relative top-0.5">
+                <Badge count={cartCount} size="small">
+                  <ShoppingCartOutlined className="text-2xl text-white" />
+                </Badge>
+              </Link>
+            )}
             {loading ? null : auth.authenticated ? (
               <>
                 <div className="h-full hover:cursor-pointer">

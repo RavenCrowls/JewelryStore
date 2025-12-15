@@ -16,8 +16,16 @@ export default function Profile() {
       setLoading(true);
       const meData = await AuthService.me();
       if (meData.authenticated && meData.userId) {
-        const profile = await UserService.getUserById(meData.userId);
-        setUserProfile(profile);
+        const [profile, imageData] = await Promise.all([
+          UserService.getUserById(meData.userId),
+          UserService.getUserImage(meData.userId)
+        ]);
+
+        // Add avatar URL to profile
+        setUserProfile({
+          ...profile,
+          avatarUrl: imageData?.imageUrl
+        });
       }
     } catch (err) {
       console.error("Failed to fetch user profile:", err);
