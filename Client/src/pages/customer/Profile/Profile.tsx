@@ -10,7 +10,6 @@ import { AuthService, UserService, type UserProfile } from "../../../services";
 export default function Profile() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isGoogleUser, setIsGoogleUser] = useState(false);
 
   const fetchUserProfile = async () => {
     try {
@@ -19,14 +18,6 @@ export default function Profile() {
       if (meData.authenticated && meData.userId) {
         const profile = await UserService.getUserById(meData.userId);
         setUserProfile(profile);
-
-        // Check if user registered with Google
-        const hasGoogleClaim = meData.claims?.some(
-          (c) =>
-            c.Type === "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier" &&
-            c.Value.includes("google")
-        );
-        setIsGoogleUser(hasGoogleClaim || false);
       }
     } catch (err) {
       console.error("Failed to fetch user profile:", err);
@@ -77,10 +68,7 @@ export default function Profile() {
               path="/"
               element={<AccountInformation userProfile={userProfile} onUpdate={fetchUserProfile} />}
             />
-            <Route
-              path="/change-password"
-              element={<ChangePassword isGoogleUser={isGoogleUser} />}
-            />
+            <Route path="/change-password" element={<ChangePassword />} />
           </Routes>
         </Col>
       </Row>
