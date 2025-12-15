@@ -80,6 +80,12 @@ export default function AddOrder() {
     const product = products.find((p) => p.id === selectedProductId);
     if (!product) return;
 
+    // Check if quantity exceeds stock
+    if (quantity > product.quantity) {
+      alert(`Insufficient stock. Available: ${product.quantity}, Requested: ${quantity}`);
+      return;
+    }
+
     // Check if product already added
     if (orderDetails.some((d) => d.productId === selectedProductId)) {
       alert("Product already added to this order");
@@ -153,7 +159,7 @@ export default function AddOrder() {
       }
 
       alert("Order created successfully!");
-      navigate("/manager/order");
+      navigate(`/manager/order/${createdOrder.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create order");
     } finally {
@@ -300,7 +306,14 @@ export default function AddOrder() {
           </div>
           <button
             onClick={handleAddProduct}
-            className="px-4 py-2 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 transition"
+            disabled={
+              !selectedProductId ||
+              quantity <= 0 ||
+              (selectedProductId
+                ? (products.find((p) => p.id === selectedProductId)?.quantity || 0) < quantity
+                : false)
+            }
+            className="px-4 py-2 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 transition disabled:bg-slate-400 disabled:cursor-not-allowed"
           >
             Add Product
           </button>

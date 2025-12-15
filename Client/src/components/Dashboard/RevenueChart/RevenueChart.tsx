@@ -1,4 +1,12 @@
-import { LineChart, Line, ResponsiveContainer, XAxis, Tooltip, Legend } from "recharts";
+import {
+  LineChart,
+  Line,
+  ResponsiveContainer,
+  XAxis,
+  Tooltip,
+  Legend,
+  ReferenceLine
+} from "recharts";
 
 type RevenueChartProps = {
   thisWeekData: Array<{ day: string; revenue: number }>;
@@ -19,6 +27,7 @@ export default function RevenueChart({ thisWeekData, lastWeekData }: RevenueChar
         <LineChart data={data} margin={{ top: 10, right: 20, left: 20, bottom: 10 }}>
           <XAxis dataKey="day" tick={{ fontSize: 12 }} />
           <Tooltip formatter={(value: number) => value.toLocaleString("vi-VN") + " VND"} />
+          <ReferenceLine y={0} stroke="#999" strokeDasharray="5 5" strokeWidth={1} />
           <Legend />
           <Line
             type="monotone"

@@ -122,7 +122,7 @@ export default function AddImport() {
       }
 
       alert("Import created successfully!");
-      navigate("/manager/import");
+      navigate(`/manager/import/${createdImport.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create import");
     } finally {
@@ -209,7 +209,8 @@ export default function AddImport() {
               <option value="">Select a product</option>
               {products.map((product) => (
                 <option key={product.id} value={product.id}>
-                  {product.name} - {product.price.toLocaleString("vi-VN")} VND
+                  {product.name} - {product.price.toLocaleString("vi-VN")} VND (Stock:{" "}
+                  {product.quantity})
                 </option>
               ))}
             </select>

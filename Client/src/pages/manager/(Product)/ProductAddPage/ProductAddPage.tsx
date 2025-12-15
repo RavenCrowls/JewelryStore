@@ -90,8 +90,8 @@ export default function ProductAddPage() {
         });
       }
 
-      // Navigate back to product list
-      navigate("/manager/product");
+      // Navigate to product detail page
+      navigate(`/manager/product/${createdProduct.id}`);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to create product";
       setError(errorMessage);
